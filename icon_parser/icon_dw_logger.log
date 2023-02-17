@@ -1,0 +1,322 @@
+scripts.loaders 2023-02-17 16:07:02,544 INFO Variable tmax_2m is downloading ..
+scripts.loaders 2023-02-17 16:09:05,519 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_079_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:05,711 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_080_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:07,097 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_082_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:07,347 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_083_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:08,512 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_085_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:08,703 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_086_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:10,276 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_088_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:10,467 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_089_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:11,828 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_091_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:12,023 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_092_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:13,075 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_094_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:13,265 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_095_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:14,640 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_097_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:14,829 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_098_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:16,122 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_100_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:16,588 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_101_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:17,675 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_103_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:17,898 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_104_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:19,562 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_106_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:19,784 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_107_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:20,831 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_109_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:21,022 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_110_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:22,235 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_112_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:22,588 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_113_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:23,743 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_115_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:24,206 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_116_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:25,279 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_118_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:25,503 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_119_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:26,862 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_121_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:27,099 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_122_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:28,060 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_124_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:28,240 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_125_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:29,391 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_127_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:29,571 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_128_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:30,735 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_130_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:30,923 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_131_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:32,025 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_133_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:32,248 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_134_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:33,383 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_136_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:33,573 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_137_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:35,677 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_139_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:35,933 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_140_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:41,806 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_142_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:42,230 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_143_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:45,071 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_145_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:45,436 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_146_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:46,714 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_148_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:46,907 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_149_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:48,129 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_151_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:48,319 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_152_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:49,439 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_154_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:49,631 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_155_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:50,682 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_157_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:50,874 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_158_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:52,130 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_160_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:52,323 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_161_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:53,476 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_163_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:53,686 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_164_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:56,439 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_166_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:56,656 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_167_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:58,056 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_169_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:58,245 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_170_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:59,261 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_172_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:09:59,451 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_173_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:10:00,496 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_175_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:10:00,764 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_176_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:10:01,900 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_178_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:10:02,131 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmax_2m/icon_global_icosahedral_single-level_2023021700_179_TMAX_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:10:03,626 INFO Variable tmax_2m has been downloaded
+
+scripts.loaders 2023-02-17 16:10:03,626 INFO Variable tmin_2m is downloading ..
+scripts.loaders 2023-02-17 16:11:55,772 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_079_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:11:56,294 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_080_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:11:57,290 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_082_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:11:57,510 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_083_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:11:58,725 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_085_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:11:58,914 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_086_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:00,038 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_088_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:00,268 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_089_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:01,733 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_091_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:01,925 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_092_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:03,188 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_094_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:03,378 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_095_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:04,780 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_097_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:04,969 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_098_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:06,165 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_100_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:06,358 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_101_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:08,015 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_103_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:08,216 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_104_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:09,312 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_106_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:09,565 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_107_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:10,793 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_109_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:10,984 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_110_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:12,446 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_112_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:12,677 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_113_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:13,849 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_115_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:14,030 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_116_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:16,878 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_118_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:18,099 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_119_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:19,256 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_121_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:19,445 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_122_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:20,610 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_124_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:20,841 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_125_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:22,626 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_127_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:22,815 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_128_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:24,082 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_130_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:24,298 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_131_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:25,693 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_133_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:26,004 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_134_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:27,041 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_136_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:27,263 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_137_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:29,132 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_139_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:29,325 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_140_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:30,434 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_142_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:30,624 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_143_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:31,631 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_145_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:31,821 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_146_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:33,553 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_148_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:33,741 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_149_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:34,907 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_151_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:35,096 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_152_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:36,130 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_154_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:36,320 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_155_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:37,447 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_157_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:37,673 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_158_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:38,758 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_160_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:38,949 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_161_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:40,102 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_163_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:40,293 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_164_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:41,311 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_166_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:41,560 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_167_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:42,971 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_169_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:43,163 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_170_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:44,318 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_172_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:44,553 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_173_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:45,539 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_175_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:12:45,730 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_176_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:13:50,743 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_178_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:13:50,946 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tmin_2m/icon_global_icosahedral_single-level_2023021700_179_TMIN_2M.grib2.bz2
+scripts.loaders 2023-02-17 16:13:51,959 INFO Variable tmin_2m has been downloaded
+
+scripts.loaders 2023-02-17 16:13:51,959 INFO Variable tot_prec is downloading ..
+scripts.loaders 2023-02-17 16:14:54,862 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_079_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:14:55,054 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_080_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:14:56,028 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_082_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:14:56,218 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_083_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:14:57,148 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_085_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:14:57,372 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_086_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:14:58,286 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_088_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:14:58,504 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_089_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:00,739 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_091_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:00,928 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_092_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:02,502 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_094_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:02,692 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_095_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:03,982 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_097_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:04,246 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_098_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:06,520 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_100_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:06,710 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_101_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:07,779 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_103_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:08,014 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_104_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:10,142 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_106_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:10,363 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_107_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:11,482 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_109_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:11,668 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_110_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:12,960 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_112_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:13,154 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_113_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:14,140 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_115_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:14,319 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_116_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:16,059 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_118_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:16,274 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_119_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:17,429 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_121_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:17,625 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_122_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:18,715 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_124_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:18,955 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_125_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:21,245 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_127_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:21,434 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_128_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:22,435 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_130_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:22,670 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_131_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:23,652 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_133_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:24,173 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_134_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:25,070 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_136_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:25,262 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_137_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:26,525 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_139_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:26,752 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_140_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:27,709 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_142_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:28,029 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_143_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:28,959 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_145_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:29,181 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_146_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:30,193 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_148_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:30,381 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_149_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:31,718 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_151_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:31,908 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_152_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:32,950 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_154_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:33,139 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_155_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:34,087 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_157_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:34,303 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_158_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:35,189 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_160_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:35,379 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_161_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:36,338 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_163_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:36,525 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_164_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:37,473 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_166_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:37,706 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_167_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:38,824 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_169_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:39,013 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_170_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:40,265 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_172_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:40,454 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_173_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:41,350 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_175_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:41,539 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_176_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:42,467 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_178_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:42,724 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/tot_prec/icon_global_icosahedral_single-level_2023021700_179_TOT_PREC.grib2.bz2
+scripts.loaders 2023-02-17 16:15:43,536 INFO Variable tot_prec has been downloaded
+
+scripts.loaders 2023-02-17 16:15:43,536 INFO Variable alb_rad is downloading ..
+scripts.loaders 2023-02-17 16:17:46,817 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_079_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:47,002 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_080_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:47,834 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_082_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:48,022 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_083_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:48,836 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_085_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:49,026 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_086_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:50,046 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_088_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:50,250 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_089_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:51,159 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_091_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:51,365 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_092_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:52,512 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_094_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:52,702 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_095_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:53,947 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_097_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:54,135 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_098_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:55,024 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_100_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:55,477 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_101_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:56,337 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_103_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:56,516 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_104_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:57,367 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_106_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:57,577 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_107_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:58,483 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_109_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:58,712 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_110_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:59,532 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_112_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:17:59,759 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_113_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:00,634 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_115_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:00,822 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_116_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:01,745 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_118_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:02,004 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_119_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:02,877 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_121_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:03,069 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_122_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:03,913 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_124_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:04,114 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_125_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:05,126 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_127_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:05,316 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_128_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:06,309 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_130_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:06,521 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_131_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:08,157 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_133_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:08,346 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_134_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:09,389 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_136_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:09,579 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_137_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:10,432 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_139_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:10,652 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_140_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:11,528 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_142_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:11,708 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_143_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:12,548 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_145_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:12,824 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_146_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:13,667 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_148_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:14,189 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_149_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:15,103 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_151_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:15,306 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_152_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:16,373 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_154_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:16,598 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_155_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:17,475 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_157_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:17,703 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_158_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:18,895 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_160_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:19,084 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_161_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:19,980 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_163_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:20,168 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_164_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:21,014 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_166_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:21,245 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_167_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:22,128 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_169_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:22,317 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_170_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:23,172 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_172_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:23,359 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_173_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:24,190 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_175_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:24,381 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_176_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:25,267 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_178_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:25,462 WARNING No file for at https://opendata.dwd.de/weather/nwp/icon/grib/00/alb_rad/icon_global_icosahedral_single-level_2023021700_179_ALB_RAD.grib2.bz2
+scripts.loaders 2023-02-17 16:18:26,101 INFO Variable alb_rad has been downloaded
+
+scripts.loaders 2023-02-17 16:18:26,102 INFO Unarchive tmax_2m ..
+scripts.loaders 2023-02-17 16:19:02,016 INFO Unarchive for tmax_2m has been finished
+
+scripts.loaders 2023-02-17 16:19:02,016 INFO Unarchive tmin_2m ..
+scripts.loaders 2023-02-17 16:19:35,448 INFO Unarchive for tmin_2m has been finished
+
+scripts.loaders 2023-02-17 16:19:35,448 INFO Unarchive tot_prec ..
+scripts.loaders 2023-02-17 16:20:00,347 INFO Unarchive for tot_prec has been finished
+
+scripts.loaders 2023-02-17 16:20:00,347 INFO Unarchive alb_rad ..
+scripts.loaders 2023-02-17 16:20:28,146 INFO Unarchive for alb_rad has been finished
+
+scripts.loaders 2023-02-17 16:20:28,146 INFO Nc coversion for tmax_2m ..
+scripts.loaders 2023-02-17 16:21:33,747 INFO Nc coversion for tmax_2m has been finished
+
+scripts.loaders 2023-02-17 16:21:33,747 INFO Nc coversion for tmin_2m ..
+scripts.loaders 2023-02-17 16:22:56,733 INFO Nc coversion for tmin_2m has been finished
+
+scripts.loaders 2023-02-17 16:22:56,735 INFO Nc coversion for tot_prec ..
+scripts.loaders 2023-02-17 16:23:59,941 INFO Nc coversion for tot_prec has been finished
+
+scripts.loaders 2023-02-17 16:23:59,941 INFO Nc coversion for alb_rad ..
+scripts.loaders 2023-02-17 16:25:04,902 INFO Nc coversion for alb_rad has been finished
+
+scripts.loaders 2023-02-17 16:25:04,903 INFO Nc aggregation for tmax_2m ..
+scripts.loaders 2023-02-17 16:25:08,999 INFO Nc aggregation for tmax_2m has been finished
+
+scripts.loaders 2023-02-17 16:25:09,000 INFO Nc aggregation for tmin_2m ..
+scripts.loaders 2023-02-17 16:25:12,282 INFO Nc aggregation for tmin_2m has been finished
+
+scripts.loaders 2023-02-17 16:25:12,282 INFO Nc aggregation for tot_prec ..
+scripts.loaders 2023-02-17 16:25:15,021 INFO Nc aggregation for tot_prec has been finished
+
+scripts.loaders 2023-02-17 16:25:15,021 INFO Nc aggregation for alb_rad ..
+scripts.loaders 2023-02-17 16:25:18,033 INFO Nc aggregation for alb_rad has been finished
+
+scripts.loaders 2023-02-17 16:25:21,412 INFO Data for 20230217 downloaded
+
