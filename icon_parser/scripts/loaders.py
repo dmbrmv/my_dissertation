@@ -138,7 +138,8 @@ class Icon_loader:
         shutil.rmtree(self.grib2_folder)
         shutil.rmtree(self.nc_folder)
         self.icon_dw_logger.info(
-            f"""###########################################################
+            f"""
+###########################################################
 ###########################################################
 
 Data for {self.today_date} downloaded
