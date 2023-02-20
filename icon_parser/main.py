@@ -4,19 +4,23 @@ from schedule import repeat, every, run_pending
 from datetime import datetime
 import gc
 
-day = datetime.today().strftime('%Y-%m-%d')
-h_m = datetime.today().strftime('%H-%M')
-
 
 @repeat(every().day.at("04:20"))
 def downloader():
+
+    day = datetime.today().strftime('%Y-%m-%d')
+    h_m = datetime.today().strftime('%H-%M')
     print(f'It is time to download icon for {day} at {h_m}')
     loader = Icon_loader(
+        icon_description='./data/static_icon/grid_world_0125.txt',
+        icon_weights='./data/static_icon/weights_icon_world.nc',
         icon_storage='https://opendata.dwd.de/weather/nwp/icon/grib',
         icon_times=['00'],
         icon_variables=['tmax_2m', 'tmin_2m',
                         'tot_prec', 'alb_rad'],
         i_t='icon_global_icosahedral_single-level',
+        coord_limits={'max_lon': 179., 'min_lon': 19.,
+                      'max_lat': 72., 'min_lat': 40.},
         res_storage=Path('/home/anton/dima_experiments/geo_data/icon_data'))
 
     loader.download_bz2()

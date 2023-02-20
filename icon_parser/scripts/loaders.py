@@ -15,9 +15,10 @@ from .nc_proc import from_icon_to_ru_nc
 class Icon_loader:
 
     def __init__(self,
+                 icon_description: str, icon_weights: str,
                  icon_storage: str, icon_times: list,
                  icon_variables: list, i_t: str,
-                 res_storage: Path) -> None:
+                 coord_limits: dict, res_storage: Path) -> None:
 
         # initial values
         self.icon_storage = icon_storage
@@ -28,11 +29,10 @@ class Icon_loader:
 
         # constants for one cycle
         self.today_date = datetime.today().strftime('%Y%m%d')
-        self.desc_f = './data/static_icon/grid_world_0125.txt'
-        self.weight_f = './data/static_icon/weights_icon_world.nc'
+        self.desc_f = icon_description
+        self.weight_f = icon_weights
 
-        self.coord_limits = {'max_lon': 179., 'min_lon': 19.,
-                             'max_lat': 72., 'min_lat': 40.}
+        self.coord_limits = coord_limits
 
         # logger
         self.icon_dw_logger = logging.getLogger(__name__)
@@ -53,10 +53,11 @@ class Icon_loader:
         for time in self.icon_times:
             for var in self.icon_variables:
                 self.icon_dw_logger.info(f"Variable {var} is downloading ..")
-                for m_time in icon_model_time:
-                    self.bz2_path = Path('./data/icon_bz2')
-                    self.bz2_path.mkdir(exist_ok=True, parents=True)
 
+                self.bz2_path = Path('./data/icon_bz2')
+                self.bz2_path.mkdir(exist_ok=True, parents=True)
+
+                for m_time in icon_model_time:
                     bz = Path(f'{self.bz2_path}/{time}/{var}')
                     bz.mkdir(exist_ok=True, parents=True)
 
@@ -82,12 +83,11 @@ class Icon_loader:
                 self.icon_dw_logger.info(f"Unarchive {var} ..")
                 files = glob.glob(f'./data/icon_bz2/{time}/{var}/*.bz2')
 
+                self.grib2_folder = Path('./data/icon_grib2')
+                self.grib2_folder.mkdir(exist_ok=True, parents=True)
+
                 for filename in files:
                     f_name = filename.split('/')[-1][:-4]
-
-                    self.grib2_folder = Path('./data/icon_grib2')
-                    self.grib2_folder.mkdir(exist_ok=True, parents=True)
-
                     grib = Path(f'{self.grib2_folder}/{time}/{var}')
                     grib.mkdir(exist_ok=True, parents=True)
 
@@ -104,14 +104,15 @@ class Icon_loader:
             for var in self.icon_variables:
                 self.icon_dw_logger.info(f"Nc coversion for {var} ..")
                 files = glob.glob(f'./data/icon_grib2/{time}/{var}/*.grib2')
+
                 self.nc_folder = Path('./data/icon_nc')
                 self.nc_folder.mkdir(exist_ok=True, parents=True)
 
                 for filename in files:
-                    out_f = filename.split('/')[-1][:-6]
+                    f_name = filename.split('/')[-1][:-6]
                     nc_temp = Path(f'{self.nc_folder}/{time}/{var}')
                     nc_temp.mkdir(exist_ok=True, parents=True)
-                    fin_f = f'{nc_temp}/{out_f}'
+                    fin_f = f'{nc_temp}/{f_name}'
 
                     os.system(
                         f'cdo -s -f nc remap,{self.desc_f},{self.weight_f} {filename} {fin_f}.nc')
@@ -137,4 +138,10 @@ class Icon_loader:
         shutil.rmtree(self.grib2_folder)
         shutil.rmtree(self.nc_folder)
         self.icon_dw_logger.info(
-            f"Data for {self.today_date} downloaded\n")
+            f"""###########################################################
+###########################################################
+
+Data for {self.today_date} downloaded
+
+###########################################################
+###########################################################\n""")
