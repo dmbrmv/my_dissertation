@@ -10,6 +10,7 @@ import numpy as np
 import xarray as xr
 from pathlib import Path
 import gc
+import logging
 
 
 class Gridder:
@@ -19,7 +20,7 @@ class Gridder:
     def __init__(self,
                  half_grid_resolution: float, ws_geom: Polygon,
                  gauge_id: str, path_to_save: Path,
-                 nc_pathes: list, var: str,
+                 nc_pathes: list, var: str, dataset: str,
                  aggregation_type: str = 'sum') -> None:
         """_summary_
 
@@ -41,6 +42,7 @@ class Gridder:
         self.gauge_id = gauge_id
         self.path_to_save = path_to_save
         self.nc_pathes = nc_pathes
+        self.dataset = dataset
         self.var = var
 
         self.aggregation_type = aggregation_type
@@ -54,13 +56,26 @@ class Gridder:
             f'{self.path_to_save}/weights/{self.grid_res}')
         self.weight_folder.mkdir(exist_ok=True, parents=True)
 
+        # logger
+        self.mete_grid_logger = logging.getLogger(__name__)
+        self.mete_grid_logger.setLevel(20)
+
+        grid_handler = logging.FileHandler("grid_logger.log", mode="a")
+        working_filename = Path(__name__).name
+        grid_formatter = logging.Formatter(
+            f"{working_filename} %(asctime)s %(levelname)s %(message)s")
+
+        grid_handler.setFormatter(grid_formatter)
+        self.mete_grid_logger.addHandler(grid_handler)
+
+        # weights
         test_weight = Path(f'{self.weight_folder}/{self.gauge_id}.nc')
         if test_weight.is_file():
-            print(f"""Weights exist with resolution
+            self.mete_grid_logger.info(f"""Weights exist with resolution
 of {self.grid_res} for {self.gauge_id} Calculation for {self.var}""")
             self.weights = xr.open_dataarray(test_weight)
         else:
-            print(f"""New weights mask calculation
+            self.mete_grid_logger.warning(f"""New weights mask calculation
 with resolution of {self.grid_res} for {self.gauge_id}""")
             self.weights = Gridder.grid_weights(self)
 
@@ -179,7 +194,7 @@ with resolution of {self.grid_res} for {self.gauge_id}""")
         # create final instersection
         ws_nc = mask_nc.where(inter_mask, drop=True)
 
-        final_save = Path(f'{self.path_to_save}/{self.var}')
+        final_save = Path(f'{self.path_to_save}/{self.dataset}/{self.var}')
         final_save.mkdir(exist_ok=True, parents=True)
 
         res_df = pd.DataFrame()
@@ -197,5 +212,7 @@ with resolution of {self.grid_res} for {self.gauge_id}""")
                 dim=['lat', 'lon'])[var].values
             res_df = res_df.set_index('date')
             res_df.to_csv(f'{final_save}/{self.gauge_id}.csv')
+        self.mete_grid_logger.warning(f"""\nValue of {self.var}
+from dataset {self.dataset} for gauge {self.gauge_id} has been calculated""")
 
         gc.collect()

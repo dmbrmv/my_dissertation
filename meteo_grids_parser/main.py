@@ -14,6 +14,8 @@ gpcp = Path(f'{meteo_path}/gpcp_year')
 gleam = Path(f'{meteo_path}/gleam_vars')
 mswep = Path(f'{meteo_path}/mswep')
 
+place_to_save = '/home/anton/dima_experiments/geo_data/meteo_grids'
+
 ds_description = {
     'era5_land': {'res': 0.05,
                   'f_path': multi_var_nc(era5_land)},
@@ -33,8 +35,8 @@ for dataset, settings in ds_description.items():
 
     grid_res = settings['res']
 
-    for i, gauge_id in tqdm(enumerate(russia_ws['gauge_id'])):
-        print(f'Weighted calculations for {dataset}')
+    for i, gauge_id in enumerate(tqdm(russia_ws['gauge_id'])):
+
         ws_geometry = russia_ws.loc[i, 'geometry']
 
         for variable, pathes in settings['f_path'].items():
@@ -42,8 +44,9 @@ for dataset, settings in ds_description.items():
             meteo_grid = Gridder(half_grid_resolution=grid_res,
                                  ws_geom=ws_geometry,
                                  gauge_id=gauge_id,
-                                 path_to_save=Path(f'{meteo_path}/great_db'),
+                                 path_to_save=Path(f'{place_to_save}'),
                                  nc_pathes=pathes,
+                                 dataset=dataset,
                                  var=variable)
 
             meteo_grid.grid_value_ws()
