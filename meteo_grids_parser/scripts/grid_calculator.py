@@ -71,12 +71,12 @@ class Gridder:
         # weights
         test_weight = Path(f'{self.weight_folder}/{self.gauge_id}.nc')
         if test_weight.is_file():
-            self.mete_grid_logger.info(f"""Weights exist with resolution
-of {self.grid_res} for {self.gauge_id} Calculation for {self.var}""")
+            self.mete_grid_logger.info(
+                f"""Weights exist with resolution of {self.grid_res} for {self.gauge_id} Calculation for {self.var}\n""")
             self.weights = xr.open_dataarray(test_weight)
         else:
-            self.mete_grid_logger.warning(f"""New weights mask calculation
-with resolution of {self.grid_res} for {self.gauge_id}""")
+            self.mete_grid_logger.warning(
+                f"""New weights mask calculation with resolution of {self.grid_res} for {self.gauge_id}\n""")
             self.weights = Gridder.grid_weights(self)
 
     def grid_weights(self):
@@ -212,7 +212,7 @@ with resolution of {self.grid_res} for {self.gauge_id}""")
                 dim=['lat', 'lon'])[var].values
             res_df = res_df.set_index('date')
             res_df.to_csv(f'{final_save}/{self.gauge_id}.csv')
-        self.mete_grid_logger.warning(f"""\nValue of {self.var}
-from dataset {self.dataset} for gauge {self.gauge_id} has been calculated""")
+        self.mete_grid_logger.warning(
+            f"""\nValue of {self.var} from dataset {self.dataset} for gauge {self.gauge_id} has been calculated\n""")
 
         gc.collect()

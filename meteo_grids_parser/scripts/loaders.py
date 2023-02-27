@@ -13,3 +13,14 @@ def multi_var_nc(path_to_nc: Path):
                   for var in var_names}
 
     return data_paths
+
+
+def aggregation_definer(dataset: str,
+                        variable: str):
+
+    if dataset == 'gleam':
+        return 'sum'
+    elif ('precipitation' in variable) | ('evaporation' in variable):
+        return 'sum'
+    else:
+        return 'mean'

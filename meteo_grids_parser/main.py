@@ -1,5 +1,5 @@
 from scripts.grid_calculator import Gridder
-from scripts.loaders import multi_var_nc
+from scripts.loaders import multi_var_nc, aggregation_definer
 import geopandas as gpd
 from pathlib import Path
 from tqdm import tqdm
@@ -41,12 +41,15 @@ for dataset, settings in ds_description.items():
 
         for variable, pathes in settings['f_path'].items():
 
+            aggregation = aggregation_definer(dataset, variable)
+
             meteo_grid = Gridder(half_grid_resolution=grid_res,
                                  ws_geom=ws_geometry,
                                  gauge_id=gauge_id,
                                  path_to_save=Path(f'{place_to_save}'),
                                  nc_pathes=pathes,
                                  dataset=dataset,
-                                 var=variable)
+                                 var=variable,
+                                 aggregation_type=aggregation)
 
             meteo_grid.grid_value_ws()
