@@ -2,6 +2,7 @@ from shapely.geometry import MultiPolygon, Polygon
 from typing import Union
 import numpy as np
 import geopandas as gpd
+import math
 from functools import reduce
 from numpy import (arctan2, cos, sin, sqrt,
                    pi, append, diff)
@@ -69,7 +70,8 @@ def polygon_area(geo_shape, radius=6378137):
 
 
 def find_extent(ws: Polygon,
-                grid_res: float):
+                grid_res: float,
+                dataset: str = ''):
     """_summary_
 
     Args:
@@ -78,7 +80,15 @@ def find_extent(ws: Polygon,
     """
 
     def x_round(x):
-        return round(x*4)/4
+        return round((x - 0.25) * 2) / 2 + 0.25
+
+    def round_nearest(x, a):
+        max_frac_digits = 10
+        for i in range(max_frac_digits):
+            if round(a, -int(math.floor(math.log10(a))) + i) == a:
+                frac_digits = -int(math.floor(math.log10(a))) + i
+                break
+        return round(round(x / a) * a, frac_digits)  # type: ignore
 
     lons, lats = ws.exterior.xy
     max_LAT = max(lats)
@@ -86,15 +96,16 @@ def find_extent(ws: Polygon,
     min_LAT = min(lats)
     min_LON = min(lons)
 
-    if grid_res >= 0.125:
+    if dataset == 'gpcp':
         return [x_round(min_LON), x_round(max_LON),
                 x_round(min_LAT), x_round(max_LAT)]
-
-    elif grid_res < 0.125:
-        return [round(min_LON, 1), round(max_LON, 1),
-                round(min_LAT, 1), round(max_LAT, 1)]
+    elif bool(dataset):
+        return [round_nearest(min_LON, grid_res),
+                round_nearest(max_LON, grid_res),
+                round_nearest(min_LAT, grid_res),
+                round_nearest(max_LAT, grid_res)]
     else:
-        raise Exception(f'Something wrong ! {grid_res}')
+        raise Exception(f'Something wrong ! {dataset} -- {grid_res}')
 
 
 def create_gdf(shape: Union[Polygon, MultiPolygon]):

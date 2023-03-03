@@ -1,7 +1,5 @@
 from typing import Hashable, Tuple, Union
 import xarray as xr
-from dask import config as dask_cfg
-from pathlib import Path
 from shapely.geometry import Polygon
 
 from .geom_proc import (poly_from_multipoly, find_extent)
@@ -54,7 +52,8 @@ def read_netcdf(net_cdf_on_disk: Union[str, list]) -> Union[
 
 def nc_by_extent(nc: xr.Dataset,
                  shape: Polygon,
-                 grid_res: float):
+                 grid_res: float,
+                 dataset: str = ''):
     """
 
     select net_cdf by extent of given shape
@@ -72,7 +71,8 @@ def nc_by_extent(nc: xr.Dataset,
 
     # find extent coordinates
     min_lon, max_lon, min_lat, max_lat = find_extent(ws=big_shape,
-                                                     grid_res=grid_res)
+                                                     grid_res=grid_res,
+                                                     dataset=dataset)
 
     # select nc inside of extent
     masked_nc = nc.where(

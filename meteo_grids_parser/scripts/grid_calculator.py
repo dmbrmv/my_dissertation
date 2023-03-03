@@ -10,7 +10,6 @@ import numpy as np
 import xarray as xr
 from pathlib import Path
 import gc
-import logging
 
 
 class Gridder:
@@ -21,7 +20,9 @@ class Gridder:
                  half_grid_resolution: float, ws_geom: Polygon,
                  gauge_id: str, path_to_save: Path,
                  nc_pathes: list, var: str, dataset: str,
-                 aggregation_type: str = 'sum') -> None:
+                 aggregation_type: str = 'sum',
+                 force_weights: bool = False,
+                 weight_mark: str = '') -> None:
         """_summary_
 
         Args:
@@ -31,7 +32,9 @@ class Gridder:
             path_to_save (Path): _description_
             nc_pathes (list): _description_
             var (str): _description_
+            dataset (str): _description_
             aggregation_type (str, optional): _description_. Defaults to 'sum'.
+            force_weights (bool, optional): _description_. Defaults to False.
 
         Raises:
             Exception: _description_
@@ -44,6 +47,8 @@ class Gridder:
         self.nc_pathes = nc_pathes
         self.dataset = dataset
         self.var = var
+        self.force_weights = force_weights
+        self.wm = weight_mark
 
         self.aggregation_type = aggregation_type
         if self.aggregation_type not in ['sum', 'mean']:
@@ -52,31 +57,21 @@ class Gridder:
                 You insert {aggregation_type}")
 
         self.nc_data = xr.open_mfdataset(nc_pathes)
-        self.weight_folder = Path(
-            f'{self.path_to_save}/weights/{self.grid_res}')
-        self.weight_folder.mkdir(exist_ok=True, parents=True)
-
-        # logger
-        self.mete_grid_logger = logging.getLogger(__name__)
-        self.mete_grid_logger.setLevel(20)
-
-        grid_handler = logging.FileHandler("grid_logger.log", mode="a")
-        working_filename = Path(__name__).name
-        grid_formatter = logging.Formatter(
-            f"{working_filename} %(asctime)s %(levelname)s %(message)s")
-
-        grid_handler.setFormatter(grid_formatter)
-        self.mete_grid_logger.addHandler(grid_handler)
-
         # weights
+        if self.force_weights:
+            self.weight_folder = Path(
+                f'{self.path_to_save}/weights/{self.wm}_{self.grid_res}')
+            self.weight_folder.mkdir(exist_ok=True, parents=True)
+        else:
+            self.weight_folder = Path(
+                f'{self.path_to_save}/weights/{self.grid_res}')
+            self.weight_folder.mkdir(exist_ok=True, parents=True)
+
         test_weight = Path(f'{self.weight_folder}/{self.gauge_id}.nc')
+
         if test_weight.is_file():
-            self.mete_grid_logger.info(
-                f"""Weights exist with resolution of {self.grid_res} for {self.gauge_id} Calculation for {self.var}\n""")
             self.weights = xr.open_dataarray(test_weight)
         else:
-            self.mete_grid_logger.warning(
-                f"""New weights mask calculation with resolution of {self.grid_res} for {self.gauge_id}\n""")
             self.weights = Gridder.grid_weights(self)
 
     def grid_weights(self):
@@ -95,7 +90,8 @@ class Gridder:
         with dask_cfg.set(**{'array.slicing.split_large_chunks': True}):
             mask_nc = nc_by_extent(nc=self.nc_data,
                                    shape=self.ws_geom,
-                                   grid_res=self.grid_res)
+                                   grid_res=self.grid_res,
+                                   dataset=self.dataset)
 
         # get lat, lon which help define area for intersection
         nc_lat, nc_lon = mask_nc.lat.values, mask_nc.lon.values
@@ -188,7 +184,8 @@ class Gridder:
         with dask_cfg.set(**{'array.slicing.split_large_chunks': True}):
             mask_nc = nc_by_extent(nc=self.nc_data,
                                    shape=self.ws_geom,
-                                   grid_res=self.grid_res)
+                                   grid_res=self.grid_res,
+                                   dataset=self.dataset)
 
         inter_mask = self.weights.astype(bool)
         # create final instersection
@@ -212,7 +209,5 @@ class Gridder:
                 dim=['lat', 'lon'])[var].values
             res_df = res_df.set_index('date')
             res_df.to_csv(f'{final_save}/{self.gauge_id}.csv')
-        self.mete_grid_logger.warning(
-            f"""\nValue of {self.var} from dataset {self.dataset} for gauge {self.gauge_id} has been calculated\n""")
 
         gc.collect()
