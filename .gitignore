@@ -1,2 +1,6 @@
 __pycache__/
 .DS_Store
+chromedriver_linux64.zip
+google-chrome-stable_current_amd64.deb
+esimo_loader/results
+LICENSE.chromedriver
