@@ -55,8 +55,8 @@ class Gridder:
             raise Exception(
                 f"Sorry, only sum and mean aggregations are allowed!\
                 You insert {aggregation_type}")
-
-        self.nc_data = xr.open_mfdataset(nc_pathes)
+        with dask_cfg.set(**{'array.slicing.split_large_chunks': True}):
+            self.nc_data = xr.open_mfdataset(nc_pathes)
         # weights
         if self.force_weights:
             self.weight_folder = Path(
@@ -67,10 +67,10 @@ class Gridder:
                 f'{self.path_to_save}/weights/{self.grid_res}')
             self.weight_folder.mkdir(exist_ok=True, parents=True)
 
-        test_weight = Path(f'{self.weight_folder}/{self.gauge_id}.nc')
-
-        if test_weight.is_file():
-            self.weights = xr.open_dataarray(test_weight)
+        self.test_weight = Path(f'{self.weight_folder}/{self.gauge_id}.nc')
+        self.weight_condition = self.test_weight.is_file()
+        if self.weight_condition:
+            self.weights = xr.open_dataarray(self.test_weight)
         else:
             self.weights = Gridder.grid_weights(self)
 
@@ -150,11 +150,9 @@ class Gridder:
         weights.name = 'weights'
         weights = weights.where(inter_mask, drop=True)
         weights = weights.fillna(0)
-
         weights.to_netcdf(f'{self.weight_folder}/{self.gauge_id}.nc')
-
         gc.collect()
-
+        
         return weights
 
     def grid_value_ws(self):
@@ -211,3 +209,5 @@ class Gridder:
             res_df.to_csv(f'{final_save}/{self.gauge_id}.csv')
 
         gc.collect()
+
+        return res_df

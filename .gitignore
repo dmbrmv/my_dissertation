@@ -5,6 +5,7 @@ __pycache__/
 .DS_Store
 .ipynb_checkpoints
 test.ipynb
+test_2.ipynb
 
 ## ignore in esimo
 chromedriver_linux64.zip
