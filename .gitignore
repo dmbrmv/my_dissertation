@@ -1,11 +1,32 @@
+## ignore in general
 __pycache__/
+._.DS_Store
+._*
 .DS_Store
+.ipynb_checkpoints
+test.ipynb
+
+## ignore in esimo
 chromedriver_linux64.zip
 google-chrome-stable_current_amd64.deb
-<<<<<<< HEAD
-esimo_loader/results
 LICENSE.chromedriver
-=======
-LICENSE.chromedriver
-esimo_loader/results
->>>>>>> 0846f06 (Update gitignore)
+esimo_loader/dw_folder
+esimo_loader/esimo_dw_logger.log
+esimo_loader/data.csv
+
+
+## ignore in parsers
+ais_parsers/data/levels/results
+ais_parsers/data/levels/new_results
+
+ais_parsers/data/discharge/results
+ais_parsers/data/discharge/results_new
+ais_parsers/data/discharge/final
+
+ais_parsers/data/initial_discharge
+ais_parsers/data/initial_levels
+
+## ignore inputer
+
+input_creator/
+
