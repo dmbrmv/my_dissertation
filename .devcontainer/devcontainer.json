@@ -26,8 +26,8 @@
 	],
 	"runArgs": [
 		"--ipc=host"
+	],
+	"mounts": [
+		"source=/home/anton/dima_experiments/geo_data,target=/workspace/geo_data,type=bind,consistency=cached"
 	]
-	// "mounts": [
-	// 	"source=/home/anton/dima_experiments/geo_data,target=/home/anton/dima_experiments/my_dissertation/input_creator/data,type=bind,consistency=cached"
-	// ]
 }
