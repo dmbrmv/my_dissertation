@@ -7,7 +7,7 @@ import glob
 hdd = '/home/anton/dima_experiments'
 
 
-@repeat(every().day.at("04:20"))
+@repeat(every().day.at("14:00"))
 def downloader():
 
     day = datetime.today().strftime('%Y-%m-%d')
