@@ -2,14 +2,15 @@ from pathlib import Path
 import glob
 
 
-def multi_var_nc(path_to_nc: Path):
+def multi_var_nc(path_to_nc: Path,
+                 file_extension: str) -> dict:
     # get variables for computation
     var_names = [i.split('/')[-1]
                  for i in
                  glob.glob(f'{path_to_nc}/*')]
 
     # define paths
-    data_paths = {var: glob.glob(f'{path_to_nc}/{var}/*.nc')
+    data_paths = {var: glob.glob(f'{path_to_nc}/{var}/*.{file_extension}')
                   for var in var_names}
 
     return data_paths
