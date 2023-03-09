@@ -32,5 +32,9 @@ ais_parsers/level_parser.py
 
 ## ignore inputer
 
-input_creator/
+input_creator/Q_H
+
+## parent data folder
+
+geo_data/
 
