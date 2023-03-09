@@ -108,13 +108,13 @@ def discharge_to_csv(data_path: str,
                             'Unnamed: 2'].astype(int).mean()
                         test_selection.loc[:,
                                            'Unnamed: 2'].values[-3] = row_mean
-                        test_selection.loc[:,
-                                           'Unnamed: 2'].values[-2:] = np.array(
-                            [np.NaN, np.NaN])
+                        test_selection.loc[
+                            :, 'Unnamed: 2'].values[-2:] = np.array([np.NaN,
+                                                                     np.NaN])
                     except ValueError:
-                        test_selection.loc[:,
-                                           'Unnamed: 2'].values[-2:] = np.array(
-                            [np.NaN, np.NaN])
+                        test_selection.loc[
+                            :, 'Unnamed: 2'].values[-2:] = np.array([np.NaN,
+                                                                     np.NaN])
                 else:
                     test_selection.loc[:,
                                        'Unnamed: 2'].values[-2:] = np.array(
@@ -253,13 +253,13 @@ def level_to_csv(data_path: str,
                             'Unnamed: 2'].astype(int).mean()
                         test_selection.loc[:,
                                            'Unnamed: 2'].values[-3] = row_mean
-                        test_selection.loc[:,
-                                           'Unnamed: 2'].values[-2:] = np.array(
-                            [np.NaN, np.NaN])
+                        test_selection.loc[
+                            :, 'Unnamed: 2'].values[-2:] = np.array([np.NaN,
+                                                                     np.NaN])
                     except ValueError:
-                        test_selection.loc[:,
-                                           'Unnamed: 2'].values[-2:] = np.array(
-                            [np.NaN, np.NaN])
+                        test_selection.loc[
+                            :, 'Unnamed: 2'].values[-2:] = np.array([np.NaN,
+                                                                     np.NaN])
                 else:
                     test_selection.loc[:,
                                        'Unnamed: 2'].values[-2:] = np.array(
