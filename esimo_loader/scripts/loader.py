@@ -47,14 +47,12 @@ class Esimo_loader:
                                  browser,
                                  download_dir):
         browser.command_executor._commands["send_command"] = (
-            "POST", '/session/$sessionId/chromium/send_command'
-        )
+            "POST", '/session/$sessionId/chromium/send_command')
+
         params = {'cmd': 'Page.setDownloadBehavior',
                   'params': {'behavior': 'allow',
                              'downloadPath': download_dir}}
         browser.execute("send_command", params)
-
-    # dw_path = "/home/anton/dima_experiments/esimo_loader/dw_f/"
 
     def web_loader(self):
         options = Options()
@@ -66,8 +64,8 @@ class Esimo_loader:
         options.add_experimental_option("prefs", {
             "download.default_directory": f'{self.dw_f}',
             "download.prompt_for_download": False,
-            "download.directory_upgrade": True,
-        })
+            "download.directory_upgrade": True})
+
         options.add_argument('--disable-gpu')
         options.add_argument('--disable-software-rasterizer')
         options.add_argument('--headless')
@@ -133,54 +131,51 @@ class Esimo_loader:
             f"Initial data was stored in {self.res_f} for {gauge_len} gauges")
 
     def data_extension(self):
-        try:
-            with open(f'{self.dw_f}/data.csv', newline='') as csv_new_file:
-                data = csv.reader(csv_new_file, delimiter=',', quotechar='"')
-                res_str = next(data)
+        with open(f'{self.dw_f}/data.csv', newline='') as csv_new_file:
+            data = csv.reader(csv_new_file, delimiter=',', quotechar='"')
+            res_str = next(data)
 
-            res_str = [word.replace(',', '') for word in res_str]
+        res_str = [word.replace(',', '') for word in res_str]
 
-            new_file = pd.read_csv(f'{self.dw_f}/data.csv',
-                                   sep=',', names=res_str,
-                                   skiprows=1, skipfooter=1,
-                                   on_bad_lines='skip',
-                                   quotechar='"',
-                                   engine='python', encoding='utf-8')
-            group_gauge = new_file.groupby(
-                by='Платформа: идентификатор локальный').groups
-            new_g = 0
-            exist_g = 0
-            for gauge_id, loc_index in group_gauge.items():
+        new_file = pd.read_csv(f'{self.dw_f}/data.csv',
+                               sep=',', names=res_str,
+                               skiprows=1, skipfooter=1,
+                               on_bad_lines='skip',
+                               quotechar='"',
+                               engine='python', encoding='utf-8')
+        group_gauge = new_file.groupby(
+            by='Платформа: идентификатор локальный').groups
+        new_g = 0
+        exist_g = 0
+        for gauge_id, loc_index in group_gauge.items():
 
-                new_gauge = new_file.loc[loc_index][[
-                    'Платформа: идентификатор локальный',
-                    'Дата и время',
-                    'Уровень воды над нулем поста']]
-                new_gauge = new_gauge.rename(
-                    columns={'Платформа: идентификатор локальный': 'gauge_id',
-                             'Дата и время': 'date',
-                             'Уровень воды над нулем поста': 'level'})
-                new_gauge['date'] = pd.to_datetime(new_gauge['date'])
-                new_gauge = new_gauge.set_index('date')
-                new_res = new_gauge[['level']].groupby(
-                    by=pd.Grouper(freq='1d')).mean()
-                try:
-                    old_res = pd.read_csv(f'{self.res_f}/{gauge_id}.csv')
-                    old_res['date'] = pd.to_datetime(old_res['date'])
-                    old_res = old_res.set_index('date')
+            new_gauge = new_file.loc[loc_index][[
+                'Платформа: идентификатор локальный',
+                'Дата и время',
+                'Уровень воды над нулем поста']]
+            new_gauge = new_gauge.rename(
+                columns={'Платформа: идентификатор локальный': 'gauge_id',
+                         'Дата и время': 'date',
+                         'Уровень воды над нулем поста': 'level'})
+            new_gauge['date'] = pd.to_datetime(new_gauge['date'])
+            new_gauge = new_gauge.set_index('date')
+            new_res = new_gauge[['level']].groupby(
+                by=pd.Grouper(freq='1d')).mean()
+            try:
+                old_res = pd.read_csv(f'{self.res_f}/{gauge_id}.csv')
+                old_res['date'] = pd.to_datetime(old_res['date'])
+                old_res = old_res.set_index('date')
 
-                    res = old_res.combine_first(new_res)
-                    res.to_csv(f'{self.res_f}/{gauge_id}.csv')
-                    exist_g += 1
-                except FileNotFoundError:
-                    new_res.to_csv(f'{self.res_f}/{gauge_id}.csv')
-                    new_g += 1
-            self.esimo_dw_logger.info(
-                f"""
-    \n###########################################################
+                res = old_res.combine_first(new_res)
+                res.to_csv(f'{self.res_f}/{gauge_id}.csv')
+                exist_g += 1
+            except FileNotFoundError:
+                new_res.to_csv(f'{self.res_f}/{gauge_id}.csv')
+                new_g += 1
+        self.esimo_dw_logger.info(
+            f"""
+\n###########################################################
 
-    On {self.today_date} extended data for {exist_g} gauges
-    and stored data for new {new_g} gauges
-    ###########################################################\n""")
-        except FileNotFoundError:
-            Esimo_loader.web_loader(self)
+On {self.today_date} extended data for {exist_g} gauges
+and stored data for new {new_g} gauges
+###########################################################\n""")
