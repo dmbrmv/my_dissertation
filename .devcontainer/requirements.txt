@@ -21,3 +21,4 @@ catboost
 shap
 cartopy
 ipywidgets
+rtree
