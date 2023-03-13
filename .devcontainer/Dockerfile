@@ -1,5 +1,5 @@
 FROM pytorch/pytorch
-RUN apt-get update && apt-get install -y git wget
+RUN apt-get update && apt-get install -y git wget libspatialindex-dev
 # Default powerline10k theme, no plugins installed
 RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.1.2/zsh-in-docker.sh)"
 RUN pip3 -q install pip --upgrade

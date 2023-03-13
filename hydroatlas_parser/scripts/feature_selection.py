@@ -1,16 +1,18 @@
-import geopandas as gpd
-import numpy as np
-import pandas as pd
-import fiona
-from pathlib import Path
 from shapely.geometry import Polygon
-from .geometry_modifications import (select_big_from_mp, get_gdf_poly,
-                                     find_poly_area)
+from pathlib import Path
+import fiona
+import pandas as pd
+import numpy as np
+import geopandas as gpd
 from .hydro_atlas_variables import (hydrology_variables,
                                     physiography_variables,
                                     climate_variables, landcover_variables,
                                     soil_and_geo_variables, urban_variables,
                                     monthes)
+from meteo_grids_parser.scripts.geom_proc import (poly_from_multipoly,
+                                                  area_from_gdf)
+import sys
+sys.path.append('/workspaces/my_dissertation/')
 
 
 def featureXtractor(user_ws: Polygon, gdb_file_path: str):
@@ -27,13 +29,11 @@ def featureXtractor(user_ws: Polygon, gdb_file_path: str):
     """
 
     # get only biggest polygon areas from watershed
-    gdf_your_WS = select_big_from_mp(user_ws)
-
+    gdf_your_ws = poly_from_multipoly(user_ws)
     # transform to geopandas for geometry operations
-    gdf_your_WS = gpd.GeoSeries([gdf_your_WS])
-    gdf_your_WS = gpd.GeoDataFrame({'geometry': gdf_your_WS})
-    gdf_your_WS = gdf_your_WS.set_crs('EPSG:4326')
-
+    gdf_your_ws = gpd.GeoSeries([gdf_your_ws])
+    gdf_your_ws = gpd.GeoDataFrame({'geometry': gdf_your_ws})
+    gdf_your_ws = gdf_your_ws.set_crs('EPSG:4326')
     # connect to HydroATLAS file with fiona+gpd interface
     layer_small = fiona.listlayers(gdb_file_path)[-1]
     # Read choosen geodatabase layer with geopandas
@@ -41,16 +41,20 @@ def featureXtractor(user_ws: Polygon, gdb_file_path: str):
                         mask=user_ws,
                         layer=layer_small,
                         ignore_geometry=False)
-    # create new column where each intersection is geodataframe
-    gdf['gdf_geometry'] = tuple(map(get_gdf_poly, gdf['geometry']))
+    # keep only single geometries from HydroATLAS
+    gdf['gdf_geometry'] = tuple(map(poly_from_multipoly, gdf['geometry']))
+    # transform each polygon to geodataframe instance
+    gdf['gdf_geometry'] = [gpd.GeoDataFrame(
+        {'geometry': sample_geom},
+        index=[0]).set_crs('EPSG:4326')
+        for sample_geom in gdf['gdf_geometry']]
     # calculate weight of each intersection correspond to it native size
     gdf['weights'] = gdf['gdf_geometry'].apply(
-        lambda x: gpd.overlay(gdf_your_WS, x)).apply(find_poly_area) /\
-        gdf['gdf_geometry'].apply(find_poly_area)
+        lambda x: gpd.overlay(gdf_your_ws, x)).apply(area_from_gdf) /\
+        gdf['gdf_geometry'].apply(area_from_gdf)
     # calculate area with weight appliance
-    gdf['weight_area'] = tuple(map(find_poly_area,
+    gdf['weight_area'] = tuple(map(area_from_gdf,
                                    gdf['gdf_geometry'])) * gdf['weights']
-
     # calculate each variable weighted mean
     geo_vector = gdf[hydrology_variables +
                      physiography_variables +
@@ -78,7 +82,7 @@ def featureXtractor(user_ws: Polygon, gdb_file_path: str):
     geo_vector[divide_by_10] /= 10
     geo_vector[divide_by_100] /= 100
     # store basin area
-    geo_vector['ws_area'] = find_poly_area(gdf_your_WS)
+    geo_vector['ws_area'] = area_from_gdf(gdf_your_ws)
 
     return geo_vector
 
@@ -90,7 +94,7 @@ def save_results(extracted_data: list,
     Path(path_to_save).mkdir(exist_ok=True, parents=True)
 
     # create DataFrame to save it by categories
-    df_to_disk = pd.concat(extracted_data).set_index(gauge_ids)
+    df_to_disk = pd.concat(extracted_data, axis=1).T.set_index(gauge_ids)
 
     df_to_disk.to_csv(f'{path_to_save}/geo_vector.csv')
 
@@ -103,5 +107,3 @@ def save_results(extracted_data: list,
 
     for key, values in save_names.items():
         df_to_disk[values].to_csv(f'{path_to_save}/{key}.csv')
-
-    return

@@ -8,6 +8,24 @@ from numpy import (arctan2, cos, sin, sqrt,
                    pi, append, diff)
 
 
+def area_from_gdf(poly):
+    """
+    Calculates area of shape stored in GeoDataFrame
+
+    Args:
+        poly (GeoDataFrame): Desired shape
+
+    Returns:
+        area (float): area of object in sq. km
+    """
+    if poly.empty:
+        return np.NaN
+    else:
+        poly = poly_from_multipoly(poly['geometry'][0])
+        area = polygon_area(poly)
+    return area
+
+
 def poly_from_multipoly(ws_geom):
     """
 
@@ -90,7 +108,7 @@ def find_extent(ws: Polygon,
                 break
         return round(round(x / a) * a, frac_digits)  # type: ignore
 
-    lons, lats = ws.exterior.xy
+    lons, lats = ws.exterior.xy  # type: ignore
     max_LAT = max(lats)
     max_LON = max(lons)
     min_LAT = min(lats)
