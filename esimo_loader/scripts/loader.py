@@ -111,8 +111,6 @@ class Esimo_loader:
         group_gauge = file.groupby(
             by='Платформа: идентификатор локальный').groups
 
-        # res_f = '/home/anton/dima_experiments/geo_data/esimo_data'
-
         for gauge_id, loc_index in group_gauge.items():
 
             gauge = file.loc[loc_index][['Платформа: идентификатор локальный',

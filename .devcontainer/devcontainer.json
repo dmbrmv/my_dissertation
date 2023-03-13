@@ -24,10 +24,10 @@
 		"PKief.material-icon-theme",
 		"ms-toolsai.jupyter-keymap"
 	],
-	"runArgs": [
+	"runArgs": ["--gpus","all",
 		"--ipc=host"
 	],
 	"mounts": [
-		"source=/home/anton/dima_experiments/geo_data,target=/workspace/geo_data,type=bind,consistency=cached"
+		"source=/home/dima/Data/geo_data,target=/workspace/geo_data,type=bind,consistency=cached"
 	]
 }
