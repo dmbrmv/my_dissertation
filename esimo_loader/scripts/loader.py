@@ -112,7 +112,6 @@ class Esimo_loader:
             by='Платформа: идентификатор локальный').groups
 
         for gauge_id, loc_index in group_gauge.items():
-
             gauge = file.loc[loc_index][['Платформа: идентификатор локальный',
                                         'Дата и время',
                                          'Уровень воды над нулем поста']]
