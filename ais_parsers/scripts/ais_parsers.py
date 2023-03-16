@@ -21,6 +21,8 @@ def replace_val(my_val):
     if my_val == '' or my_val == '-' or my_val == '--' or my_val == ' ':
         return -9999
     elif isinstance(my_val, str):
+        if my_val[-1] == '-':
+            my_val = my_val[:-1]
         try:
             return pd.to_numeric(my_val)
         except ValueError:
@@ -42,9 +44,6 @@ def discharge_to_csv(data_path: str,
 
     save_path.mkdir(exist_ok=True, parents=True)
 
-    # skip_top = 0
-    # table_step = 0
-    # month_step = 0
     month_days = 31
     # if 0 -- ID of gauge, 2 -- river name
     river_step = 0
@@ -186,9 +185,6 @@ def level_to_csv(data_path: str,
 
     save_path.mkdir(exist_ok=True, parents=True)
 
-    # skip_top = 0
-    # table_step = 0
-    # month_step = 0
     month_days = 31
 
     # if 0 -- ID of gauge, 2 -- river name
