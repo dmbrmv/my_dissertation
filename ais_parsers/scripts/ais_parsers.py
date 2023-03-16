@@ -76,84 +76,114 @@ def discharge_to_csv(data_path: str,
     # define number of downloaded rivers
     results = {river: [] for river in river_ids[0:number_of_rivers]}
 
-    for river_name, data in results.items():
+    for i, (river_name, data) in enumerate(results.items()):
 
-        for i in range(len(monthes_range)):
+        test_selection = file.iloc[
+            monthes_range[i]:monthes_range[i] + month_days, 1:]
 
-            test_selection = file.iloc[
-                monthes_range[i]:monthes_range[i] + month_days, 1:]
+        test_selection = test_selection.applymap(
+            lambda x: str(x).replace('прсх', '0')).applymap(
+            lambda x: str(x).replace('прмз', '0')).applymap(
+            lambda x: str(x).replace(',', '.')).applymap(
+            lambda x: str(x).replace('?', '')).applymap(
+            lambda x: re.sub('[^-?0-9.]', '', x))
 
-            test_selection = test_selection.applymap(
-                lambda x: str(x).replace('прсх', '0')).applymap(
-                lambda x: str(x).replace('прмз', '0')).applymap(
-                lambda x: str(x).replace(',', '.')).applymap(
-                lambda x: str(x).replace('?', '')).applymap(
-                lambda x: re.sub('[^-?0-9.]', '', x))
+        dates = pd.date_range(
+            start=f'{file.iloc[year_fields[i], 1]}-01-01',
+            end=f'{file.iloc[year_fields[i], 1]}-12-31')
 
-            dates = pd.date_range(
-                start=f'{file.iloc[year_fields[i], 1]}-01-01',
-                end=f'{file.iloc[year_fields[i], 1]}-12-31')
-
-            if len(dates) == 365:
-                test_selection.loc[:,
-                                   'Unnamed: 2'].values[-3:] = np.array(
-                    [np.NaN, np.NaN, np.NaN])
-            elif len(dates) == 366:
-                if test_selection.loc[:,
-                                      'Unnamed: 2'].values[-3] == '':
-                    try:
-                        row_mean = test_selection.loc[
-                            test_selection.index[:-3],
-                            'Unnamed: 2'].astype(int).mean()
-                        test_selection.loc[:,
-                                           'Unnamed: 2'].values[-3] = row_mean
-                        test_selection.loc[
-                            :, 'Unnamed: 2'].values[-2:] = np.array([np.NaN,
-                                                                     np.NaN])
-                    except ValueError:
-                        test_selection.loc[
-                            :, 'Unnamed: 2'].values[-2:] = np.array([np.NaN,
-                                                                     np.NaN])
-                else:
+        if len(dates) == 365:
+            test_selection.loc[:,
+                               'Unnamed: 2'].values[-3:] = np.array(
+                [np.NaN, np.NaN, np.NaN])
+        elif len(dates) == 366:
+            if test_selection.loc[:,
+                                  'Unnamed: 2'].values[-3] == '':
+                try:
+                    row_mean = test_selection.loc[
+                        test_selection.index[:-3],
+                        'Unnamed: 2'].astype(int).mean()
                     test_selection.loc[:,
-                                       'Unnamed: 2'].values[-2:] = np.array(
-                        [np.NaN, np.NaN])
+                                       'Unnamed: 2'].values[-3] = row_mean
+                    test_selection.loc[
+                        :, 'Unnamed: 2'].values[-2:] = np.array([np.NaN,
+                                                                 np.NaN])
+                except ValueError:
+                    test_selection.loc[
+                        :, 'Unnamed: 2'].values[-2:] = np.array([np.NaN,
+                                                                 np.NaN])
+            else:
+                test_selection.loc[:,
+                                   'Unnamed: 2'].values[-2:] = np.array(
+                    [np.NaN, np.NaN])
 
-            test_selection.loc[:,
-                               'Unnamed: 4'].values[-1:] = np.array(
-                [np.NaN])
-            test_selection.loc[:,
-                               'Unnamed: 6'].values[-1:] = np.array(
-                [np.NaN])
-            test_selection.loc[:,
-                               'Unnamed: 9'].values[-1:] = np.array(
-                [np.NaN])
-            test_selection.loc[:,
-                               'Unnamed: 11'].values[-1:] = np.array(
-                [np.NaN])
+        test_selection.loc[:,
+                           'Unnamed: 4'].values[-1:] = np.array(
+            [np.NaN])
+        test_selection.loc[:,
+                           'Unnamed: 6'].values[-1:] = np.array(
+            [np.NaN])
+        test_selection.loc[:,
+                           'Unnamed: 9'].values[-1:] = np.array(
+            [np.NaN])
+        test_selection.loc[:,
+                           'Unnamed: 11'].values[-1:] = np.array(
+            [np.NaN])
+
+        if '.' in test_selection.values:
+            rows = np.flatnonzero(
+                (test_selection == '.').values)//test_selection.shape[1]
+            cols = np.flatnonzero(
+                (test_selection == '.').values) % test_selection.shape[1]
+
+            prev_vals = list()
+            for r, c in zip(rows, cols):
+                try:
+                    prev_vals.append(pd.to_numeric(
+                        test_selection.iloc[r-1, c]))
+                except IndexError:
+                    prev_vals.append(pd.to_numeric(
+                        test_selection.iloc[r+1, c]))
+
+            next_vals = list()
+            for r, c in zip(rows, cols):
+                try:
+                    next_vals.append(pd.to_numeric(
+                        test_selection.iloc[r+1, c]))
+                except IndexError:
+                    next_vals.append(pd.to_numeric(
+                        test_selection.iloc[r-1, c]))
+
+            fill_val = [np.mean([pr, nx])
+                        for pr, nx in zip(prev_vals, next_vals)]
+
+            for i, (r, c) in enumerate(zip(rows, cols)):
+                test_selection.iat[r, c] = str(fill_val[i])
 
             test_selection = np.array(list(map(
                 replace_val,
                 test_selection.to_numpy().T.flatten())),
                 dtype=float)
+        else:
+            test_selection = np.array(list(map(
+                replace_val,
+                test_selection.to_numpy().T.flatten())),
+                dtype=float)
 
-            test_selection = test_selection[~np.isnan(test_selection)]
+        test_selection = test_selection[~np.isnan(test_selection)]
 
-            # ID always unique -- no need to check river name
+        # ID always unique -- no need to check river name
 
-            river_id = file.iloc[river_fields[i], 1]
-
-            if river_id == river_name:
-                try:
-                    results[river_name].append(
-                        df_from_excel(observations=test_selection,
-                                      dates=dates,
-                                      col_name='discharge'))
-                except ValueError:
-                    print(
-                        f'{river_name} at {file.iloc[year_fields[i], 1]}\n')
-                    print(data_path)
-                    print('\n')
+        try:
+            results[river_name].append(
+                df_from_excel(observations=test_selection,
+                              dates=dates,
+                              col_name='discharge'))
+        except ValueError:
+            print(
+                f'{river_name} at {file.iloc[year_fields[i], 1]}\n')
+            print(data_path)
+            print('\n')
 
     label_id = {}
     # association between id and river name
@@ -218,83 +248,110 @@ def level_to_csv(data_path: str,
     # define number of downloaded rivers
     results = {river: [] for river in river_ids[0:number_of_rivers]}
 
-    for river_name, data in results.items():
+    for i, (river_name, data) in enumerate(results.items()):
 
-        for i in range(len(monthes_range)):
+        test_selection = file.iloc[
+            monthes_range[i]:monthes_range[i] + month_days, 1:]
 
-            test_selection = file.iloc[
-                monthes_range[i]:monthes_range[i] + month_days, 1:]
+        test_selection = test_selection.applymap(
+            lambda x: str(x).replace('прсх', '0')).applymap(
+            lambda x: str(x).replace('прмз', '0')).applymap(
+            lambda x: str(x).replace(',', '.')).applymap(
+            lambda x: str(x).replace('?', '')).applymap(
+            lambda x: re.sub('[^-?0-9.]', '', x))
 
-            test_selection = test_selection.applymap(
-                lambda x: str(x).replace('прсх', '0')).applymap(
-                lambda x: str(x).replace('прмз', '0')).applymap(
-                lambda x: str(x).replace(',', '.')).applymap(
-                lambda x: str(x).replace('?', '')).applymap(
-                lambda x: re.sub('[^-?0-9.]', '', x))
+        dates = pd.date_range(
+            start=f'{file.iloc[year_fields[i], 1]}-01-01',
+            end=f'{file.iloc[year_fields[i], 1]}-12-31')
 
-            dates = pd.date_range(
-                start=f'{file.iloc[year_fields[i], 1]}-01-01',
-                end=f'{file.iloc[year_fields[i], 1]}-12-31')
-
-            if len(dates) == 365:
-                test_selection.loc[:,
-                                   'Unnamed: 2'].values[-3:] = np.array(
-                    [np.NaN, np.NaN, np.NaN])
-            elif len(dates) == 366:
-                if test_selection.loc[:,
-                                      'Unnamed: 2'].values[-3] == '':
-                    try:
-                        row_mean = test_selection.loc[
-                            test_selection.index[:-3],
-                            'Unnamed: 2'].astype(int).mean()
-                        test_selection.loc[:,
-                                           'Unnamed: 2'].values[-3] = row_mean
-                        test_selection.loc[
-                            :, 'Unnamed: 2'].values[-2:] = np.array([np.NaN,
-                                                                     np.NaN])
-                    except ValueError:
-                        test_selection.loc[
-                            :, 'Unnamed: 2'].values[-2:] = np.array([np.NaN,
-                                                                     np.NaN])
-                else:
+        if len(dates) == 365:
+            test_selection.loc[:,
+                               'Unnamed: 2'].values[-3:] = np.array(
+                [np.NaN, np.NaN, np.NaN])
+        elif len(dates) == 366:
+            if test_selection.loc[:,
+                                  'Unnamed: 2'].values[-3] == '':
+                try:
+                    row_mean = test_selection.loc[
+                        test_selection.index[:-3],
+                        'Unnamed: 2'].astype(int).mean()
                     test_selection.loc[:,
-                                       'Unnamed: 2'].values[-2:] = np.array(
-                        [np.NaN, np.NaN])
+                                       'Unnamed: 2'].values[-3] = row_mean
+                    test_selection.loc[
+                        :, 'Unnamed: 2'].values[-2:] = np.array([np.NaN,
+                                                                 np.NaN])
+                except ValueError:
+                    test_selection.loc[
+                        :, 'Unnamed: 2'].values[-2:] = np.array([np.NaN,
+                                                                 np.NaN])
+            else:
+                test_selection.loc[:,
+                                   'Unnamed: 2'].values[-2:] = np.array(
+                    [np.NaN, np.NaN])
 
-            test_selection.loc[:,
-                               'Unnamed: 4'].values[-1:] = np.array(
-                [np.NaN])
-            test_selection.loc[:,
-                               'Unnamed: 6'].values[-1:] = np.array(
-                [np.NaN])
-            test_selection.loc[:,
-                               'Unnamed: 9'].values[-1:] = np.array(
-                [np.NaN])
-            test_selection.loc[:,
-                               'Unnamed: 11'].values[-1:] = np.array(
-                [np.NaN])
+        test_selection.loc[:,
+                           'Unnamed: 4'].values[-1:] = np.array(
+            [np.NaN])
+        test_selection.loc[:,
+                           'Unnamed: 6'].values[-1:] = np.array(
+            [np.NaN])
+        test_selection.loc[:,
+                           'Unnamed: 9'].values[-1:] = np.array(
+            [np.NaN])
+        test_selection.loc[:,
+                           'Unnamed: 11'].values[-1:] = np.array(
+            [np.NaN])
+
+        if '.' in test_selection.values:
+            rows = np.flatnonzero(
+                (test_selection == '.').values)//test_selection.shape[1]
+            cols = np.flatnonzero(
+                (test_selection == '.').values) % test_selection.shape[1]
+
+            prev_vals = list()
+            for r, c in zip(rows, cols):
+                try:
+                    prev_vals.append(pd.to_numeric(
+                        test_selection.iloc[r-1, c]))
+                except IndexError:
+                    prev_vals.append(pd.to_numeric(
+                        test_selection.iloc[r+1, c]))
+
+            next_vals = list()
+            for r, c in zip(rows, cols):
+                try:
+                    next_vals.append(pd.to_numeric(
+                        test_selection.iloc[r+1, c]))
+                except IndexError:
+                    next_vals.append(pd.to_numeric(
+                        test_selection.iloc[r-1, c]))
+
+            fill_val = [np.mean([pr, nx])
+                        for pr, nx in zip(prev_vals, next_vals)]
+
+            for i, (r, c) in enumerate(zip(rows, cols)):
+                test_selection.iat[r, c] = str(fill_val[i])
 
             test_selection = np.array(list(map(
                 replace_val,
                 test_selection.to_numpy().T.flatten())),
                 dtype=float)
+        else:
+            test_selection = np.array(list(map(
+                replace_val,
+                test_selection.to_numpy().T.flatten())),
+                dtype=float)
 
-            test_selection = test_selection[~np.isnan(test_selection)]
-
-            # ID always unique -- no need to check river name
-
-            river_id = file.iloc[river_fields[i], 1]
-
-            if river_id == river_name:
-                try:
-                    results[river_name].append(
-                        df_from_excel(observations=test_selection,
-                                      dates=dates,
-                                      col_name='level'))
-                except ValueError:
-                    print(f'{river_name} at {file.iloc[year_fields[i], 1]}\n')
-                    print(data_path)
-                    print('\n')
+        test_selection = test_selection[~np.isnan(test_selection)]
+        try:
+            results[river_name].append(
+                df_from_excel(observations=test_selection,
+                              dates=dates,
+                              col_name='level'))
+        except ValueError:
+            print(f'\n{river_name} at {file.iloc[year_fields[i], 1]}')
+            print(data_path)
+            print('\n')
 
     label_id = {}
     # association between id and river name
