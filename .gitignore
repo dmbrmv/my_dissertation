@@ -20,6 +20,7 @@ esimo_loader/data.csv
 ais_parsers/data/res_levels
 ais_parsers/data/res_discharge
 ais_parsers/data/delete_me
+ais_parsers/data/height_id.csv
 
 ## ignore inputer
 
