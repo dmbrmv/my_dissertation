@@ -49,7 +49,6 @@ gauge_data = dict()
 bad_gauges = list()
 
 for gauge in tqdm(geometry_file.index):
-    # for gauge in ['9002']:
     try:
         # get precomputed value in form of dataframe
         qh_vals = read_with_date_index(

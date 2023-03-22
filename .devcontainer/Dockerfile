@@ -1,9 +1,9 @@
 FROM pytorch/pytorch
 RUN apt-get update && apt-get install -y git wget libspatialindex-dev
 # Create user to avoid file permissions problem
-RUN addgroup --gid $GROUP_ID user
-RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
-USER user
+# RUN addgroup --gid $GROUP_ID user
+# RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
+# USER user
 # Default powerline10k theme, no plugins installed
 RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.1.2/zsh-in-docker.sh)"
 RUN pip3 -q install pip --upgrade

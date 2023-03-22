@@ -4,7 +4,7 @@ import geopandas as gpd
 from pathlib import Path
 from tqdm import tqdm
 
-russia_ws = gpd.read_file('./data/russia_ws.gpkg')
+russia_ws = gpd.read_file('../geo_data/geometry/russia_ws.gpkg')
 
 meteo_path = '/home/anton/dima_experiments/geo_data/meteorology'
 era5_land = Path(f'{meteo_path}/era5-land/russia')
@@ -18,18 +18,24 @@ place_to_save = '/home/anton/dima_experiments/geo_data/meteo_grids'
 
 ds_description = {
     'era5_land': {'res': 0.05,
-                  'f_path': multi_var_nc(era5_land)},
+                  'f_path': multi_var_nc(era5_land,
+                                         file_extension='nc')},
     'era5': {'res': 0.125,
-             'f_path': multi_var_nc(era5)},
+             'f_path': multi_var_nc(era5,
+                                    file_extension='nc')},
     'imerg': {'res': 0.05,
-              'f_path': multi_var_nc(imerg)},
+              'f_path': multi_var_nc(imerg,
+                                     file_extension='nc')},
     'gpcp': {'res': 0.25,
-             'f_path': multi_var_nc(gpcp)},
+             'f_path': multi_var_nc(gpcp,
+                                    file_extension='nc')},
     'gleam': {'res': 0.125,
-              'f_path': multi_var_nc(gleam)},
+              'f_path': multi_var_nc(gleam,
+                                     file_extension='nc')},
     'mswep': {'res': 0.05,
-              'f_path': multi_var_nc(mswep)}
-    }
+              'f_path': multi_var_nc(mswep,
+                                     file_extension='nc')}
+}
 
 
 for dataset, settings in ds_description.items():
