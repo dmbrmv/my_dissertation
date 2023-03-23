@@ -4,9 +4,9 @@ import geopandas as gpd
 from pathlib import Path
 from tqdm import tqdm
 
-russia_ws = gpd.read_file('../geo_data/geometry/russia_ws.gpkg')
+russia_ws = gpd.read_file('../geo_data/geometry/kamchatka_ws.gpkg')
 
-meteo_path = '/home/anton/dima_experiments/geo_data/meteorology'
+meteo_path = '../geo_data/meteorology'
 era5_land = Path(f'{meteo_path}/era5-land/russia')
 era5 = Path(f'{meteo_path}/era5/russia')
 imerg = Path(f'{meteo_path}/imerg_year_new')
@@ -14,7 +14,7 @@ gpcp = Path(f'{meteo_path}/gpcp_year_new')
 gleam = Path(f'{meteo_path}/gleam_vars')
 mswep = Path(f'{meteo_path}/mswep_new')
 
-place_to_save = '/home/anton/dima_experiments/geo_data/meteo_grids'
+place_to_save = '../geo_data/meteo_grids'
 
 ds_description = {
     'era5_land': {'res': 0.05,

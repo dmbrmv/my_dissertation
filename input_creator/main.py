@@ -1,21 +1,12 @@
-from scripts.readers import read_with_date_index, xr_opener
-from meteo_grids_parser.scripts.loaders import multi_var_nc
-import xarray as xr
-import pandas as pd
-import numpy as np
-from pathlib import Path
-import glob
-import geopandas as gpd
-import matplotlib.pyplot as plt
-from matplotlib.ticker import FormatStrFormatter
-from scipy.optimize import curve_fit
 from tqdm.notebook import tqdm
-import datetime
-import os
-from typing import Tuple
-import json
+import geopandas as gpd
+from pathlib import Path
+import numpy as np
+import pandas as pd
+from scripts.readers import read_with_date_index
 import sys
 sys.path.append('/workspaces/my_dissertation/')
+from meteo_grids_parser.scripts.loaders import multi_var_nc
 
 
 meteo_data = Path('/workspaces/my_dissertation/geo_data/meteo_grids')
@@ -40,11 +31,11 @@ gleam_vals = multi_var_nc(Path(gleam_vals),
 
 
 geometry_file = gpd.read_file(
-    '/workspaces/my_dissertation/geo_data/geometry/russia_ws.gpkg')
+    '/workspaces/my_dissertation/geo_data/geometry/kamchatka_ws.gpkg')
 geometry_file = geometry_file.set_index('gauge_id')
 
 geo_folder = '/workspaces/my_dissertation/geo_data/great_db'
-hydrological_storage = f'{geo_folder}/hydro_meteo'
+hydrological_storage = f'{geo_folder}/ais_data'
 gauge_data = dict()
 bad_gauges = list()
 

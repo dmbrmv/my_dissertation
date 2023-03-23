@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/home/anton/dima_experiments/my_dissertation')
+sys.path.append('/workspaces/my_dissertation')
 from meteo_grids_parser.scripts.geom_proc import (poly_from_multipoly,
                                                   area_from_gdf)
 from .hydro_atlas_variables import (hydrology_variables,

@@ -3,13 +3,13 @@ import geopandas as gpd
 from scripts.feature_selection import featureXtractor, save_results
 
 # set path to shape file
-home_folder = '/home/anton/dima_experiments/my_dissertation/geo_data'
+home_folder = '../geo_data'
 # path to geodataframe
-shape_file_path = f'{home_folder}/geometry/russia_ws.gpkg'
+shape_file_path = f'{home_folder}/geometry/kamchatka_ws.gpkg'
 # set path to downloaded HydroATLAS
 gdb_file_path = f'{home_folder}/hydro_atlas/BasinATLAS_v10.gdb'
 # set path where results will be stored
-path_to_save = f'{home_folder}/static_attributes'
+path_to_save = f'{home_folder}/static_attributes/kamchatka'
 
 # Read shape file with geometry column
 my_shape = gpd.read_file(shape_file_path)
