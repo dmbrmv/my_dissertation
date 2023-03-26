@@ -22,3 +22,5 @@ shap
 cartopy
 ipywidgets
 rtree
+pytorch-forecasting
+neuralhydrology
