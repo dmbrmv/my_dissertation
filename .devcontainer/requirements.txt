@@ -15,6 +15,7 @@ shapely
 geopandas
 pyepsg
 tensorboard
+torch_tb_profiler
 jupyter
 scikit-learn
 catboost

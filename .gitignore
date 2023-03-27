@@ -7,6 +7,7 @@ __pycache__/
 .lr_find*
 test.ipynb
 test_2.ipynb
+.devcontainer
 
 ## ignore in esimo
 chromedriver_linux64.zip
@@ -27,8 +28,6 @@ input_creator/Q_H
 ## parent data folder
 
 geo_data/
-
-.devcontainer
 
 forecast/lightning_logs
 forecast/optuna_test
