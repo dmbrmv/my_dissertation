@@ -26,10 +26,10 @@
 		"ms-python.autopep8"
 	],
 	"runArgs": [
-		// "--gpus","all",
+		"--gpus","all",
 		"--ipc=host"
 	],
 	"mounts": [
-		"source=/home/anton/dima_experiments/geo_data,target=/workspace/geo_data,type=bind,consistency=cached"
+		"source=/home/dima/Data/geo_data,target=/workspaces/my_dissertation/geo_data,type=bind,consistency=cached"
 	]
 }

@@ -4,6 +4,7 @@ __pycache__/
 ._*
 .DS_Store
 .ipynb_checkpoints
+.lr_find*
 test.ipynb
 test_2.ipynb
 
@@ -17,10 +18,7 @@ esimo_loader/data.csv
 
 
 ## ignore in parsers
-ais_parsers/data/res_levels
-ais_parsers/data/res_discharge
-ais_parsers/data/delete_me
-ais_parsers/data/height_id.csv
+ais_parsers/data
 
 ## ignore inputer
 
@@ -31,3 +29,6 @@ input_creator/Q_H
 geo_data/
 
 .devcontainer
+
+forecast/lightning_logs
+forecast/optuna_test
