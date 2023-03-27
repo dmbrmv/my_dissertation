@@ -152,7 +152,7 @@ class Gridder:
         weights = weights.fillna(0)
         weights.to_netcdf(f'{self.weight_folder}/{self.gauge_id}.nc')
         gc.collect()
-        
+
         return weights
 
     def grid_value_ws(self):

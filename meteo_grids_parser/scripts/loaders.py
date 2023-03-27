@@ -21,7 +21,8 @@ def aggregation_definer(dataset: str,
 
     if dataset == 'gleam':
         return 'sum'
-    elif ('precipitation' in variable) | ('evaporation' in variable):
+    elif (('precipitation' in variable) |
+          ('evaporation' in variable) | ('tot_prec' in variable)):
         return 'sum'
     else:
         return 'mean'
