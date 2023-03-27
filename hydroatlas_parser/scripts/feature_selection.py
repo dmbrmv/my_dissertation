@@ -1,18 +1,18 @@
 import sys
-sys.path.append('/workspaces/my_dissertation')
-from meteo_grids_parser.scripts.geom_proc import (poly_from_multipoly,
-                                                  area_from_gdf)
+sys.path.append('/home/anton/dima_experiments/my_dissertation')
+from shapely.geometry import Polygon
+from pathlib import Path
+import fiona
+import pandas as pd
+import numpy as np
+import geopandas as gpd
 from .hydro_atlas_variables import (hydrology_variables,
                                     physiography_variables,
                                     climate_variables, landcover_variables,
                                     soil_and_geo_variables, urban_variables,
                                     monthes)
-import geopandas as gpd
-import numpy as np
-import pandas as pd
-import fiona
-from pathlib import Path
-from shapely.geometry import Polygon
+from meteo_grids_parser.scripts.geom_proc import (poly_from_multipoly,
+                                                  area_from_gdf)
 
 
 def featureXtractor(user_ws: Polygon, gdb_file_path: str):
