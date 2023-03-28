@@ -1,9 +1,11 @@
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 import geopandas as gpd
 from pathlib import Path
 import numpy as np
 import pandas as pd
-from scripts.readers import read_with_date_index
+import glob
+import xarray as xr
+from scripts.readers import read_with_date_index, xr_opener
 import sys
 sys.path.append('/workspaces/my_dissertation/')
 from meteo_grids_parser.scripts.loaders import multi_var_nc
@@ -31,7 +33,7 @@ gleam_vals = multi_var_nc(Path(gleam_vals),
 
 
 geometry_file = gpd.read_file(
-    '/workspaces/my_dissertation/geo_data/geometry/kamchatka_ws.gpkg')
+    '/workspaces/my_dissertation/geo_data/geometry/russia_ws.gpkg')
 geometry_file = geometry_file.set_index('gauge_id')
 
 geo_folder = '/workspaces/my_dissertation/geo_data/great_db'
@@ -116,3 +118,16 @@ for gauge in tqdm(geometry_file.index):
         with open('bad_gauges.txt', 'w') as text_file:
             text_file.write(f'{gauge} has no observations\n')
         bad_gauges.append(gauge)
+
+# read all stored files in one file
+files = glob.glob(f'{geo_folder}/nc_concat/*.nc')
+big_file = xr.concat([xr_opener(file) for file in files],
+                     dim='gauge_id')
+# save only one's with no miss data on discharge in qms/s
+for gauge in big_file['q_cms_s'].dropna(dim='gauge_id')['gauge_id'].values:
+    ds = big_file.sel(gauge_id=gauge)
+    ds.to_netcdf(f'{geo_folder}/nc_all_q/{gauge}.nc')
+# save only one's with no miss data on level in relative sm
+for gauge in big_file['lvl_mbs'].dropna(dim='gauge_id')['gauge_id'].values:
+    ds = big_file.sel(gauge_id=gauge)
+    ds.to_netcdf(f'{geo_folder}/nc_all_h/{gauge}.nc')

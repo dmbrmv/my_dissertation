@@ -8,8 +8,8 @@ from tqdm import tqdm
 import numpy as np
 import pandas as pd
 
-from .geom_functions import (polygon_area, find_float_len, select_big_from_MP)
-from ...data_builders.geometry_scripts.gdal_processing import create_mosaic, vrt_to_geotiff
+from geom_functions import (polygon_area, find_float_len, poly_from_multipoly)
+from gdal_processing import create_mosaic, vrt_to_geotiff
 
 
 def from_dir_to_ws(region_name,
@@ -54,9 +54,7 @@ def from_dir_to_ws(region_name,
                 fdir_copy=fdir,
                 x=x_coord,
                 y=y_coord)
-            new_area = polygon_area(
-                lats=gauge_file.loc[i, 'geometry'].exterior.coords.xy[1],
-                lons=gauge_file.loc[i, 'geometry'].exterior.coords.xy[0])
+            new_area = polygon_area(gauge_file.loc[i, 'geometry'])
             gauge_file.loc[i, 'new_area'] = new_area
             print(f'Calculated area, sq.km {new_area:.2f}')
         else:
@@ -119,53 +117,6 @@ def dir_acc_for_aoi(region_name,
     gc.collect()
 
     print(f'\n{region_name} полностью обсчитан !\n')
-
-
-# def catchment_from_elv(grid_copy,
-#                        dem_copy,
-#                        x,
-#                        y):
-#     ws = None
-#     initial_grid = grid_copy
-#     # Resolve flats in DEM
-#     inflated_dem = dem_copy
-
-#     # Determine D8 flow directions from DEM
-#     # ----------------------
-#     # Specify directional mapping
-#     dirmap = (64, 128, 1, 2, 4, 8, 16, 32)
-#     # Compute flow directions
-#     # -------------------------------------
-#     fdir = initial_grid.flowdir(inflated_dem, dirmap=dirmap)
-
-#     # Calculate flow accumulation
-#     # --------------------------
-#     acc = initial_grid.accumulation(fdir, dirmap=dirmap)
-
-#     if acc is not None:
-#         # Snap pour point to high accumulation cell
-#         x_snap, y_snap = initial_grid.snap_to_mask(acc > 1e3, (x, y))
-
-#         # Delineate the catchment
-#         catch = initial_grid.catchment(x=x_snap, y=y_snap,
-#                                        fdir=fdir,
-#                                        dirmap=dirmap,
-#                                        xytype='coordinate')
-
-#         # Crop and plot the catchment
-#         # ---------------------------
-#         # Clip the bounding box to the catchment
-#         initial_grid.clip_to(catch)
-#         # clipped_catch = initial_grid.view(ws_grid)
-#         if initial_grid is not None:
-#             ws = initial_grid.polygonize()
-#             ws = ops.unary_union([geometry.shape(shape)
-#                                   for shape, value in ws])
-#             ws = select_big_from_MP(ws)
-
-#         return ws
-#     else:
-#         return None
 
 
 def catchment_from_dir(grid_copy,
@@ -278,9 +229,7 @@ def my_catchment(grid_p: str,
         ws = select_big_from_MP(ws)
         gauges_file.loc[i, 'geometry'] = ws
 
-        new_area = polygon_area(
-            lats=gauges_file.loc[i, 'geometry'].exterior.coords.xy[1],
-            lons=gauges_file.loc[i, 'geometry'].exterior.coords.xy[0])
+        new_area = polygon_area(gauges_file.loc[i, 'geometry'])
         gauges_file.loc[i, 'new_area'] = new_area
 
         print(f'Calculated area, sq.km {new_area:.2f}')
