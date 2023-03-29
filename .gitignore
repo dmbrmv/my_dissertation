@@ -30,5 +30,8 @@ geo_data/
 # ignore logs 
 forecast/lightning_logs
 forecast/optuna_test
+# ignore runs
+test_meteo_input/configs
+test_meteo_input/runs*
 
 DELETE_ME/
