@@ -1,5 +1,6 @@
 from pathlib import Path
 import pandas as pd
+import yaml
 
 
 class ConfigExtractor:
@@ -30,9 +31,13 @@ class ConfigExtractor:
         self._raster_storage = self.cfg['raster_storage']
         self._initial_fdir = self.cfg['initial_fdir']
         self._accum_masks = self.cfg['accum_masks']
-        
+
         self._point_geometry = self.cfg['point_geometry']
         self._watershed_name = self.cfg['watershed_name']
+        self._mask_storage = self.cfg['mask_storage']
+        self._river_network_storage = self.cfg['river_net_storage']
+        self._initial_meteo = self.cfg['initial_meteo']
+        self._grid_storage = self.cfg['grid_storage']
 
     @property
     def save_storage(self):
@@ -62,11 +67,23 @@ class ConfigExtractor:
     def watershed_name(self):
         return Path(self._watershed_name)
 
+    @property
+    def mask_storage(self):
+        return Path(self._mask_storage)
 
+    @property
+    def river_net_storage(self):
+        return Path(self._river_network_storage)
 
+    @property
+    def grid_storage(self):
+        return Path(self._grid_storage)
 
+    @property
+    def initial_meteo(self):
+        return Path(self._initial_meteo)
 
-
+    # previous cfg keys
 
     @property
     def cmip_path(self):
@@ -99,3 +116,10 @@ class ConfigExtractor:
     @property
     def forecast_dates(self):
         return self._forecast_dates
+
+
+with open(Path("config.yml"), "r") as yamlfile:
+    cfg_settings = yaml.load(yamlfile, Loader=yaml.FullLoader)
+    print("cfg loaded")
+
+config_info = ConfigExtractor(cfg_settings)

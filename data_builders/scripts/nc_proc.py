@@ -2,7 +2,7 @@ from typing import Hashable, Tuple, Union
 import xarray as xr
 from shapely.geometry import Polygon
 
-from .geometry_scripts.geom_functions import (poly_from_multipoly, find_extent)
+from .geom_functions import (poly_from_multipoly, find_extent)
 
 
 # !TODO

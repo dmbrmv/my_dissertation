@@ -156,7 +156,7 @@ def catchment_from_dir(grid_copy,
             ws = initial_grid.polygonize()
             ws = ops.unary_union([geometry.shape(shape)
                                   for shape, _ in ws])
-            ws = select_big_from_MP(ws)
+            ws = poly_from_multipoly(ws)
         gc.collect()
         return ws
     else:
@@ -226,7 +226,7 @@ def my_catchment(grid_p: str,
         ws = grid.polygonize()
         ws = ops.unary_union([geometry.shape(shape)
                               for shape, _ in ws])
-        ws = select_big_from_MP(ws)
+        ws = poly_from_multipoly(ws)
         gauges_file.loc[i, 'geometry'] = ws
 
         new_area = polygon_area(gauges_file.loc[i, 'geometry'])

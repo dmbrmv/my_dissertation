@@ -26,21 +26,20 @@ def area_from_gdf(poly):
     return area
 
 
-def poly_from_multipoly(ws_geom):
-    """
+def find_float_len(number: float) -> int:
 
-    Function return only biggest polygon
-    from multipolygon WS
-    It's the real WS, and not malfunctioned part of it
+    return len(str(number).split('.')[1]) >= 2
 
-    """
-    if type(ws_geom) == MultiPolygon:
-        big_area = [polygon_area(geo_shape=polygon)
-                    for polygon in ws_geom.geoms]
-        ws_geom = ws_geom.geoms[np.argmax(big_area)]
-    else:
-        ws_geom = ws_geom
-    return ws_geom
+
+def min_max_xy(shp_file):
+
+    x_max, x_min = np.max(shp_file.exterior.xy[0]), np.min(
+        shp_file.exterior.xy[0])
+
+    y_max, y_min = np.max(shp_file.exterior.xy[1]), np.min(
+        shp_file.exterior.xy[1])
+
+    return (x_min, y_min, x_max, y_max)
 
 
 def polygon_area(geo_shape, radius=6378137):
@@ -85,6 +84,59 @@ def polygon_area(geo_shape, radius=6378137):
         return area * 4 * pi * radius**2 / 10**6
     else:  # return in ratio of sphere total area
         return area / 10**6
+
+
+def poly_from_multipoly(ws_geom):
+    """
+
+    Function return only biggest polygon
+    from multipolygon WS
+    It's the real WS, and not malfunctioned part of it
+
+    """
+    if type(ws_geom) == MultiPolygon:
+        big_area = [polygon_area(geo_shape=polygon)
+                    for polygon in ws_geom.geoms]
+        ws_geom = ws_geom.geoms[np.argmax(big_area)]
+    else:
+        ws_geom = ws_geom
+    return ws_geom
+
+
+def ws_AOI(ws, shp_path: str):
+
+    def my_ceil(a, precision=0):
+        return np.true_divide(np.ceil(a * 10**precision), 10**precision)
+
+    def my_floor(a, precision=0):
+        return np.true_divide(np.floor(a * 10**precision), 10**precision)
+
+    LONS, LATS = ws.exterior.xy
+    max_LAT = np.max(LATS)
+    max_LON = np.max(LONS)
+    min_LAT = np.min(LATS)
+    min_LON = np.min(LONS)
+
+    min_LON, max_LON, min_LAT, max_LAT = (
+        my_floor(min_LON, 2), my_ceil(max_LON, 2),
+        my_floor(min_LAT, 2), my_ceil(max_LAT, 2))
+
+    test = gpd.GeoDataFrame()
+    aoi_geom = Polygon([[min_LON, min_LAT], [min_LON, max_LAT],
+                        [max_LON, max_LAT], [max_LON, min_LAT]])
+    test.loc[0, 'geometry'] = aoi_geom  # type: ignore
+    test = test.set_crs(epsg=4326)
+
+    test.to_file(f'{shp_path}', index=False)
+    return shp_path
+
+
+def round_up(x):
+    return int(np.ceil(x / 5.0)) * 5
+
+
+def round_down(x):
+    return int(np.floor(x / 5.0)) * 5
 
 
 def find_extent(ws: Polygon,

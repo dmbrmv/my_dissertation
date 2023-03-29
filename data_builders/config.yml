@@ -12,7 +12,7 @@ raster_storage: '../geo_data/great_db/geometry_builder/aoi_rasters/'
 initial_fdir: '../geo_data/great_db/geometry_builder/topography'
 
 watershed_storage: '../geo_data/great_db/geometry/example_ws/res/'
-river_network_storage: '../geo_data/great_db/geometry/river_network'
+river_net_storage: '../geo_data/great_db/geometry/river_network'
 # Necessary pathes for meteo aggregations
 initial_meteo: '../geo_data/meteorology'
 grid_storage: '../geo_data/meteo_grids'

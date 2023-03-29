@@ -1,7 +1,6 @@
-from .geometry_scripts.geom_functions import (
-    create_gdf, getSquareVertices, polygon_area, poly_from_multipoly)
-from nc_proc import nc_by_extent
-
+from .nc_proc import nc_by_extent
+from .geom_functions import (create_gdf, getSquareVertices,
+                             polygon_area, poly_from_multipoly)
 from dask import config as dask_cfg
 from shapely.geometry import Polygon
 import geopandas as gpd
@@ -10,6 +9,7 @@ import numpy as np
 import xarray as xr
 from pathlib import Path
 import gc
+
 
 
 class Gridder:
@@ -122,7 +122,7 @@ class Gridder:
         # find biggest intersection if it returns MultiPolygon instance
         # select biggest Polygon in MultiPolygon
         intersected = [create_gdf(
-            poly_from_multipoly(section.loc[0, 'geometry']))
+            poly_from_multipoly(section.loc[0, 'geometry']))  # type: ignore
             if len(section) != 0
             else gpd.GeoDataFrame()
             for section in intersected]
