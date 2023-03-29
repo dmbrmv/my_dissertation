@@ -12,7 +12,7 @@ validation_basin_file: ./openf_basins.txt
 test_basin_file: ./openf_basins.txt
 
 # training, validation and test time periods (format = 'dd/mm/yyyy')
-train_start_date: '01/01/2009'
+train_start_date: '01/01/2008'
 train_end_date: '31/12/2016'
 validation_start_date: '01/01/2017'
 validation_end_date: '31/12/2018'
@@ -189,31 +189,47 @@ target_variables:
 # Which CAMELS attributes to use. Leave empty if none should be used
 static_attributes:
 # HydroATLAS
-- for_pc_sse # forest cover extent
-- crp_pc_sse # cropland extent
-- pst_pc_sse # pasture extent
+ # forest cover extent
+- for_pc_sse
+ # cropland extent
+- crp_pc_sse
+ # pasture extent
+- pst_pc_sse
+ # inundation extent
+- inu_pc_ult
+ # irrigated area extent
+- ire_pc_sse
+ # limnicity
+- lka_pc_use
+ # lake volume
+- lkv_mc_usu
+ # reservoir volume
+- rev_mc_usu
+ # groundwater table depth
+- gwt_cm_sav
 
-- inu_pc_ult # inundation extent
-- ire_pc_sse # irrigated area extent
-- lka_pc_use # limnicity
-- lkv_mc_usu # lake volume
-- rev_mc_usu # reservoir volume
+ # permafrost extent
+- prm_pc_sse
+ # stream gradient
+- sgr_dk_sav
+ # terrain slope
+- slp_dg_sav
 
-- gwt_cm_sav # groundwater table depth
+ # clay fraction in soil
+- cly_pc_sav
+ # silt fraction in soil
+- slt_pc_sav
+ # sand fraction in soil
+- snd_pc_sav
+ # karst area extent
+- kar_pc_sse
+ # urban extent
+- urb_pc_sse
 
-- prm_pc_sse # permafrost extent
-
-- sgr_dk_sav # stream gradient
-- slp_dg_sav # terrain slope
-
-- cly_pc_sav # clay fraction in soil
-- slt_pc_sav # silt fraction in soil
-- snd_pc_sav # sand fraction in soil
-- kar_pc_sse # karst area extent
-- urb_pc_sse # urban extent
-
-- ws_area # watershed area
-- ele_mt_sav # average height
+ # watershed area
+- ws_area
+ # average height
+- ele_mt_sav
 
 
 # Path to pickle file(s) containing additional data. Each pickle file must contain a dictionary
