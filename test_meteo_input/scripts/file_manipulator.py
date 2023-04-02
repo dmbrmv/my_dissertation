@@ -8,10 +8,15 @@ def file_checker(file_path: str,
                  meteo_predictors: list,
                  hydro_target: str,
                  possible_nans: int = 0):
-    condition = xr.open_dataset(
-        file_path).to_dataframe()[
-            [hydro_target,
-             *meteo_predictors]].isna().sum().sum() != possible_nans
+
+    ds_file = xr.open_dataset(file_path).to_dataframe()[
+        [hydro_target, *meteo_predictors]]
+
+    condition_1 = ds_file.isna().sum().sum() != possible_nans
+    condition_2 = max([max(value/ds_file[hydro_target].to_numpy())
+                       for value in ds_file[hydro_target].to_numpy()]) > 1500
+    condition = condition_1 | condition_2
+
     return condition
 
 
@@ -38,7 +43,6 @@ def file_rewriter(q_pathes: list,
                 ds.to_netcdf(f'{ts_dir}/{filename}')
             except ValueError:
                 continue
-
     basins = [file.split('/')[-1][:-3] for
               file in glob.glob(f'{ts_dir}/*.nc')]
     with open('./openf_basins.txt', 'w') as the_file:
