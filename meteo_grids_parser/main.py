@@ -12,7 +12,7 @@ era5 = Path(f'{meteo_path}/era5/russia')
 imerg = Path(f'{meteo_path}/imerg_year_new')
 gpcp = Path(f'{meteo_path}/gpcp_year_new')
 gleam = Path(f'{meteo_path}/gleam_vars')
-mswep = Path(f'{meteo_path}/mswep_new')
+mswep = Path(f'{meteo_path}/mswep')
 
 place_to_save = '../geo_data/meteo_grids'
 
@@ -35,7 +35,7 @@ place_to_save = '../geo_data/meteo_grids'
 #     'mswep': {'res': 0.05,
 #               'f_path': multi_var_nc(mswep,
 #                                      file_extension='nc')}}
-icon = '../geo_data/icon_data'
+# icon = '../geo_data/icon_data'
 ds_description = {
     'icon': {'res': 0.0625,
              'f_path': multi_var_nc(Path(icon),

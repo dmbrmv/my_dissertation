@@ -36,10 +36,9 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
     basemap_data.to_crs(aea_crs_proj4).plot(  # type: ignore
         ax=ax, color='grey', edgecolor='black', legend=False)
     gdf_to_plot = gdf_to_plot.to_crs(aea_crs_proj4)  # type: ignore
-    print(type(gdf_to_plot))
     # plot variable
     if just_points:
-        gdf_to_plot.plot(
+        scatter_plot = gdf_to_plot.plot(
             ax=ax,
             column=distinction_col,
             cmap=cmap,
@@ -48,12 +47,13 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
             legend_kwds={'loc': "lower left",
                          'fontsize': 8})
     else:
-        gdf_to_plot.plot(
+        scatter_plot = gdf_to_plot.plot(
             ax=ax,
             column=metric_col,
+            cmap=cmap,
             marker='o', markersize=20,
             legend=True,
-            legend_kwds={'labels': metric_col,
+            legend_kwds={'label': metric_col,
                          'orientation': 'horizontal',
                          'shrink': 0.3,
                          'pad': -0.1,

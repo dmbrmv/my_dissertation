@@ -35,3 +35,7 @@ test_meteo_input/configs
 test_meteo_input/runs*
 
 DELETE_ME/
+
+# ignore visualisator helper
+visualizations/images
+visualizations/recovery
