@@ -39,3 +39,4 @@ DELETE_ME/
 # ignore visualisator helper
 visualizations/images
 visualizations/recovery
+paper_visualisation/

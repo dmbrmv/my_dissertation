@@ -13,11 +13,15 @@ def file_checker(file_path: str,
         [hydro_target, *meteo_predictors]]
 
     condition_1 = ds_file.isna().sum().sum() != possible_nans
-    condition_2 = max([max(value/ds_file[hydro_target].to_numpy())
-                       for value in ds_file[hydro_target].to_numpy()]) > 1500
-    condition = condition_1 | condition_2
+    # if (hydro_target == 'q_mm_day') | (hydro_target == 'q_cms_s'):
+    #     condition_2 = max([max(value/ds_file[hydro_target].to_numpy())
+    #                        for value
+    #                        in ds_file[hydro_target].to_numpy()]) > 2000
+    #     condition = condition_1 | condition_2
+    # else:
+    #     condition = condition_1
 
-    return condition
+    return condition_1
 
 
 def file_rewriter(q_pathes: list,

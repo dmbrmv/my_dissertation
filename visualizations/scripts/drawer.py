@@ -58,7 +58,7 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
                          'shrink': 0.3,
                          'pad': -0.1,
                          'values': list_of_limits,
-                         'ticks': [0.00, 0.20, 0.40, 0.55, 0.75, 0.90],
+                         'ticks': [i+0.05 for i in list_of_limits],
                          'drawedges': True})
     if with_histogram:
         # list_of_limits_hist = [0, 250, 500, 1000, 2000]
@@ -97,3 +97,18 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
               fontdict={'size': 14})
 
     return fig
+
+
+def metric_viewer(gauges_file: gpd.GeoDataFrame,
+                  metric_col: str,
+                  metric_csv: str):
+    model_metric = pd.read_csv(metric_csv)
+    model_metric = model_metric.rename(columns={'basin': 'gauge_id'})
+    model_metric['gauge_id'] = model_metric['gauge_id'].astype('str')
+    model_metric = model_metric.set_index('gauge_id')
+
+    res_file = gauges_file.set_index('gauge_id').join(model_metric).dropna()
+    nse_median = res_file[metric_col].median()
+    res_file.loc[res_file[metric_col] < 0, metric_col] = 0
+
+    return res_file, nse_median
