@@ -33,7 +33,7 @@ gleam_vals = multi_var_nc(Path(gleam_vals),
 
 
 geometry_file = gpd.read_file(
-    '/workspaces/my_dissertation/geo_data/geometry/russia_ws.gpkg')
+    '/workspaces/my_dissertation/geo_data/great_db/geometry/russia_ws_15.gpkg')
 geometry_file = geometry_file.set_index('gauge_id')
 
 geo_folder = '/workspaces/my_dissertation/geo_data/great_db'
