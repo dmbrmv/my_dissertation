@@ -44,6 +44,7 @@ def file_rewriter(q_pathes: list,
             filename = file.split('/')[-1]
             try:
                 ds = ds.drop('gauge_id')
+                ds = ds.sel()
                 ds.to_netcdf(f'{ts_dir}/{filename}')
             except ValueError:
                 continue

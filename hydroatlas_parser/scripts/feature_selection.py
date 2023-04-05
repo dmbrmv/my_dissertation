@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/home/anton/dima_experiments/my_dissertation')
+sys.path.append('/workspaces/my_dissertation')
 from shapely.geometry import Polygon
 from pathlib import Path
 import fiona
@@ -61,9 +61,11 @@ def featureXtractor(user_ws: Polygon, gdb_file_path: str):
                      climate_variables +
                      landcover_variables +
                      soil_and_geo_variables +
-                     urban_variables].apply(
+                     urban_variables].applymap(
         lambda x:
             np.sum(x * gdf['weights'])/np.sum(gdf['weights']))
+    geo_vector[geo_vector < 0] = np.NaN
+    geo_vector = geo_vector.mean()
     # some values in HydroATLAS was multiplied by <X>, so to bring it
     # back to original form this procedure is required
     divide_by_10 = [item for sublist
