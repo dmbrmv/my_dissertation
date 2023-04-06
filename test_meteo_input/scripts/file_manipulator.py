@@ -41,8 +41,8 @@ def file_rewriter(q_pathes: list,
             continue
         else:
             ds = xr.open_dataset(file)
-            filename = file.split('/')[-1]
             try:
+                filename = file.split('/')[-1]
                 ds = ds.drop('gauge_id')
                 ds = ds.sel()
                 ds.to_netcdf(f'{ts_dir}/{filename}')
