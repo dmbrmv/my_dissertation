@@ -1,10 +1,10 @@
 # --- Experiment configurations --------------------------------------------------------------------
 
 # experiment name, used as folder name
-experiment_name: era5_prcp
+experiment_name: era5L_static_prcp
 
 # place to store run directory (if empty runs are stored in code_dir/runs/)
-run_dir: ./runs_q_cms
+run_dir: ./runs_static
 
 # files to specify training, validation and test basins (relative to code root or absolute path)
 train_basin_file: ./openf_basins.txt
@@ -12,7 +12,7 @@ validation_basin_file: ./openf_basins.txt
 test_basin_file: ./openf_basins.txt
 
 # training, validation and test time periods (format = 'dd/mm/yyyy')
-train_start_date: '01/01/2008'
+train_start_date: '01/01/2009'
 train_end_date: '31/12/2016'
 validation_start_date: '01/01/2017'
 validation_end_date: '31/12/2018'
@@ -40,7 +40,7 @@ device: cuda:0
 validate_every: 3
 
 # specify how many random basins to use for validation
-validate_n_random_basins: 1148
+validate_n_random_basins: 1106
 
 # By default, validation is cached (even is this argument is empty). Set to False, if you do not want to use it.
 cache_validation_data: True
@@ -70,13 +70,13 @@ output_activation: linear
 # ----> General settings <----
 
 # Number of cell states of the LSTM
-hidden_size: 420
+hidden_size: 256
 
 # Initial bias value of the forget gate
 initial_forget_bias: 6
 
 # Dropout applied to the output of the LSTM
-output_dropout: 0.42
+output_dropout: 0.4
 
 # --- Training configuration -----------------------------------------------------------------------
 
@@ -101,7 +101,7 @@ learning_rate:
 batch_size: 256
 
 # Number of training epochs
-epochs: 42
+epochs: 30
 
 # adds noise with given std to the labels during training. Leave empty or set to 0 if not used.
 target_noise_std: 
@@ -163,8 +163,6 @@ save_train_data: True
 # If existing train data file exist, specify path to the pickle file here
 train_data_file:
 
-# Forcing product [daymet, maurer, maurer_extended, nldas, nldas_extended, nldas_hourly]
-# can be either a list of forcings or a single forcing product
 forcings: 
 
 # variables to use as time series input (names match the data file column headers)
@@ -177,18 +175,16 @@ forcings:
 #   1H:
 #     - total_precipitation_nldas_hourly
 dynamic_inputs:
-# era
-- t_max_e5
-- t_min_e5
-- prcp_e5
+- t_max_e5l
+- t_min_e5l
+- prcp_e5l
 
 # which columns to use as target
 target_variables:
-- q_cms_s
+- q_mm_day
 
 # Which CAMELS attributes to use. Leave empty if none should be used
 static_attributes:
-# HydroATLAS
  # forest cover extent
 - for_pc_sse
  # cropland extent
@@ -230,6 +226,7 @@ static_attributes:
 - ws_area
  # average height
 - ele_mt_sav
+
 
 
 # Path to pickle file(s) containing additional data. Each pickle file must contain a dictionary
