@@ -5,7 +5,7 @@ from scripts.feature_selection import featureXtractor, save_results
 # set path to shape file
 home_folder = '../geo_data'
 # path to geodataframe
-shape_file_path = f'{home_folder}/geometry/russia_ws.gpkg'
+shape_file_path = f'{home_folder}/great_db/geometry/russia_ws_15.gpkg'
 # set path to downloaded HydroATLAS
 gdb_file_path = f'{home_folder}/hydro_atlas/BasinATLAS_v10.gdb'
 # set path where results will be stored

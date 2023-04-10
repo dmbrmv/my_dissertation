@@ -1,5 +1,5 @@
 from scripts.grid_calculator import Gridder
-from scripts.loaders import multi_var_nc, aggregation_definer
+from scripts.loaders import multi_var_nc, aggregation_definer, grid_descriptor
 import geopandas as gpd
 from pathlib import Path
 from tqdm import tqdm
@@ -12,55 +12,32 @@ era5 = Path(f'{meteo_path}/era5/russia')
 imerg = Path(f'{meteo_path}/imerg_year_new')
 gpcp = Path(f'{meteo_path}/gpcp_year_new')
 gleam = Path(f'{meteo_path}/gleam_vars')
-mswep = Path(f'{meteo_path}/mswep')
-icon = '../geo_data/icon_data'
+mswep = Path(f'{meteo_path}/mswep_new')
+icon = Path('../geo_data/icon_data')
+# define data
+ds_description = {**grid_descriptor(dataset_name='era5_land',
+                                    half_resolution=0.05,
+                                    files=era5_land),
+                  **grid_descriptor(dataset_name='era5',
+                                    half_resolution=0.125,
+                                    files=era5_land),
+                  **grid_descriptor(dataset_name='imerg',
+                                    half_resolution=0.05,
+                                    files=imerg),
+                  **grid_descriptor(dataset_name='gpcp',
+                                    half_resolution=0.25,
+                                    files=gpcp),
+                  **grid_descriptor(dataset_name='gleam',
+                                    half_resolution=0.125,
+                                    files=gleam),
+                  **grid_descriptor(dataset_name='mswep',
+                                    half_resolution=0.05,
+                                    files=mswep),
+                  **grid_descriptor(dataset_name='icon',
+                                    half_resolution=0.0625,
+                                    files=icon)}
 
 place_to_save = '../geo_data/meteo_grids'
-
-# ds_description = {
-#     'era5_land': {'res': 0.05,
-#                   'f_path': multi_var_nc(era5_land,
-#                                          file_extension='nc')},
-#     'era5': {'res': 0.125,
-#              'f_path': multi_var_nc(era5,
-#                                     file_extension='nc')},
-#     'imerg': {'res': 0.05,
-#               'f_path': multi_var_nc(imerg,
-#                                      file_extension='nc')},
-#     'gpcp': {'res': 0.25,
-#              'f_path': multi_var_nc(gpcp,
-#                                     file_extension='nc')},
-#     'gleam': {'res': 0.125,
-#               'f_path': multi_var_nc(gleam,
-#                                      file_extension='nc')},
-#     'mswep': {'res': 0.05,
-#               'f_path': multi_var_nc(mswep,
-#                                      file_extension='nc')}}
-ds_description = {
-    # 'era5_land': {'res': 0.05,
-    #               'f_path': multi_var_nc(era5_land,
-    #                                      file_extension='nc')},
-    # 'era5': {'res': 0.125,
-    #          'f_path': multi_var_nc(era5,
-    #                                 file_extension='nc')},
-    # 'imerg': {'res': 0.05,
-    #           'f_path': multi_var_nc(imerg,
-    #                                  file_extension='nc')},
-    # 'gpcp': {'res': 0.25,
-    #          'f_path': multi_var_nc(gpcp,
-    #                                 file_extension='nc')},
-    # 'gleam': {'res': 0.125,
-    #           'f_path': multi_var_nc(gleam,
-    #                                  file_extension='nc')},
-    'mswep': {'res': 0.05,
-              'f_path': multi_var_nc(mswep,
-                                     file_extension='nc')}}
-
-# ds_description = {
-#     'icon': {'res': 0.0625,
-#              'f_path': multi_var_nc(Path(icon),
-#                                     file_extension='nc')}}
-
 
 for dataset, settings in ds_description.items():
 

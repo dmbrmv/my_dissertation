@@ -11,7 +11,6 @@ from pathlib import Path
 import gc
 
 
-
 class Gridder:
     """_summary_
     """
@@ -108,8 +107,6 @@ class Gridder:
                                       phi=0)))
         # create geodataframe from each polygon from emulation
         polygons = [create_gdf(poly) for poly in polygons]
-        # calculate area of watershed to latter comparisons
-        ws_area = polygon_area(geo_shape=ws_gdf.loc[0, 'geometry'])
         # find intersection beetween grid cell and actual watershed
         intersected = list()
         for polygon in polygons:
@@ -139,10 +136,11 @@ class Gridder:
                                   dims=['lat', 'lon'],
                                   coords=[nc_lat, nc_lon])
         # calculate weights of each intersection correspond to net cdf grid
-        weights = np.array([0 if section.empty
-                            else polygon_area(
-                                geo_shape=section.loc[0, 'geometry']) / ws_area
-                            for section in intersected])
+        weights = np.array(
+            [0 if section.empty else
+             polygon_area(geo_shape=section.loc[0, 'geometry']) / polygon_area(
+                                    geo_shape=polygons[i].loc[0, 'geometry'])
+             for i, section in enumerate(intersected)])
         weights = weights.reshape(grid_shape)
         # transform to DataArray for calculations
         weights = xr.DataArray(data=weights,
