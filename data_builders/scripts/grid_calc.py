@@ -8,8 +8,8 @@ from tqdm import tqdm
 import numpy as np
 import pandas as pd
 
-from geom_functions import (polygon_area, find_float_len, poly_from_multipoly)
-from gdal_processing import create_mosaic, vrt_to_geotiff
+from .geom_functions import (polygon_area, find_float_len, poly_from_multipoly)
+from .gdal_processing import create_mosaic, vrt_to_geotiff
 
 
 def from_dir_to_ws(region_name,
@@ -70,7 +70,7 @@ def from_dir_to_ws(region_name,
         gauge_file['area'] - gauge_file['new_area']) \
         / (gauge_file['area']) * 100
 
-    gauge_file.to_file(f'{save_p}/{region_name}.gpkg',
+    gauge_file.to_file(f'{save_p}/{region_name}.gpkg',  # type: ignore
                        encoding='utf-8')
     return gauge_file
 
@@ -266,6 +266,6 @@ def my_catchment(grid_p: str,
 
     storage = Path(save_p)
     storage.mkdir(exist_ok=True, parents=True)
-    gauges_file.to_file(f'{storage}/{region_name}.gpkg',
+    gauges_file.to_file(f'{storage}/{region_name}.gpkg',  # type: ignore
                         encoding='utf-8')
     return gauges_file

@@ -4,9 +4,10 @@ from copy import deepcopy
 import glob
 import geopandas as gpd
 from typing import Union
-from geom_functions import round_down, round_up, min_max_xy
+from .geom_functions import round_down, round_up, min_max_xy
 from pathlib import Path
 import pandas as pd
+from .config_definition import config_info
 
 
 def aoi_name_path(shp_generator):

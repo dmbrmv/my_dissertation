@@ -1,5 +1,5 @@
 from scripts.grid_calculator import Gridder
-from scripts.loaders import multi_var_nc, aggregation_definer, grid_descriptor
+from scripts.loaders import aggregation_definer, grid_descriptor
 import geopandas as gpd
 from pathlib import Path
 from tqdm import tqdm

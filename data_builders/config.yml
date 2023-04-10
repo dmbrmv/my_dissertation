@@ -8,10 +8,10 @@ point_geometry: '../geo_data/great_db/geometry/russia_gauges.gpkg'
 
 mask_storage: '../geo_data/great_db/geometry_builder/region_masks'
 accum_masks: '../geo_data/great_db/geometry_builder/accum_masks'
-raster_storage: '../geo_data/great_db/geometry_builder/aoi_rasters/'
-initial_fdir: '../geo_data/great_db/geometry_builder/topography'
+raster_storage: '../geo_data/great_db/geometry_builder/aoi_rasters'
+initial_fdir: '../geo_data/great_db/geometry_builder'
 
-watershed_storage: '../geo_data/great_db/geometry/example_ws/res/'
+watershed_storage: '../geo_data/great_db/geometry/example_ws/res'
 river_net_storage: '../geo_data/great_db/geometry/river_network'
 # Necessary pathes for meteo aggregations
 initial_meteo: '../geo_data/meteorology'
