@@ -1,22 +1,22 @@
 # --- Experiment configurations --------------------------------------------------------------------
 
 # experiment name, used as folder name
-experiment_name: mswep_static_prcp
+experiment_name: era5L_static_prcp
 
 # place to store run directory (if empty runs are stored in code_dir/runs/)
-run_dir: ./runs_static
+run_dir: ./runs_blind
 
 # files to specify training, validation and test basins (relative to code root or absolute path)
 train_basin_file: ./openf_basins.txt
 validation_basin_file: ./openf_basins.txt
-test_basin_file: ./openf_basins.txt
+test_basin_file: ./basins_test.txt
 
 # training, validation and test time periods (format = 'dd/mm/yyyy')
 train_start_date: '01/01/2009'
 train_end_date: '31/12/2016'
 validation_start_date: '01/01/2017'
 validation_end_date: '31/12/2018'
-test_start_date: '01/01/2019'
+test_start_date: '01/01/2009'
 test_end_date: '31/12/2020'
 
 # 2008 -- 2016
@@ -70,7 +70,7 @@ output_activation: linear
 # ----> General settings <----
 
 # Number of cell states of the LSTM
-hidden_size: 420
+hidden_size: 256
 
 # Initial bias value of the forget gate
 initial_forget_bias: 6
@@ -177,7 +177,7 @@ forcings:
 dynamic_inputs:
 - t_max_e5l
 - t_min_e5l
-- prcp_mswep
+- prcp_e5l
 
 # which columns to use as target
 target_variables:

@@ -1,10 +1,10 @@
 # --- Experiment configurations --------------------------------------------------------------------
 
 # experiment name, used as folder name
-experiment_name: era5_prcp
+experiment_name: era5L_volgoDon
 
 # place to store run directory (if empty runs are stored in code_dir/runs/)
-run_dir: ./runs_no_static
+run_dir: ./runs_bad_regions
 
 # files to specify training, validation and test basins (relative to code root or absolute path)
 train_basin_file: ./openf_basins.txt
@@ -40,7 +40,7 @@ device: cuda:0
 validate_every: 3
 
 # specify how many random basins to use for validation
-validate_n_random_basins: 1106
+validate_n_random_basins: 93
 
 # By default, validation is cached (even is this argument is empty). Set to False, if you do not want to use it.
 cache_validation_data: True
@@ -175,9 +175,9 @@ forcings:
 #   1H:
 #     - total_precipitation_nldas_hourly
 dynamic_inputs:
-- t_max_e5
-- t_min_e5
-- prcp_e5
+- t_max_e5l
+- t_min_e5l
+- prcp_e5l
 
 # which columns to use as target
 target_variables:

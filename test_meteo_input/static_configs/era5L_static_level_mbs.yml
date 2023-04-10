@@ -1,7 +1,7 @@
 # --- Experiment configurations --------------------------------------------------------------------
 
 # experiment name, used as folder name
-experiment_name: mswep_static_prcp
+experiment_name: era5L_static_mbs_60_epoch
 
 # place to store run directory (if empty runs are stored in code_dir/runs/)
 run_dir: ./runs_static
@@ -40,7 +40,7 @@ device: cuda:0
 validate_every: 3
 
 # specify how many random basins to use for validation
-validate_n_random_basins: 1106
+validate_n_random_basins: 1400
 
 # By default, validation is cached (even is this argument is empty). Set to False, if you do not want to use it.
 cache_validation_data: True
@@ -49,8 +49,8 @@ cache_validation_data: True
 # this can either be a list or a dictionary. If a dictionary is used, the inner keys must match the name of the
 # target_variable specified below. Using dicts allows for different metrics per target variable.
 metrics:
-- NSE
-- KGE
+- MSE
+- RMSE
 
 # --- Model configuration --------------------------------------------------------------------------
 
@@ -70,7 +70,7 @@ output_activation: linear
 # ----> General settings <----
 
 # Number of cell states of the LSTM
-hidden_size: 420
+hidden_size: 256
 
 # Initial bias value of the forget gate
 initial_forget_bias: 6
@@ -84,7 +84,7 @@ output_dropout: 0.4
 optimizer: Adam
 
 # specify loss [MSE, NSE, RMSE]
-loss: NSE
+loss: RMSE
 
 # add regularization terms.
 # Options: tie_frequencies (couples the different frequencies' predictions in an MSE error term)
@@ -101,7 +101,7 @@ learning_rate:
 batch_size: 256
 
 # Number of training epochs
-epochs: 30
+epochs: 60
 
 # adds noise with given std to the labels during training. Leave empty or set to 0 if not used.
 target_noise_std: 
@@ -177,11 +177,11 @@ forcings:
 dynamic_inputs:
 - t_max_e5l
 - t_min_e5l
-- prcp_mswep
+- prcp_e5l
 
 # which columns to use as target
 target_variables:
-- q_mm_day
+- lvl_mbs
 
 # Which CAMELS attributes to use. Leave empty if none should be used
 static_attributes:
