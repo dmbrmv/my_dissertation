@@ -1,23 +1,38 @@
 # Parameters necessary for data creation from zero
 
 # Necessary pathes to geometry manipulations
-save_storage: '../geo_data/great_db/geometry/example_ws'
-watershed_name : 'russia_ws'
+save_storage: './test_data/geometry/example_ws'
+watershed_name : 'test_builder'
 acc_faktor: 1000
-point_geometry: '../geo_data/great_db/geometry/russia_gauges.gpkg'
+point_geometry: './test_data/geometry/example_gauges.gpkg'
 
-mask_storage: '../geo_data/great_db/geometry_builder/region_masks'
-accum_masks: '../geo_data/great_db/geometry_builder/accum_masks'
-raster_storage: '../geo_data/great_db/geometry_builder/aoi_rasters'
-initial_fdir: '../geo_data/great_db/geometry_builder'
+mask_storage: './test_data/geometry_builder/region_masks'
+accum_masks: './test_data/geometry_builder/accum_masks'
+raster_storage: './test_data/geometry_builder/aoi_rasters'
+initial_fdir: './test_data/geometry_builder'
 
-watershed_storage: '../geo_data/great_db/geometry/example_ws/res'
-river_net_storage: '../geo_data/great_db/geometry/river_network'
+watershed_storage: './test_data/geometry/example_ws/res'
+river_net_storage: './test_data/geometry/river_network'
 # Necessary pathes for meteo aggregations
-initial_meteo: '../geo_data/meteorology'
-grid_storage: '../geo_data/meteo_grids'
+initial_meteo: './test_data/meteorology'
+grid_storage: './test_data/meteo_grids'
 
+# # Necessary pathes to geometry manipulations
+# save_storage: '../geo_data/great_db/geometry/example_ws'
+# watershed_name : 'russia_ws'
+# acc_faktor: 1000
+# point_geometry: '../geo_data/great_db/geometry/russia_gauges.gpkg'
 
+# mask_storage: '../geo_data/great_db/geometry_builder/region_masks'
+# accum_masks: '../geo_data/great_db/geometry_builder/accum_masks'
+# raster_storage: '../geo_data/great_db/geometry_builder/aoi_rasters'
+# initial_fdir: '../geo_data/great_db/geometry_builder'
+
+# watershed_storage: '../geo_data/great_db/geometry/example_ws/res'
+# river_net_storage: '../geo_data/great_db/geometry/river_network'
+# # Necessary pathes for meteo aggregations
+# initial_meteo: '../geo_data/meteorology'
+# grid_storage: '../geo_data/meteo_grids'
 
 
 
