@@ -16,6 +16,7 @@ river_net_storage: './test_data/geometry/river_network'
 # Necessary pathes for meteo aggregations
 initial_meteo: './test_data/meteorology'
 grid_storage: './test_data/meteo_grids'
+final_meteo: './test_data/xr_meteo'
 
 # # Necessary pathes to geometry manipulations
 # save_storage: '../geo_data/great_db/geometry/example_ws'

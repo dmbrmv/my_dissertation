@@ -38,6 +38,7 @@ class ConfigExtractor:
         self._river_network_storage = self.cfg['river_net_storage']
         self._initial_meteo = self.cfg['initial_meteo']
         self._grid_storage = self.cfg['grid_storage']
+        self._final_meteo = self.cfg['final_meteo']
 
     @property
     def save_storage(self):
@@ -82,6 +83,10 @@ class ConfigExtractor:
     @property
     def initial_meteo(self):
         return Path(self._initial_meteo)
+
+    @property
+    def final_meteo(self):
+        return Path(self._final_meteo)
 
     # previous cfg keys
 

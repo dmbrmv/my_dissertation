@@ -22,6 +22,7 @@ class RiverNetworkGPKG():
     def network_creator(self):
 
         acc_tiff = f'{config_info.raster_storage}/acc/{self.tile_tag}_acc.tiff'
+        print(acc_tiff)
         # initialize calculation grid
         acc = xr.open_dataset(acc_tiff)
 
@@ -32,9 +33,9 @@ class RiverNetworkGPKG():
         min_lat = np.round(acc['y'].min().values)
         max_lat = np.round(acc['y'].max().values)
 
-        lons = np.arange(start=min_lon, stop=max_lon,
+        lons = np.arange(start=min_lon, stop=max_lon+2.5,
                          step=2.5)
-        lats = np.arange(start=min_lat, stop=max_lat,
+        lats = np.arange(start=min_lat, stop=max_lat+2.5,
                          step=2.5)
         # write tiles from whole raster in predefined place
         acc_tiles_storage = Path(
@@ -141,4 +142,5 @@ class RiverNetworkGPKG():
             temp_res_riv = temp_res_riv[[
                 'id', 'rank', 'acc_range', 'geometry']]
 
-            temp_res_riv.to_file(f'{geometry_storage}/{tile_name}.gpkg')
+            temp_res_riv.to_file(
+                f'{geometry_storage}/{tile_name}.gpkg')  # type: ignore
