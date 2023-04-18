@@ -128,8 +128,7 @@ class Gridder:
         inter_mask = np.array([False if section.empty is True
                                else True
                                for section in intersected])
-        self.polygons_size = sum(inter_mask)
-
+        self.polygons_size = np.sum(inter_mask)
         # shape of initial coordindate size
         grid_shape = (len(nc_lat), len(nc_lon))
 
@@ -186,6 +185,7 @@ class Gridder:
                                    dataset=self.dataset)
 
         inter_mask = self.weights.astype(bool)
+        self.polygons_size = np.sum(inter_mask.to_numpy())
         # create final instersection
         ws_nc = mask_nc.where(inter_mask, drop=True)
 
