@@ -2,6 +2,7 @@ import xarray as xr
 from pathlib import Path
 import shutil
 import glob
+from .blacklist import really_bad_gauges
 
 
 def file_checker(file_path: str,
@@ -33,21 +34,26 @@ def file_rewriter(q_pathes: list,
     ts_dir.mkdir(exist_ok=True, parents=True)
 
     for file in q_pathes:
-        cond = file_checker(file_path=file,
-                            hydro_target=hydro_target,
-                            meteo_predictors=meteo_predictors,
-                            possible_nans=possible_nans)
-        if cond:
-            continue
+        gauge_id = file.split('/')[-1][:-3]
+
+        if gauge_id in really_bad_gauges:
+            pass
         else:
-            ds = xr.open_dataset(file)
-            try:
-                filename = file.split('/')[-1]
-                ds = ds.drop('gauge_id')
-                ds = ds.sel()
-                ds.to_netcdf(f'{ts_dir}/{filename}')
-            except ValueError:
+            cond = file_checker(file_path=file,
+                                hydro_target=hydro_target,
+                                meteo_predictors=meteo_predictors,
+                                possible_nans=possible_nans)
+            if cond:
                 continue
+            else:
+                ds = xr.open_dataset(file)
+                try:
+                    filename = file.split('/')[-1]
+                    ds = ds.drop('gauge_id')
+                    ds = ds.sel()
+                    ds.to_netcdf(f'{ts_dir}/{filename}')
+                except ValueError:
+                    continue
     basins = [file.split('/')[-1][:-3] for
               file in glob.glob(f'{ts_dir}/*.nc')]
     with open('./openf_basins.txt', 'w') as the_file:

@@ -2,6 +2,7 @@ import geopandas as gpd
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import pandas as pd
+plt.rcParams["font.family"] = "Times New Roman"
 
 
 def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
@@ -12,7 +13,7 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
                  list_of_limits: list = [0.00, 0.15, 0.30, 0.50, 0.70, 0.90],
                  cmap: str = 'RdYlGn',
                  metric_col: str = '',
-                 figsize: tuple = (11.69, 8.27),
+                 figsize: tuple = (6.92913, 4.88189),
                  just_points: bool = False,
                  with_histogram: bool = False):
     # RUSSIA
@@ -42,7 +43,7 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
             ax=ax,
             column=distinction_col,
             cmap=cmap,
-            marker='o', markersize=10,
+            marker='o', markersize=6,
             legend=True,
             legend_kwds={'loc': "lower left",
                          'fontsize': 8})
@@ -51,7 +52,7 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
             ax=ax,
             column=metric_col,
             cmap=cmap,
-            marker='o', markersize=20,
+            marker='o', markersize=6,
             legend=True,
             legend_kwds={'label': metric_col,
                          'orientation': 'horizontal',
@@ -60,6 +61,9 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
                          'values': list_of_limits,
                          'ticks': [i+0.05 for i in list_of_limits],
                          'drawedges': True})
+    my_fig = scatter_plot.figure
+    cb_ax = my_fig.axes[1]
+    cb_ax.tick_params(labelsize=6)
     if with_histogram:
         # list_of_limits_hist = [0, 250, 500, 1000, 2000]
         hist_df = pd.crosstab(gdf_to_plot[metric_col],  # type: ignore
@@ -70,7 +74,7 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
         hist_df = hist_df.reset_index(drop=True)
 
         # x of borders, y of borders, weight, height
-        ax_hist = ax.inset_axes([0.06, 0.07, 0.24, 0.24])
+        ax_hist = ax.inset_axes([0.00, 0.05, 0.33, 0.24])
 
         extra_hist = hist_df.sum(axis=0).plot.bar(ax=ax_hist,
                                                   rot=0,
@@ -79,7 +83,7 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
                                                   edgecolor='black',
                                                   lw=1)
         extra_hist.set_facecolor('white')
-        extra_hist.tick_params(width=2)
+        extra_hist.tick_params(width=1)
 
         xlbl = [str(col)[1:-1].replace(', ', '-')
                 for col in hist_df.columns]
@@ -87,14 +91,12 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
         extra_hist.set_xticklabels(xlbl)
 
         plt.setp(ax_hist.get_xticklabels(),
-                 fontsize=9,
-                 fontweight="bold")
+                 fontsize=5)
         plt.setp(ax_hist.get_yticklabels(),
-                 fontsize=9,
-                 fontweight="bold")
+                 fontsize=5)
 
     plt.title(f'{title_text}',
-              fontdict={'size': 14})
+              fontdict={'size': 12})
 
     return fig
 
