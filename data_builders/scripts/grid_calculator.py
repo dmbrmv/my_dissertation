@@ -107,6 +107,8 @@ class Gridder:
                                       phi=0)))
         # create geodataframe from each polygon from emulation
         polygons = [create_gdf(poly) for poly in polygons]
+        # calculate area of watershed to latter comparisons
+        ws_area = polygon_area(geo_shape=ws_gdf.loc[0, 'geometry'])
         # find intersection beetween grid cell and actual watershed
         intersected = list()
         for polygon in polygons:
@@ -127,7 +129,6 @@ class Gridder:
         inter_mask = np.array([False if section.empty is True
                                else True
                                for section in intersected])
-        self.polygons_size = sum(inter_mask)
 
         # shape of initial coordindate size
         grid_shape = (len(nc_lat), len(nc_lon))
@@ -139,8 +140,7 @@ class Gridder:
         # calculate weights of each intersection correspond to net cdf grid
         weights = np.array(
             [0 if section.empty else
-             polygon_area(geo_shape=section.loc[0, 'geometry']) / polygon_area(
-                 geo_shape=polygons[i].loc[0, 'geometry'])
+             polygon_area(geo_shape=section.loc[0, 'geometry']) / ws_area
              for i, section in enumerate(intersected)])
         weights = weights.reshape(grid_shape)
         # transform to DataArray for calculations
@@ -185,7 +185,6 @@ class Gridder:
                                    dataset=self.dataset)
 
         inter_mask = self.weights.astype(bool)
-        self.polygons_size = sum(inter_mask)
         # create final instersection
         ws_nc = mask_nc.where(inter_mask, drop=True)
 
@@ -197,7 +196,7 @@ class Gridder:
         if self.aggregation_type == 'sum':
             res_df['date'] = ws_nc.time.values
             res_df[var] = ws_nc.weighted(weights=self.weights).sum(
-                dim=['lat', 'lon'])[var].values / self.polygons_size
+                dim=['lat', 'lon'])[var].values
             res_df = res_df.set_index('date')
             res_df.to_csv(f'{final_save}/{self.gauge_id}.csv')
 
