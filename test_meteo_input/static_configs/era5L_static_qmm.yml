@@ -1,7 +1,7 @@
 # --- Experiment configurations --------------------------------------------------------------------
 
 # experiment name, used as folder name
-experiment_name: era5L_static_prcp
+experiment_name: era5L_static_CellWeights
 
 # place to store run directory (if empty runs are stored in code_dir/runs/)
 run_dir: ./runs_static
