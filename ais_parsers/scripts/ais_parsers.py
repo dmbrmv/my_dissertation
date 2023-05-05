@@ -38,38 +38,35 @@ def discharge_to_csv(data_path: str,
     observation points included in final file
 
     Args:
-        data_path (Path): Path to .xlsx file
+        data_path (Path): Path to .xls file
         save_path (Path): Folder where results will be stored
     """
 
     save_path.mkdir(exist_ok=True, parents=True)
-
     month_days = 31
     # if 0 -- ID of gauge, 2 -- river name
-    river_step = 0
-    river_label = 2
-    year_step = 1
-    m_bs = 3
+    river_step = 4
+    river_label = 6
+    year_step = 5
 
-    skip_top = 18
-    month_step = 5
-    table_step = 53
+    month_step = 9
+    # jump over year fro gauge
+    table_step = 47
 
-    file = pd.read_excel(data_path, skiprows=skip_top, skipfooter=0)
+    # file = pd.read_excel(data_path, skiprows=skip_top, skipfooter=0)
+    xml = pd.read_html(data_path, decimal='.', thousands=" ")
+    file = xml[0]
 
     monthes_range = list(range(month_step, file.shape[0], table_step))
     river_fields = list(range(river_step, file.shape[0], table_step))
     river_labels = list(range(river_label, file.shape[0], table_step))
-    m_bs_fields = list(range(m_bs, file.shape[0], table_step))
     year_fields = list(range(year_step, file.shape[0], table_step))
 
     river_ids = np.array([file.iloc[river_fields[i], 1]
-                          for i in range(len(monthes_range))])
+                          for i in range(len(monthes_range))],
+                         dtype=np.int32)
 
     river_names = np.array([file.iloc[river_labels[i], 1]
-                            for i in range(len(monthes_range))])
-
-    m_bs_values = np.array([file.iloc[m_bs_fields[i], 1]
                             for i in range(len(monthes_range))])
     # ID always unique
     number_of_rivers = len(np.unique(river_ids))
@@ -87,6 +84,7 @@ def discharge_to_csv(data_path: str,
             lambda x: str(x).replace(',', '.')).applymap(
             lambda x: str(x).replace('?', '')).applymap(
             lambda x: re.sub('[^-?0-9.]', '', x))
+        test_selection.columns = [f'Unnamed: {i}' for i in range(1, 13)]
 
         dates = pd.date_range(
             start=f'{file.iloc[year_fields[i], 1]}-01-01',
@@ -191,19 +189,18 @@ def discharge_to_csv(data_path: str,
         if r_id in label_id.keys():
             pass
         else:
-            label_id[r_id] = [river_names[i], m_bs_values[i]]
+            label_id[r_id] = [river_names[i]]
 
     for river_name, data in results.items():
         data = pd.concat(data)
 
         data.to_csv(f'{save_path}/{river_name}.csv')
 
-    return label_id
+    return results
 
 
 def level_to_csv(data_path: str,
-                 save_path: Path,
-                 from_top: int = 38) -> dict:
+                 save_path: Path) -> dict:
     """Script allows to parse data from AIS GMVO (https://gmvo.skniivh.ru/)
     Excel output format both for level and discharge into .csv for separate
     observation points included in final file
@@ -218,16 +215,17 @@ def level_to_csv(data_path: str,
     month_days = 31
 
     # if 0 -- ID of gauge, 2 -- river name
-    river_step = 0
-    river_label = 2
-    year_step = 1
-    m_bs = 3
+    river_step = 52
+    river_label = 54
+    year_step = 53
+    m_bs = 55
 
-    skip_top = from_top
-    month_step = 7
-    table_step = 55
+    month_step = 59
+    table_step = 49
 
-    file = pd.read_excel(data_path, skiprows=skip_top, skipfooter=0)
+    # file = pd.read_excel(data_path, skiprows=skip_top, skipfooter=0)
+    xml = pd.read_html(data_path, decimal='.', thousands=" ")
+    file = xml[0]
 
     monthes_range = list(range(month_step, file.shape[0], table_step))
     river_fields = list(range(river_step, file.shape[0], table_step))
@@ -236,13 +234,15 @@ def level_to_csv(data_path: str,
     year_fields = list(range(year_step, file.shape[0], table_step))
 
     river_ids = np.array([file.iloc[river_fields[i], 1]
-                          for i in range(len(monthes_range))])
+                          for i in range(len(monthes_range))],
+                         dtype=np.int32)
 
     river_names = np.array([file.iloc[river_labels[i], 1]
                             for i in range(len(monthes_range))])
 
     m_bs_values = np.array([file.iloc[m_bs_fields[i], 1]
-                            for i in range(len(monthes_range))])
+                            for i in range(len(monthes_range))],
+                           dtype=np.float32)
     # ID always unique
     number_of_rivers = len(np.unique(river_ids))
     # define number of downloaded rivers
@@ -259,6 +259,7 @@ def level_to_csv(data_path: str,
             lambda x: str(x).replace(',', '.')).applymap(
             lambda x: str(x).replace('?', '')).applymap(
             lambda x: re.sub('[^-?0-9.]', '', x))
+        test_selection.columns = [f'Unnamed: {i}' for i in range(1, 13)]
 
         dates = pd.date_range(
             start=f'{file.iloc[year_fields[i], 1]}-01-01',
