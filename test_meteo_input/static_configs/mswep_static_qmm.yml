@@ -1,7 +1,7 @@
 # --- Experiment configurations --------------------------------------------------------------------
 
 # experiment name, used as folder name
-experiment_name: mswep_static_prcp
+experiment_name: mswep_static_SmallMedium
 
 # place to store run directory (if empty runs are stored in code_dir/runs/)
 run_dir: ./runs_static
@@ -70,7 +70,7 @@ output_activation: linear
 # ----> General settings <----
 
 # Number of cell states of the LSTM
-hidden_size: 420
+hidden_size: 256
 
 # Initial bias value of the forget gate
 initial_forget_bias: 6

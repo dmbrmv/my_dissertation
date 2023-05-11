@@ -26,6 +26,7 @@ def file_checker(file_path: str,
 
 
 def file_rewriter(q_pathes: list,
+                  area_index,
                   ts_dir: Path,
                   hydro_target: str,
                   meteo_predictors: list,
@@ -37,6 +38,8 @@ def file_rewriter(q_pathes: list,
         gauge_id = file.split('/')[-1][:-3]
 
         if gauge_id in really_bad_gauges:
+            pass
+        elif gauge_id not in area_index:
             pass
         else:
             cond = file_checker(file_path=file,

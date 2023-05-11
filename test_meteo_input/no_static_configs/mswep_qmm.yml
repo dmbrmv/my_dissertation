@@ -1,7 +1,7 @@
 # --- Experiment configurations --------------------------------------------------------------------
 
 # experiment name, used as folder name
-experiment_name: mswep_qmm
+experiment_name: mswep_qmm_SmallMedium
 
 # place to store run directory (if empty runs are stored in code_dir/runs/)
 run_dir: ./runs_no_static
@@ -177,8 +177,8 @@ forcings:
 #   1H:
 #     - total_precipitation_nldas_hourly
 dynamic_inputs:
-- t_max_e5
-- t_min_e5
+- t_max_e5l
+- t_min_e5l
 - prcp_mswep
 
 # which columns to use as target
