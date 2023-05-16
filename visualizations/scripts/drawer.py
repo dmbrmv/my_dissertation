@@ -89,6 +89,17 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
         xlbl = [str(col)[1:-1].replace(', ', '-')
                 for col in hist_df.columns]
 
+        def str_to_float(x):
+            return list(map(float, x.split('-')))
+
+        def round_1_digit(x):
+            return str(round(x, 1))
+
+        def str_joiner(x):
+            return '-'.join(x)
+        xlbl = [str_joiner([round_1_digit(y)
+                            for y in str_to_float(x)]) for x in xlbl]
+
         extra_hist.set_xticklabels(xlbl)
 
         plt.setp(ax_hist.get_xticklabels(),
