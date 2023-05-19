@@ -1,6 +1,8 @@
 import geopandas as gpd
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
+from matplotlib import cm
+import matplotlib as mpl
 import pandas as pd
 plt.rcParams["font.family"] = "Times New Roman"
 
@@ -10,12 +12,14 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
                  distinction_col: str,
                  title_text: str = '',
                  rus_extent: list = [50, 140, 32, 90],
-                 list_of_limits: list = [0.00, 0.25, 0.50, 0.70, 0.90],
-                 cmap: str = 'RdYlGn',
+                 list_of_limits: list = [0.0, 0.3, 0.5, 0.7, 1.0],
+                 cmap_name: str = 'RdYlGn',
                  metric_col: str = '',
                  figsize: tuple = (4.88189, 3.34646),
                  just_points: bool = False,
-                 with_histogram: bool = False):
+                 with_histogram: bool = False,
+                 ugms: bool = False,
+                 ugms_gdf: gpd.GeoDataFrame = gpd.GeoDataFrame()):
     # RUSSIA
     aea_crs = ccrs.AlbersEqualArea(central_longitude=100,
                                    standard_parallels=(50, 70),
@@ -27,15 +31,17 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
 
     fig, ax = plt.subplots(figsize=figsize,
                            subplot_kw={'projection': aea_crs})
+    cmap = cm.get_cmap(cmap_name, 5)
+    norm_cmap = mpl.colors.Normalize(vmin=0, vmax=1)
 
     # plot settings
     ax.set_aspect('equal')
     ax.axis('off')
     ax.set_extent(rus_extent)  # type: ignore
-
-    # plot russia basemap
-    basemap_data.to_crs(aea_crs_proj4).plot(  # type: ignore
-        ax=ax, color='grey', edgecolor='black', legend=False)
+    if not ugms:
+        # plot russia basemap
+        basemap_data.to_crs(aea_crs_proj4).plot(  # type: ignore
+            ax=ax, color='grey', edgecolor='black', legend=False, alpha=0.8)
     gdf_to_plot = gdf_to_plot.to_crs(aea_crs_proj4)  # type: ignore
     # plot variable
     if just_points:
@@ -43,26 +49,40 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
             ax=ax,
             column=distinction_col,
             cmap=cmap,
-            marker='o', markersize=3,
+            marker='o', markersize=1,
             legend=True,
-            legend_kwds={'loc': "lower left",
-                         'fontsize': 8})
+            legend_kwds={"loc": "lower left",
+                         "fmt": "{:.0f}", 'fontsize': 6})
+
     else:
+        if ugms:
+            ugms_gdf.to_crs(aea_crs_proj4).plot(
+                ax=ax,
+                column=metric_col,
+                cmap=cmap, norm=norm_cmap,
+                legend=False,
+                edgecolor='black', linewidth=0.6)
         scatter_plot = gdf_to_plot.plot(
             ax=ax,
             column=metric_col,
-            cmap=cmap,
+            cmap=cmap, norm=norm_cmap,
             marker='o', markersize=3,
+            edgecolor='black', linewidth=0.2,
             legend=True,
             legend_kwds={'orientation': 'horizontal',
-                         'shrink': 0.3,
-                         'pad': -0.065,
-                         'values': list_of_limits,
-                         'ticks': [i for i in list_of_limits],
+                         'shrink': 0.4,
+                         'pad': -0.075,
+                         'anchor': (0.6, 0.5),
+                         #  'values': list_of_limits,
+                         #  'ticks': [i for i in list_of_limits],
                          'drawedges': True})
+
     my_fig = scatter_plot.figure
-    cb_ax = my_fig.axes[1]
-    cb_ax.tick_params(labelsize=6)
+    if not just_points:
+        cb_ax = my_fig.axes[1]
+        cb_ax.tick_params(labelsize=6)
+        # cb_ax.set_xticklabels([f'{i}-{round(i+0.2, 2)}'
+        #                        for i in list_of_limits])
     if with_histogram:
         # list_of_limits_hist = [0, 250, 500, 1000, 2000]
         hist_df = pd.crosstab(gdf_to_plot[metric_col],  # type: ignore

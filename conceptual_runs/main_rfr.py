@@ -1,12 +1,12 @@
 import glob
 import pandas as pd
-pd.options.mode.chained_assignment = None
 import joblib
 from copy import deepcopy
 from scripts.data_readers import read_gauge, nse, feature_target
 from pathlib import Path
 from sklearn.ensemble import RandomForestRegressor
 from tqdm import tqdm
+pd.options.mode.chained_assignment = None
 
 calibration_place = Path('./cal_res')
 rfr_calibration = Path(f'{calibration_place}/rfr')

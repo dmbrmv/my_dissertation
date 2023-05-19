@@ -9,8 +9,8 @@ from pathlib import Path
 
 def nse(predictions, targets):
     return 1-(
-        np.sum((targets-predictions)**2)/np.sum(
-            (targets-np.mean(targets))**2))
+        np.nansum((targets-predictions)**2)/np.nansum(
+            (targets-np.nanmean(targets))**2))
 
 
 def read_gauge(gauge_id: str,
@@ -18,7 +18,7 @@ def read_gauge(gauge_id: str,
 
     test_df = xr.open_dataset(
         f'../geo_data/great_db/nc_all_q/{gauge_id}.nc').to_dataframe(
-            )[['q_mm_day', 'prcp_e5l', 't_min_e5l', 't_max_e5l', 'Ep']]
+    )[['q_mm_day', 'prcp_e5l', 't_min_e5l', 't_max_e5l', 'Ep']]
 
     if simple:
         test_df.index.name = 'Date'
