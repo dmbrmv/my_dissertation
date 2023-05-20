@@ -8,7 +8,6 @@ from scripts.model_eval import nnse, pred_res_builder
 import glob
 import geopandas as gpd
 import pandas as pd
-from tqdm import tqdm
 
 import torch
 torch.set_float32_matmul_precision('medium')
@@ -131,7 +130,6 @@ for nc_file in glob.glob('../geo_data/great_db/nc_all_q/*.nc'):
             by_gauge_res.append(resdf)
         except Exception as e:
             with open('error_file.txt', 'a') as f:
-                f.write(''.join(f'{e} -- for gauge {gauge_id}'))
+                f.write(''.join(f'{e} -- for gauge {gauge_id}\n'))
 by_gauge_res = pd.concat(by_gauge_res)
 by_gauge_res.to_csv('./result/tft_by_gauge.csv', index=False)
-
