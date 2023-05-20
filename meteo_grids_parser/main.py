@@ -32,10 +32,11 @@ ds_description = {**grid_descriptor(dataset_name='era5_land',
                                     files=gleam),
                   **grid_descriptor(dataset_name='mswep',
                                     half_resolution=0.05,
-                                    files=mswep),
-                  **grid_descriptor(dataset_name='icon',
-                                    half_resolution=0.0625,
-                                    files=icon)}
+                                    files=mswep)}
+#   **grid_descriptor(dataset_name='icon',
+#                     half_resolution=0.0625,
+#                     files=icon)
+
 
 place_to_save = '../geo_data/meteo_grids'
 
