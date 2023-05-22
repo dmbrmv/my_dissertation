@@ -5,6 +5,7 @@ from pytorch_forecasting import TemporalFusionTransformer
 import torch
 import pandas as pd
 import numpy as np
+from pathlib import Path
 import matplotlib.pyplot as plt
 
 
@@ -29,12 +30,16 @@ def nse(pred, target):
 
 def pred_res_builder(gauge_id: str,
                      hydro_target: str,
+                     res_storage: str,
                      meteo_input: list, static_parameters: list,
                      model_checkpoint: str,
                      val_df: pd.Series,
                      scaler: MinMaxScaler,
                      val_ts_ds: TimeSeriesDataSet,
                      with_plot: bool = False):
+
+    p = Path(f'{res_storage}')
+    p.mkdir(exist_ok=True, parents=True)
     best_tft = TemporalFusionTransformer.load_from_checkpoint(model_checkpoint)
     raw_prediction, _, idx, _, _ = best_tft.predict(
         val_ts_ds.filter(lambda x: x.gauge_id == gauge_id),
@@ -81,6 +86,7 @@ def pred_res_builder(gauge_id: str,
     compare_res['q_mm_day'] = with_obs[hydro_target]
     compare_res['q_mm_day_pred'] = with_pred['q_mm_day_pred']
     compare_res = compare_res.set_index('date')
+    compare_res.to_csv(f'{p}/{gauge_id}.csv')
 
     # get nse
     pred_nse = nse(pred=compare_res['q_mm_day_pred'],
@@ -99,7 +105,7 @@ def pred_res_builder(gauge_id: str,
         decoder_params=meteo_input)
 
     res_df = pd.DataFrame(data={var: val for var, val in
-                                zip(['gauge', 'NSE',
+                                zip(['gauge_id', 'NSE',
                                      'day', 'static', 'encoder', 'decoder'],
                                     [gauge_id, pred_nse,
                                      attnt, static, enc, dec])},

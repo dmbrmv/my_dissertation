@@ -1,5 +1,5 @@
-from calibration.calibrator import calibrate_gauge
-from hydro_models import hbv, gr4j_cema_neige
+from conceptual_runs.calibration.calibrator import calibrate_gauge
+from conceptual_runs.hydro_models import hbv, gr4j_cema_neige
 import xarray as xr
 import pandas as pd
 import numpy as np
@@ -44,11 +44,13 @@ def get_params(model_name: str,
                gauge_id: str,
                train: pd.DataFrame,
                test: pd.DataFrame,
+               calibrate: bool = False,
                with_plot: bool = False):
-    calibrate_gauge(df=train, hydro_models=[model_name],
-                    res_calibrate=f'{params_path}/{gauge_id}',
-                    # xD
-                    iterations=600)
+    if calibrate:
+        calibrate_gauge(df=train, hydro_models=[model_name],
+                        res_calibrate=f'{params_path}/{gauge_id}',
+                        # xD
+                        iterations=600)
 
     lines = open(f'{params_path}/{gauge_id}', 'r').read().splitlines()
     params = eval(lines[3].split(':')[1])[0]
@@ -62,7 +64,7 @@ def get_params(model_name: str,
         test[['Q_sim', 'Q_mm']].plot()
         plt.title(f'Normalized NSE -- {res_nse}')
 
-    return res_nse
+    return res_nse, test
 
 
 def day_agg(df: pd.DataFrame,

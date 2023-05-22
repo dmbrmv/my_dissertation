@@ -1,0 +1,38 @@
+# data manipulation
+pandas
+h5py
+numba
+xarray==0.21.1
+dask
+netCDF4
+bottleneck
+spotpy
+# geometry packages
+shapely
+geopandas
+descartes
+pyepsg
+cartopy
+rtree
+# machine learning
+tensorboard
+torch_tb_profiler
+scikit-learn
+scipy
+catboost
+shap
+pytorch-forecasting
+neuralhydrology==1.5
+# cute jupyter
+jupyter
+ipywidgets==7.
+autopep8
+pep8
+ipykernel
+flake8
+pyflakes
+# visualisation
+seaborn
+matplotlib
+bokeh
+yellowbrick
