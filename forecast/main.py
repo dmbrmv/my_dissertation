@@ -1,4 +1,5 @@
-from scripts.tft_data import open_for_tft, train_val_split, nnse
+from scripts.tft_data import open_for_tft, train_val_split
+from scripts.model_eval import nnse
 
 import glob
 import geopandas as gpd
@@ -37,7 +38,9 @@ file = open_for_tft(
     meteo_predictors=meteo_input,
     hydro_target=hydro_target)
 
-train_ds, train_loader, val_ds, val_loader = train_val_split(file)
+(train_ds, train_loader,
+ val_ds, val_loader, val_df,
+ scaler) = train_val_split(file)
 
 
 # configure network and trainer
@@ -45,7 +48,7 @@ early_stop_callback = EarlyStopping(monitor="val_loss",
                                     min_delta=1e-3, patience=6, verbose=True,
                                     mode="min")
 lr_logger = LearningRateMonitor()  # log the learning rate
-logger = TensorBoardLogger("TFT_914")  # logging results to a tensorboard
+logger = TensorBoardLogger("single_gauge")  # logging results to a tensorboard
 
 if device == 'cuda':
     accel = 'gpu'

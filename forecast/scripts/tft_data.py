@@ -143,22 +143,11 @@ def train_val_split(big_df: pd.DataFrame,
 
     train_dataloader = train_ds.to_dataloader(train=True,
                                               batch_size=batch_size,
-                                              num_workers=8)
+                                              num_workers=16)
     val_dataloader = val_ds.to_dataloader(train=False,
                                           batch_size=batch_size,
-                                          num_workers=8)
+                                          num_workers=16)
 
-    return train_ds, train_dataloader, val_ds, val_dataloader
-
-
-class nnse(MultiHorizonMetric):
-
-    def loss(self, pred, target):
-
-        pred = self.to_prediction(pred)
-        denom = torch.sum((target-pred)**2)
-        divsr = torch.sum((target - torch.mean(target)**2))
-        nse = 1 - torch.div(denom, divsr)
-        nnse = 1 / (2 - nse)
-
-        return nnse
+    return (train_ds, train_dataloader,
+            val_ds, val_dataloader, val_df,
+            scaler)

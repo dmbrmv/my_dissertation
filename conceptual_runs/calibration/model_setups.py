@@ -3,11 +3,11 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from spotpy.parameter import Uniform
-from spotpy.objectivefunctions import rmse
+# from spotpy.parameter import Uniform
+# from spotpy.objectivefunctions import rmse
 import os
 
-from hydro_models import hbv, gr4j_cema_neige
+from conceptual_runs.hydro_models import hbv, gr4j_cema_neige
 
 input_df_name = 'calibration_data_Goreluha_1975_2009.csv'
 

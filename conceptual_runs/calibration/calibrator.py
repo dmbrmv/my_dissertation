@@ -1,6 +1,6 @@
 from .model_setups import gr4j_setup, hbv_setup
-import spotpy
-from spotpy.objectivefunctions import nashsutcliffe
+# import spotpy
+# from spotpy.objectivefunctions import nashsutcliffe
 
 models_dict = {
     "hbv": hbv_setup,
