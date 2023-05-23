@@ -53,12 +53,12 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
             ax=ax,
             column=distinction_col,
             cmap=cmap,
-            marker='o', markersize=6,
+            marker='o', markersize=8,
             legend=True,
             legend_kwds={'ncol': 4,
-                         "loc": "lower left",
-                         "fmt": "{:.0f}", 'fontsize': 6,
-                         'markerscale': 0.3})
+                         "loc": "lower center",
+                         "fmt": "{:.0f}", 'fontsize': 10,
+                         'markerscale': 0.5, 'frameon': False})
     else:
         if ugms:
             ugms_gdf.to_crs(aea_crs_proj4).plot(
@@ -66,26 +66,25 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
                 column=metric_col,
                 cmap=cmap, norm=norm_cmap,
                 legend=False,
-                edgecolor='black', linewidth=0.6)
+                edgecolor='black', linewidth=0.6,
+                missing_kwds={'color': '#DF60DF00'})
         scatter_plot = gdf_to_plot.plot(
             ax=ax,
             column=metric_col,
             cmap=cmap, norm=norm_cmap,
-            marker='o', markersize=3,
+            marker='o', markersize=8,
             edgecolor='black', linewidth=0.2,
             legend=True,
             legend_kwds={'orientation': 'horizontal',
-                         'shrink': 0.4,
+                         'shrink': 0.35,
                          'pad': -0.075,
                          'anchor': (0.6, 0.5),
-                         #   'values': list_of_limits,
-                         #  'ticks': [i for i in ['1', '2', '3', '4']],
                          'drawedges': True})
 
     my_fig = scatter_plot.figure
     if not just_points:
         cb_ax = my_fig.axes[1]
-        cb_ax.tick_params(labelsize=6)
+        cb_ax.tick_params(labelsize=8)
         cb_ax.xaxis.set_major_locator(
             mticker.FixedLocator([i+1.5 for i in list_of_limits]))
         cb_ax.set_xticklabels([f'{i+1}'
@@ -110,7 +109,7 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
                                                   edgecolor='black',
                                                   lw=1)
         extra_hist.set_facecolor('white')
-        
+
         extra_hist.set_xlabel(f'{metric_col}',
                               fontdict={'fontsize': 8}, loc='right')
 
@@ -132,12 +131,12 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
         extra_hist.tick_params(width=1)
 
         plt.setp(ax_hist.get_xticklabels(),
-                 fontsize=6)
+                 fontsize=8)
         plt.setp(ax_hist.get_yticklabels(),
-                 fontsize=6)
+                 fontsize=8)
 
     plt.title(f'{title_text}',
-              fontdict={'size': 9})
+              fontdict={'size': 12})
 
     return fig
 
@@ -145,6 +144,7 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
 def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
                    basemap_data: gpd.GeoDataFrame,
                    columns_from_gdf: list,
+                   label_list: list,
                    nrows: int,
                    ncols: int,
                    title_text: list = [''],
@@ -195,7 +195,7 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
                 marker='o', markersize=1,
                 legend=True,
                 legend_kwds={"loc": "lower left",
-                             "fmt": "{:.0f}", 'fontsize': 6})
+                             "fmt": "{:.0f}", 'fontsize': 8})
 
         else:
             if ugms:
@@ -204,7 +204,8 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
                     column=columns_from_gdf[i],
                     cmap=cmap, norm=norm_cmap,
                     legend=False,
-                    edgecolor='black', linewidth=0.6)
+                    edgecolor='black', linewidth=0.6,
+                    missing_kwds={'color': '#DF60DF00'})
             scatter_plot = gdf_to_plot.plot(
                 ax=ax,
                 column=columns_from_gdf[i],
@@ -217,10 +218,11 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
                              'pad': -0.05,
                              'anchor': (0.6, 0.5),
                              'drawedges': True})
-
+        ax.text(0, 1, label_list[i], ha='left', va='top',
+                transform=ax.transAxes, fontsize=12)
         my_fig = scatter_plot.figure
         cb_ax = my_fig.axes[nrows*ncols+i]
-        cb_ax.tick_params(labelsize=6)
+        cb_ax.tick_params(labelsize=8)
 
         if with_histogram:
             hist_df = pd.crosstab(
@@ -262,9 +264,9 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
             plt.setp(ax_hist.get_xticklabels(),
                      fontsize=6)
             plt.setp(ax_hist.get_yticklabels(),
-                     fontsize=6)
+                     fontsize=8)
         ax.set_title(f'{title_text[i]}',
-                     fontdict={'size': 9})
+                     fontdict={'size': 12})
         plt.tight_layout()
 
     return fig

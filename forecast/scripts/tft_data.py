@@ -3,36 +3,17 @@ from tqdm.notebook import tqdm
 import xarray as xr
 from pytorch_forecasting import TimeSeriesDataSet
 from sklearn.preprocessing import MinMaxScaler
-from pytorch_forecasting.metrics.base_metrics import MultiHorizonMetric
-import torch
-
-really_bad_gauges = ['48011', '72004', '12614', '12305', '4036', '4226',
-                     '5190', '10357', '80174', '10549', '9344', '10688',
-                     '84448', '74425', '78507', '84803', '8256', '8359',
-                     '5607', '84108', '72246', '8139', '10539', '75527',
-                     '4197', '78343', '75428', '84200', '19383', '78225',
-                     '84213', '19135', '12354', '9331', '72518', '4068',
-                     '84398', '2164', '5613', '77362', '8120', '4012',
-                     '5352', '84043', '84453', '8281', '48008', '83260',
-                     '78501', '84119', '76145', '10058', '84245', '4235',
-                     '84295', '75780', '72450', '5199', '9309', '48056',
-                     '75110', '4240', '77164', '84019', '4005', '5611',
-                     '84157', '842000', '49128', '9546', '5604', '76325',
-                     '9511', '10060', '49095', '84315', '72198', '77327',
-                     '78620', '78163', '84185', '76644', '9345', '7171',
-                     '4071', '84400', '19111', '19008', '6563', '75271',
-                     '76470', '70129', '72744', '9355', '11327', '70102',
-                     '11374', '75222', '19167', '75387', '78261',
-                     '10584', '78499', '84354', '10548', '11675']
 
 
 def file_checker(file_path: str,
                  meteo_predictors: list,
                  hydro_target: str):
-    condition = xr.open_dataset(
+    nan_vals = xr.open_dataset(
         file_path).to_dataframe()[
             [hydro_target,
-             *meteo_predictors]].isna().sum().sum() != 0
+             *meteo_predictors]].isna().sum().sum()
+
+    condition = nan_vals != 0
 
     return condition
 
@@ -42,6 +23,7 @@ def open_for_tft(nc_files: list,
                  meteo_predictors: list,
                  area_index,
                  hydro_target: str,
+                 allow_nan: bool = False,
                  index_col: str = 'gauge_id') -> pd.DataFrame:
 
     static_attributes = pd.read_csv(static_path,
@@ -51,32 +33,31 @@ def open_for_tft(nc_files: list,
     res_file = list()
     for file_path in tqdm(nc_files):
         gauge_id = file_path.split('/')[-1][:-3]
-        if gauge_id in really_bad_gauges:
-            pass
-        else:
-            try:
-                gauge_static = static_attributes.loc[[gauge_id], :]
-            except KeyError:
-                print(f'No data for {gauge_id} !')
-                continue
-            cond = file_checker(file_path=file_path,
-                                meteo_predictors=meteo_predictors,
-                                hydro_target=hydro_target)
+
+        try:
+            gauge_static = static_attributes.loc[[gauge_id], :]
+        except KeyError:
+            print(f'No data for {gauge_id} !')
+            continue
+        cond = file_checker(file_path=file_path,
+                            meteo_predictors=meteo_predictors,
+                            hydro_target=hydro_target)
+        print(cond)
+        if not allow_nan:
             if cond:
                 continue
-            elif gauge_id not in area_index:
-                pass
-            else:
-                file = xr.open_dataset(file_path)
-                file = file.to_dataframe()
-                # file['date'] = file.index
-                file = file.reset_index()
-                file['time_idx'] = file.index
+        elif gauge_id not in area_index:
+            pass
+        else:
+            file = xr.open_dataset(file_path)
+            file = file.to_dataframe()
+            # file['date'] = file.index
+            file = file.reset_index()
+            file['time_idx'] = file.index
+            for col in gauge_static.columns:
+                file[col] = gauge_static.loc[gauge_id, col]
 
-                for col in gauge_static.columns:
-                    file[col] = gauge_static.loc[gauge_id, col]
-
-                res_file.append(file)
+            res_file.append(file)
 
     file = pd.concat(res_file, axis=0)
     file = file.reset_index(drop=True)
@@ -102,8 +83,9 @@ def train_val_split(big_df: pd.DataFrame,
                     prediction_length: int = 7,
                     train_end: str = '2017-12-31',
                     train_start: str = '2008-01-01',
-                    batch_size: int = 256):
-
+                    batch_size: int = 256, require_train: bool = True):
+    if 'index' in big_df.columns:
+        big_df = big_df.rename(columns={'index': 'date'})
     big_df = big_df[['date', 'time_idx', 'gauge_id',
                      hydro_target, *meteo_input, *static_parameters]]
     big_df = big_df.dropna().reset_index(drop=True)
@@ -128,6 +110,7 @@ def train_val_split(big_df: pd.DataFrame,
 
     train_ds = TimeSeriesDataSet(
         data=train_df,
+        allow_missing_timesteps=True,
         time_idx="time_idx",
         target=hydro_target,
         group_ids=["gauge_id"],

@@ -36,3 +36,4 @@ seaborn
 matplotlib
 bokeh
 yellowbrick
+kaleido
