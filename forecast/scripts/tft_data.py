@@ -31,7 +31,7 @@ def open_for_tft(nc_files: list,
     static_attributes.index = static_attributes.index.astype(str)
 
     res_file = list()
-    for file_path in tqdm(nc_files):
+    for file_path in (nc_files):
         gauge_id = file_path.split('/')[-1][:-3]
 
         try:
@@ -42,22 +42,20 @@ def open_for_tft(nc_files: list,
         cond = file_checker(file_path=file_path,
                             meteo_predictors=meteo_predictors,
                             hydro_target=hydro_target)
-        print(cond)
         if not allow_nan:
             if cond:
                 continue
-        elif gauge_id not in area_index:
-            pass
-        else:
-            file = xr.open_dataset(file_path)
-            file = file.to_dataframe()
-            # file['date'] = file.index
-            file = file.reset_index()
-            file['time_idx'] = file.index
-            for col in gauge_static.columns:
-                file[col] = gauge_static.loc[gauge_id, col]
+        if gauge_id not in area_index:
+            continue
+        file = xr.open_dataset(file_path)
+        file = file.to_dataframe()
+        # file['date'] = file.index
+        file = file.reset_index()
+        file['time_idx'] = file.index
+        for col in gauge_static.columns:
+            file[col] = gauge_static.loc[gauge_id, col]
 
-            res_file.append(file)
+        res_file.append(file)
 
     file = pd.concat(res_file, axis=0)
     file = file.reset_index(drop=True)

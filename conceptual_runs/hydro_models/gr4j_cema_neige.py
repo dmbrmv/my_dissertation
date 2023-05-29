@@ -254,6 +254,6 @@ def bounds():
     X7 : temperature which separates rain and snow fraction of precipitation
         [-1.5, 2.5]
     '''
-    bnds = ((0, 1500), (-10, 5), (0, 500),
-            (0.5, 4.0), (0, 1), (1, 10), (-1.5, 2.5))
+    bnds = ((0, 3000), (-10, 10), (0, 1000),
+            (0, 20), (0, 1), (1, 10), (-1.5, 2.5))
     return bnds

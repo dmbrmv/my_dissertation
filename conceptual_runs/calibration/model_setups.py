@@ -3,13 +3,11 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-# from spotpy.parameter import Uniform
-# from spotpy.objectivefunctions import rmse
+from spotpy.parameter import Uniform
+from spotpy.objectivefunctions import rmse
 import os
 
 from conceptual_runs.hydro_models import hbv, gr4j_cema_neige
-
-input_df_name = 'calibration_data_Goreluha_1975_2009.csv'
 
 
 class gr4j_setup(object):
@@ -38,13 +36,13 @@ class gr4j_setup(object):
         snow fraction of precipitation
             [-1.5, 2.5]
     '''
-    x1 = Uniform(low=0., high=1500.)
-    x2 = Uniform(low=-10., high=5.)
-    x3 = Uniform(low=1., high=500.)
-    x4 = Uniform(low=0.5, high=4.0)
-    x5 = Uniform(low=0., high=0., optguess=0.0)
-    x6 = Uniform(low=1.9, high=1.9, optguess=1.9)
-    x7 = Uniform(low=0.55, high=0.55, optguess=0.55)
+    x1 = Uniform(low=0., high=3000.)
+    x2 = Uniform(low=-10., high=10.)
+    x3 = Uniform(low=0., high=1000.)
+    x4 = Uniform(low=0, high=20)
+    x5 = Uniform(low=0., high=1., optguess=0.0)
+    x6 = Uniform(low=1., high=10., optguess=1.9)
+    x7 = Uniform(low=-1.5, high=2.5, optguess=0.55)
 
     def __init__(self, data, obj_func=None):
         self.Name = 'GR4J'
@@ -136,23 +134,19 @@ class hbv_setup(object):
     '''
     BETA = Uniform(low=1.0, high=6.0)
     CET = Uniform(low=0., high=0.3)
-    FC = Uniform(low=30., high=500., optguess=30.)
-    K0 = Uniform(low=0.01, high=0.4)
-    K1 = Uniform(low=0.01, high=0.4)
+    FC = Uniform(low=50., high=700., optguess=50.)
+    K0 = Uniform(low=0.05, high=0.99)
+    K1 = Uniform(low=0.01, high=0.8)
     K2 = Uniform(low=0.001, high=0.15)
     LP = Uniform(low=0.3, high=1.)
-    MAXBAS = Uniform(low=2., high=7.)
-    PERC = Uniform(low=0., high=3.)
-    UZL = Uniform(low=0., high=250.)
+    MAXBAS = Uniform(low=1., high=3.)
+    PERC = Uniform(low=0., high=6.)
+    UZL = Uniform(low=0., high=100.)
     PCORR = Uniform(low=0.5, high=2.)
-    TT = Uniform(low=0.55, high=0.55, optguess=0.55)
-    # TT = Uniform(low=-1.5, high=2.5)
-    CFMAX = Uniform(low=1, high=1, optguess=1)
-    # CFMAX = Uniform(low=1., high=10.)
-    SFCF = Uniform(low=1., high=1., optguess=1)
-    # SFCF = Uniform(low=0.4, high=1.)
-    CFR = Uniform(low=0.05, high=0.05, optguess=0.05)
-    # CFR = Uniform(low=0., high=0.1, optguess=0.05)
+    TT = Uniform(low=-2.5, high=2.5, optguess=0.55)
+    CFMAX = Uniform(low=0.5, high=5., optguess=1.)
+    SFCF = Uniform(low=1., high=1.5, optguess=1.)
+    CFR = Uniform(low=0., high=0.01, optguess=0.005)
     CWH = Uniform(low=0., high=0.2, optguess=0.1)
 
     def __init__(self, data, obj_func=None):

@@ -1,6 +1,6 @@
 from .model_setups import gr4j_setup, hbv_setup
-# import spotpy
-# from spotpy.objectivefunctions import nashsutcliffe
+import spotpy
+from spotpy.objectivefunctions import nashsutcliffe, rmse
 
 models_dict = {
     "hbv": hbv_setup,
@@ -11,7 +11,7 @@ models_dict = {
 def calibrate_gauge(df,
                     res_calibrate: str,
                     hydro_models=['hbv', 'gr4j'],
-                    iterations=2400):
+                    iterations=600):
 
     for model in hydro_models:
         print(f"\n--------------\nCurrent model {model}\n--------------\n")

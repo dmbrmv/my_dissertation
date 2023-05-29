@@ -32,6 +32,8 @@ def read_gauge(gauge_id: str,
                                           'q_mm_day': 'Q_mm'})
         test_df.index.name = 'Date'
         test_df = test_df.drop(['t_min_e5l', 't_max_e5l'], axis=1)
+        test_df.loc[test_df['Evap'] < 0, 'Evap'] = 0
+        # test_df['Evap'] *= 1e1
 
         train = test_df[:'2018']
         test = test_df['2018':]
@@ -62,7 +64,8 @@ def get_params(model_name: str,
     res_nse = nse(predictions=test['Q_sim'], targets=test['Q_mm'])
     if with_plot:
         test[['Q_sim', 'Q_mm']].plot()
-        plt.title(f'Normalized NSE -- {res_nse}')
+        plt.title(f'NSE -- {res_nse}')
+        plt.show()
 
     return res_nse, test
 
