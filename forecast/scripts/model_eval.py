@@ -111,15 +111,18 @@ def pred_res_builder(gauge_id: str,
     #                                  attnt, static, enc, dec])},
     #                       index=[0])
     res_df = pd.DataFrame(data={var: val for var, val in
-                                zip(['gauge_id', 'NSE',
-                                     'day', 'encoder', 'decoder'],
-                                    [gauge_id, pred_nse,
-                                    attnt, enc, dec])},
+                                zip(['gauge_id', 'NSE', 'encoder', 'decoder'],
+                                    [gauge_id, pred_nse, enc, dec])},
                           index=[0])
     static *= 100
     static['gauge_id'] = gauge_id
     static = static.set_index('gauge_id', drop=True)
-    return res_df, interpretation, static
+
+    attnt_df = pd.DataFrame(attnt.reshape(1, 365), index=[0])
+    attnt_df['gauge_id'] = gauge_id
+    attnt_df = attnt_df.set_index('gauge_id', drop=True)
+
+    return res_df, interpretation, static, attnt_df
 
 
 def interpretation_for_gauge(interp_dict: dict,
@@ -142,8 +145,8 @@ def interpretation_for_gauge(interp_dict: dict,
         return interp
 
     # find most informative days
-    _, indices = interp_dict['attention'].sort(descending=True)
-    indices = indices[0]+1
+    _, attnt = interp_dict['attention'].sort(descending=True)
+    attnt += 1
     # get most valuable static parameters
     static_worth = interp_df(interp_tensor=interp_dict['static_variables'],
                              df_columns=static_parameters)
@@ -163,4 +166,4 @@ def interpretation_for_gauge(interp_dict: dict,
     dec_col, _ = (decoder_worth.idxmax(axis=1)[0],
                   decoder_worth.max(axis=1)[0])
 
-    return int(indices), static_worth, enc_col, dec_col
+    return attnt.cpu(), static_worth, enc_col, dec_col

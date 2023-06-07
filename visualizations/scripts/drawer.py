@@ -40,7 +40,7 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
         vmin, vmax = cmap_lims
         norm_cmap = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
     else:
-        cmap = cm.get_cmap(cmap_name)
+        cmap = cm.get_cmap(cmap_name, 18)
     # plot settings
     ax.set_aspect('equal')
     ax.axis('off')
@@ -56,11 +56,11 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
             ax=ax,
             column=distinction_col,
             cmap=cmap,
-            marker='o', markersize=8,
+            marker='o', markersize=24,
             legend=True,
             legend_kwds={'ncol': 4,
-                         "loc": "lower right",
-                         "fmt": "{:.0f}", 'fontsize': 12,
+                         "loc": "lower center",
+                         "fmt": "{:.0f}", 'fontsize': 14,
                          'markerscale': 0.5, 'frameon': True})
     else:
         if ugms:
@@ -75,7 +75,7 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
             ax=ax,
             column=metric_col,
             cmap=cmap, norm=norm_cmap,
-            marker='o', markersize=8,
+            marker='o', markersize=24,
             edgecolor='black', linewidth=0.2,
             legend=True,
             legend_kwds={'orientation': 'horizontal',
@@ -191,6 +191,12 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
     for i, ax in enumerate(np.ravel(axs)):
         cmap = cm.get_cmap(cmap_name, 8)
         vmin, vmax = cmap_lims
+        # [-100, -75, -50, -25, 0, 25, 50, 75, 100]
+        # [0.0, 0.50, 0.70, 0.80, 1.00]
+        # bounds = [-100, -75, -50, -25, 0, 25, 50, 75, 100]
+
+        # norm_cmap = mpl.colors.BoundaryNorm([0.0, 0.50, 0.70, 0.80, 1.00],
+        #                                     4)
         norm_cmap = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
         if i >= len(columns_from_gdf):
             ax.set_visible(False)
@@ -229,7 +235,7 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
                 ax=ax,
                 column=columns_from_gdf[i],
                 cmap=cmap, norm=norm_cmap,
-                marker='o', markersize=12,
+                marker='o', markersize=16,
                 edgecolor='black', linewidth=0.2,
                 legend=True,
                 legend_kwds={'orientation': 'horizontal',
@@ -243,13 +249,15 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
         if not just_points:
             cb_ax = my_fig.axes[nrows*ncols+i]
             cb_ax.tick_params(labelsize=10)
-
+            # [-100, -75, -50, -25, 0,
+            # 25, 50, 75, 100]
+            # [0.00, 0.25, .50, .75, 1.00]
             cb_ax.xaxis.set_major_locator(
                 mticker.FixedLocator([i for i
-                                      in [-100, -75, -50, -25, 0.0,
+                                      in [-100, -75, -50, -25, 0,
                                           25, 50, 75, 100]]))
-            cb_ax.set_xticklabels([f'{i}'
-                                   for i in [-100, -75, -50, -25, 0.0,
+            cb_ax.set_xticklabels([f'{i:.0f}'
+                                   for i in [-100, -75, -50, -25, 0,
                                              25, 50, 75, 100]])
 
         if with_histogram:
@@ -271,8 +279,8 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
             extra_hist.bar_label(extra_hist.containers[0], fmt='%.0f')
             extra_hist.set_facecolor('white')
             extra_hist.tick_params(width=1)
-            # extra_hist.set_xlabel(f'{columns_from_gdf[i]}',
-            #                       fontdict={'fontsize': 14}, loc='right')
+            extra_hist.set_xlabel(f'{columns_from_gdf[i]}',
+                                  fontdict={'fontsize': 14}, loc='right')
             extra_hist.grid(False)
             xlbl = [str(col)[1:-1].replace(', ', '-')
                     for col in hist_df.columns]
