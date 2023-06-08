@@ -15,8 +15,6 @@ RUN mkdir /init
 COPY ./requirements.txt /init/requirements.txt
 RUN pip install -r /init/requirements.txt
 
-# RUN echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
-# RUN apt-get install -y ttf-mscorefonts-installer
 RUN rm ~/.cache/matplotlib -rf
 
 RUN zsh

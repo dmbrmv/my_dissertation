@@ -27,11 +27,14 @@
 		"ms-python.flake8"
 	],
 	"runArgs": [
-		"--gpus",
+		// "--gpus",
 		"all",
 		"--ipc=host"
 	],
 	"mounts": [
-		"source=/home/dima/Data/geo_data,target=/workspaces/my_dissertation/geo_data,type=bind,consistency=cached"
+		// server
+		"source=/home/anton/dima_experiments/geo_data,target=/workspaces/my_dissertation/geo_data,type=bind,consistency=cached"
+		// home
+		// "source=/home/dima/Data/geo_data,target=/workspaces/my_dissertation/geo_data,type=bind,consistency=cached"
 	]
 }
