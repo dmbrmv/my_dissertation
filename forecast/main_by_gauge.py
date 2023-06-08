@@ -43,74 +43,98 @@ static_parameters = ['for_pc_sse', 'crp_pc_sse',
 ws_file = gpd.read_file('../geo_data/great_db/geometry/russia_ws.gpkg')
 ws_file = ws_file.set_index('gauge_id')
 ws_file = ws_file[ws_file['new_area'] <= 50000]
+tft_gauges = [f.split('/')[-1][:-4]
+              for f in glob.glob('./single_gauge_8epoch/')]
 
-by_gauge_res = list()
 for nc_file in glob.glob('../geo_data/great_db/nc_all_q/*.nc'):
     gauge_id = nc_file.split('/')[-1][:-3]
-    try:
-        file = open_for_tft(
-            nc_files=[nc_file],
-            static_path='../geo_data/attributes/geo_vector.csv',
-            area_index=ws_file.index,
-            meteo_predictors=meteo_input,
-            hydro_target=hydro_target)
+    if gauge_id in tft_gauges:
+        continue
+    else:
+        try:
+            file = open_for_tft(
+                nc_files=[nc_file],
+                static_path='../geo_data/attributes/geo_vector.csv',
+                area_index=ws_file.index,
+                meteo_predictors=meteo_input,
+                hydro_target=hydro_target, allow_nan=True)
 
-        (train_ds, train_loader,
-            val_ds, val_loader, val_df,
-            scaler) = train_val_split(file)
+            (train_ds, train_loader,
+                val_ds, val_loader, val_df,
+                scaler) = train_val_split(file)
 
-        # configure network and trainer
-        early_stop_callback = EarlyStopping(monitor="val_loss",
-                                            min_delta=1e-3, patience=3,
-                                            verbose=True, mode="min")
-        # log the learning rate
-        lr_logger = LearningRateMonitor()
-        # logging results to a tensorboard
-        logger = TensorBoardLogger(f"./single_gauge/{gauge_id}_tft")
+            # configure network and trainer
+            early_stop_callback = EarlyStopping(monitor="val_loss",
+                                                min_delta=1e-3, patience=3,
+                                                verbose=True, mode="min")
+            # log the learning rate
+            lr_logger = LearningRateMonitor()
+            # logging results to a tensorboard
+            logger = TensorBoardLogger(f"./single_gauge_8epoch/{gauge_id}_tft")
 
-        if device == 'cuda':
-            accel = 'gpu'
-        else:
-            accel = 'cpu'
+            if device == 'cuda':
+                accel = 'gpu'
+            else:
+                accel = 'cpu'
 
-        trainer = pl.Trainer(
-            max_epochs=15,
-            accelerator='auto',
-            enable_model_summary=True,
-            check_val_every_n_epoch=3,
-            gradient_clip_val=0.5,
-            log_every_n_steps=3,
-            callbacks=[lr_logger, early_stop_callback],
-            logger=logger)
+            trainer = pl.Trainer(
+                max_epochs=8,
+                accelerator='auto',
+                enable_model_summary=True,
+                check_val_every_n_epoch=3,
+                gradient_clip_val=0.5,
+                log_every_n_steps=3,
+                callbacks=[lr_logger, early_stop_callback],
+                logger=logger)
 
-        tft = TemporalFusionTransformer.from_dataset(
-            train_ds,
-            learning_rate=1e-3,
-            hidden_size=64,
-            dropout=0.4,
-            loss=nnse(),
-            optimizer='adam')
+            tft = TemporalFusionTransformer.from_dataset(
+                train_ds,
+                learning_rate=1e-3,
+                hidden_size=64,
+                dropout=0.4,
+                loss=nnse(),
+                optimizer='adam')
 
         # print(f"Number of parameters in network: {tft.size()/1e3:.1f}k")
 
-        # fit network
-        trainer.fit(tft,
-                    train_dataloaders=train_loader,
-                    val_dataloaders=val_loader)
-        chkpt = glob.glob(
-            f'./single_gauge/{gauge_id}_tft/*/*/checkpoints/*.ckpt')[0]
-        resdf, _ = pred_res_builder(gauge_id=gauge_id,
-                                    hydro_target=hydro_target,
-                                    meteo_input=meteo_input,
-                                    static_parameters=static_parameters,
-                                    model_checkpoint=chkpt,
-                                    res_storage='./result/tft_single',
-                                    val_df=val_df,
-                                    scaler=scaler,
-                                    val_ts_ds=val_ds, with_plot=False)
-        by_gauge_res.append(resdf)
-    except Exception as e:
-        with open('error_file.txt', 'a') as f:
-            f.write(''.join(f'{e} -- for gauge {gauge_id}\n'))
-by_gauge_res = pd.concat(by_gauge_res)
-by_gauge_res.to_csv('./result/tft_by_gauge.csv', index=False)
+            # fit network
+            trainer.fit(tft,
+                        train_dataloaders=train_loader,
+                        val_dataloaders=val_loader)
+        except Exception as e:
+            with open('error_file.txt', 'a') as f:
+                f.write(''.join(f'{e} -- for gauge {gauge_id}\n'))
+
+# by_gauge_res = list()
+# for nc_file in glob.glob('../geo_data/great_db/nc_all_q/*.nc'):
+#     gauge_id = nc_file.split('/')[-1][:-3]
+#     try:
+#         file = open_for_tft(
+#             nc_files=[nc_file],
+#             static_path='../geo_data/attributes/geo_vector.csv',
+#             area_index=ws_file.index,
+#             meteo_predictors=meteo_input,
+#             hydro_target=hydro_target, allow_nan=True)
+
+#         (_, _,
+#          val_ds, _, val_df,
+#          scaler) = train_val_split(file)
+
+#         chkpt = glob.glob(
+#             f'./single_gauge_8epoch/{gauge_id}_tft/*/*/checkpoints/*.ckpt')[0]
+#         resdf, _ = pred_res_builder(
+#             gauge_id=gauge_id,
+#             hydro_target=hydro_target,
+#             meteo_input=meteo_input,
+#             static_parameters=static_parameters,
+#             model_checkpoint=chkpt,
+#             res_storage='./result/tft_single_8epoch',
+#             val_df=val_df,
+#             scaler=scaler,
+#             val_ts_ds=val_ds, with_plot=False)
+#         by_gauge_res.append(resdf)
+#     except ValueError:
+#         continue
+
+# by_gauge_res = pd.concat(by_gauge_res)
+# by_gauge_res.to_csv('./result/tft_by_gauge_4static.csv', index=False)

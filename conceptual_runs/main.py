@@ -4,9 +4,9 @@ from scripts.data_readers import read_gauge, get_params
 from pathlib import Path
 
 calibration_place = Path('./cal_res')
-hbv_calibration = Path(f'{calibration_place}/hbv')
+hbv_calibration = Path(f'{calibration_place}/hbv_sceua')
 hbv_calibration.mkdir(exist_ok=True, parents=True)
-gr4j_calibration = Path(f'{calibration_place}/gr4j')
+gr4j_calibration = Path(f'{calibration_place}/gr4j_sceua')
 gr4j_calibration.mkdir(exist_ok=True, parents=True)
 
 

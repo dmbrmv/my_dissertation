@@ -46,8 +46,14 @@ data_builders/test_data
 forecast/scripts/data_builders.py
 
 forecast/single_gauge
+forecast/single_gauge_8epoch
 forecast/TFT_914
 forecast/TFT_test_run_2gauges
+
+forecast/result/blind_gauge
+forecast/result/lost_gauge
+forecast/result/tft_single_8epoch
+
 conceptual_runs/cal_res
 conclusions/results
 
