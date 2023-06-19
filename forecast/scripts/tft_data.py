@@ -23,19 +23,25 @@ def open_for_tft(nc_files: list,
                  meteo_predictors: list,
                  area_index,
                  hydro_target: str,
+                 with_static: bool = True,
                  allow_nan: bool = False,
                  index_col: str = 'gauge_id') -> pd.DataFrame:
-
-    static_attributes = pd.read_csv(static_path,
-                                    index_col=index_col)
-    static_attributes.index = static_attributes.index.astype(str)
+    if with_static:
+        static_attributes = pd.read_csv(static_path,
+                                        index_col=index_col)
+        static_attributes.index = static_attributes.index.astype(str)
+    else:
+        static_attributes = None
 
     res_file = list()
     for file_path in (nc_files):
         gauge_id = file_path.split('/')[-1][:-3]
 
         try:
-            gauge_static = static_attributes.loc[[gauge_id], :]
+            if isinstance(static_attributes, pd.DataFrame):
+                gauge_static = static_attributes.loc[[gauge_id], :]
+            else:
+                gauge_static = None
         except KeyError:
             print(f'No data for {gauge_id} !')
             continue
@@ -52,8 +58,10 @@ def open_for_tft(nc_files: list,
         # file['date'] = file.index
         file = file.reset_index()
         file['time_idx'] = file.index
-        for col in gauge_static.columns:
-            file[col] = gauge_static.loc[gauge_id, col]
+
+        if isinstance(gauge_static, pd.DataFrame):
+            for col in gauge_static.columns:
+                file[col] = gauge_static.loc[gauge_id, col]
 
         res_file.append(file)
 
@@ -81,17 +89,28 @@ def train_val_split(big_df: pd.DataFrame,
                     prediction_length: int = 7,
                     train_end: str = '2017-12-31',
                     train_start: str = '2008-01-01',
-                    batch_size: int = 256, require_train: bool = True):
+                    batch_size: int = 256,
+                    with_static: bool = True,
+                    require_train: bool = True):
+
     if 'index' in big_df.columns:
         big_df = big_df.rename(columns={'index': 'date'})
-    big_df = big_df[['date', 'time_idx', 'gauge_id',
-                     hydro_target, *meteo_input, *static_parameters]]
+    if with_static:
+        big_df = big_df[['date', 'time_idx', 'gauge_id',
+                        hydro_target, *meteo_input, *static_parameters]]
+    else:
+        big_df = big_df[['date', 'time_idx', 'gauge_id',
+                         hydro_target, *meteo_input]]
     big_df = big_df.dropna().reset_index(drop=True)
 
     scaler = MinMaxScaler(feature_range=(1, 10))
-    big_df[[hydro_target, *meteo_input,
-            *static_parameters]] = scaler.fit_transform(
-        big_df[[hydro_target, *meteo_input, *static_parameters]])
+    if with_static:
+        big_df[[hydro_target, *meteo_input,
+                *static_parameters]] = scaler.fit_transform(
+            big_df[[hydro_target, *meteo_input, *static_parameters]])
+    else:
+        big_df[[hydro_target, *meteo_input]] = scaler.fit_transform(
+                    big_df[[hydro_target, *meteo_input]])
 
     train_df = big_df[lambda x:
                       (train_start <= x.date) &
@@ -105,19 +124,31 @@ def train_val_split(big_df: pd.DataFrame,
     # set time_idx in according to slice
     # with range from 0 to max for each gauge
     val_df['time_idx'] -= val_df['time_idx'].min()
-
-    train_ds = TimeSeriesDataSet(
-        data=train_df,
-        allow_missing_timesteps=True,
-        time_idx="time_idx",
-        target=hydro_target,
-        group_ids=["gauge_id"],
-        time_varying_unknown_reals=[hydro_target],
-        max_encoder_length=encoder_length,
-        max_prediction_length=prediction_length,
-        static_reals=static_parameters,
-        time_varying_known_reals=meteo_input,
-        scalers={'name': 'None'})
+    if with_static:
+        train_ds = TimeSeriesDataSet(
+            data=train_df,
+            allow_missing_timesteps=True,
+            time_idx="time_idx",
+            target=hydro_target,
+            group_ids=["gauge_id"],
+            time_varying_unknown_reals=[hydro_target],
+            max_encoder_length=encoder_length,
+            max_prediction_length=prediction_length,
+            static_reals=static_parameters,
+            time_varying_known_reals=meteo_input,
+            scalers={'name': 'None'})
+    else:
+        train_ds = TimeSeriesDataSet(
+            data=train_df,
+            allow_missing_timesteps=True,
+            time_idx="time_idx",
+            target=hydro_target,
+            group_ids=["gauge_id"],
+            time_varying_unknown_reals=[hydro_target],
+            max_encoder_length=encoder_length,
+            max_prediction_length=prediction_length,
+            time_varying_known_reals=meteo_input,
+            scalers={'name': 'None'})
 
     val_ds = TimeSeriesDataSet.from_dataset(train_ds,
                                             val_df)

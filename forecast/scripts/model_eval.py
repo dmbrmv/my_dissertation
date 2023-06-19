@@ -36,6 +36,7 @@ def pred_res_builder(gauge_id: str,
                      val_df: pd.Series,
                      scaler: MinMaxScaler,
                      val_ts_ds: TimeSeriesDataSet,
+                     with_static: bool = True,
                      with_plot: bool = False):
 
     p = Path(f'{res_storage}')
@@ -65,22 +66,36 @@ def pred_res_builder(gauge_id: str,
     compare_res = compare_res[[val in idx['time_idx'].values  # type: ignore
                                for val in compare_res['time_idx'].values]]
     compare_res['q_mm_day_pred'] = res
+    if with_static:
+        with_pred = compare_res[['q_mm_day_pred',
+                                *meteo_input, *static_parameters]]
+        with_obs = compare_res[[hydro_target,
+                                *meteo_input, *static_parameters]]
 
-    with_pred = compare_res[['q_mm_day_pred',
-                             *meteo_input, *static_parameters]]
-    with_obs = compare_res[[hydro_target, *meteo_input, *static_parameters]]
+        new_scaler = MinMaxScaler()
 
-    new_scaler = MinMaxScaler()
+        new_scaler.min_, new_scaler.scale_ = scaler.min_, scaler.scale_
 
-    new_scaler.min_, new_scaler.scale_ = scaler.min_, scaler.scale_
+        # recalculate
+        with_pred[['q_mm_day_pred',
+                   *meteo_input,
+                   *static_parameters]] = new_scaler.inverse_transform(with_pred)
+        with_obs[[hydro_target,
+                  *meteo_input,
+                  *static_parameters]] = scaler.inverse_transform(with_obs)
+    else:
+        with_pred = compare_res[['q_mm_day_pred', *meteo_input]]
+        with_obs = compare_res[[hydro_target, *meteo_input]]
 
-    # recalculate
-    with_pred[['q_mm_day_pred',
-               *meteo_input,
-               *static_parameters]] = new_scaler.inverse_transform(with_pred)
-    with_obs[[hydro_target,
-              *meteo_input,
-              *static_parameters]] = scaler.inverse_transform(with_obs)
+        new_scaler = MinMaxScaler()
+
+        new_scaler.min_, new_scaler.scale_ = scaler.min_, scaler.scale_
+
+        # recalculate
+        with_pred[['q_mm_day_pred',
+                   *meteo_input]] = new_scaler.inverse_transform(with_pred)
+        with_obs[[hydro_target,
+                  *meteo_input]] = scaler.inverse_transform(with_obs)
 
     compare_res = compare_res[['date', 'q_mm_day', 'q_mm_day_pred']]
     compare_res['q_mm_day'] = with_obs[hydro_target]
@@ -98,11 +113,47 @@ def pred_res_builder(gauge_id: str,
 
     interpretation = best_tft.interpret_output(raw_prediction, reduction="sum")
 
-    attnt, static, enc, dec = interpretation_for_gauge(
-        interp_dict=interpretation,
-        static_parameters=static_parameters,
-        encoder_params=[*meteo_input, hydro_target],
-        decoder_params=meteo_input)
+    if with_static:
+        attnt, static, enc, dec = interpretation_for_gauge(
+            interp_dict=interpretation,
+            static_parameters=static_parameters,
+            encoder_params=[*meteo_input, hydro_target],
+            decoder_params=meteo_input)
+
+        static *= 100
+        static['gauge_id'] = gauge_id
+        static = static.set_index('gauge_id', drop=True)
+
+        attnt_df = pd.DataFrame(attnt.reshape(1, 365), index=[0])
+        attnt_df['gauge_id'] = gauge_id
+        attnt_df = attnt_df.set_index('gauge_id', drop=True)
+
+        res_df = pd.DataFrame(data={var: val for var, val in
+                                    zip(['gauge_id', 'NSE',
+                                         'encoder', 'decoder'],
+                                        [gauge_id, pred_nse, enc, dec])},
+                              index=[0])
+
+        return res_df, interpretation, static, attnt_df
+
+    else:
+        attnt, _, enc, dec = interpretation_for_gauge(
+            interp_dict=interpretation,
+            static_parameters=static_parameters,
+            encoder_params=[*meteo_input, hydro_target],
+            decoder_params=meteo_input)
+
+        res_df = pd.DataFrame(data={var: val for var, val in
+                                    zip(['gauge_id', 'NSE',
+                                         'encoder', 'decoder'],
+                                        [gauge_id, pred_nse, enc, dec])},
+                              index=[0])
+
+        attnt_df = pd.DataFrame(attnt.reshape(1, 365), index=[0])
+        attnt_df['gauge_id'] = gauge_id
+        attnt_df = attnt_df.set_index('gauge_id', drop=True)
+
+        return res_df, attnt_df
 
     # res_df = pd.DataFrame(data={var: val for var, val in
     #                             zip(['gauge_id', 'NSE',
@@ -110,25 +161,13 @@ def pred_res_builder(gauge_id: str,
     #                                 [gauge_id, pred_nse,
     #                                  attnt, static, enc, dec])},
     #                       index=[0])
-    res_df = pd.DataFrame(data={var: val for var, val in
-                                zip(['gauge_id', 'NSE', 'encoder', 'decoder'],
-                                    [gauge_id, pred_nse, enc, dec])},
-                          index=[0])
-    static *= 100
-    static['gauge_id'] = gauge_id
-    static = static.set_index('gauge_id', drop=True)
-
-    attnt_df = pd.DataFrame(attnt.reshape(1, 365), index=[0])
-    attnt_df['gauge_id'] = gauge_id
-    attnt_df = attnt_df.set_index('gauge_id', drop=True)
-
-    return res_df, interpretation, static, attnt_df
 
 
 def interpretation_for_gauge(interp_dict: dict,
                              static_parameters: list,
                              encoder_params: list,
-                             decoder_params: list):
+                             decoder_params: list,
+                             with_static: bool = True):
 
     def to_percentage(values: torch.Tensor):
         values = values / values.sum(-1).unsqueeze(-1)
@@ -148,8 +187,11 @@ def interpretation_for_gauge(interp_dict: dict,
     _, attnt = interp_dict['attention'].sort(descending=True)
     attnt += 1
     # get most valuable static parameters
-    static_worth = interp_df(interp_tensor=interp_dict['static_variables'],
-                             df_columns=static_parameters)
+    if with_static:
+        static_worth = interp_df(interp_tensor=interp_dict['static_variables'],
+                                 df_columns=static_parameters)
+    else:
+        static_worth = None
     # stat_col, _ = (static_worth.idxmax(axis=1)[0],
     #                static_worth.max(axis=1)[0])
     # stat_col, _ = (list(static_worth.T.nlargest(n=4, columns=0).T.columns),

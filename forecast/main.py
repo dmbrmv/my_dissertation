@@ -1,5 +1,5 @@
 from scripts.tft_data import open_for_tft, train_val_split
-from scripts.model_eval import nnse
+# from scripts.model_eval import nnse
 
 import glob
 import geopandas as gpd
@@ -9,6 +9,7 @@ import torch
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import EarlyStopping, LearningRateMonitor
 from pytorch_forecasting import TemporalFusionTransformer
+from pytorch_forecasting.metrics import RMSE
 from pytorch_lightning.loggers import TensorBoardLogger
 
 # setting device on GPU if available, else CPU
@@ -29,18 +30,19 @@ hydro_target = 'q_mm_day'
 
 ws_file = gpd.read_file('../geo_data/great_db/geometry/russia_ws.gpkg')
 ws_file = ws_file.set_index('gauge_id')
-ws_file = ws_file[ws_file['new_area'] <= 50000]
+# ws_file = ws_file[ws_file['new_area'] <= 50000]
 
 file = open_for_tft(
     nc_files=glob.glob('../geo_data/great_db/nc_all_q/*.nc'),
     static_path='../geo_data/attributes/geo_vector.csv',
     area_index=ws_file.index,
     meteo_predictors=meteo_input,
-    hydro_target=hydro_target)
+    hydro_target=hydro_target,
+    with_static=False)
 
 (train_ds, train_loader,
  val_ds, val_loader, val_df,
- scaler) = train_val_split(file)
+ scaler) = train_val_split(file, with_static=False)
 
 
 # configure network and trainer
@@ -48,7 +50,8 @@ early_stop_callback = EarlyStopping(monitor="val_loss",
                                     min_delta=1e-3, patience=6, verbose=True,
                                     mode="min")
 lr_logger = LearningRateMonitor()  # log the learning rate
-logger = TensorBoardLogger("single_gauge")  # logging results to a tensorboard
+# logging results to a tensorboard
+logger = TensorBoardLogger("multi_gauge_256_no_static")
 
 if device == 'cuda':
     accel = 'gpu'
@@ -68,9 +71,9 @@ trainer = pl.Trainer(
 tft = TemporalFusionTransformer.from_dataset(
     train_ds,
     learning_rate=1e-3,
-    hidden_size=6,
+    hidden_size=256,
     dropout=0.4,
-    loss=nnse(),
+    loss=RMSE(),
     reduce_on_plateau_patience=6,
     optimizer='adam')
 
