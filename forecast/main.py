@@ -26,32 +26,32 @@ if device.type == 'cuda':
 
 
 meteo_input = ['prcp_e5l',  't_max_e5l', 't_min_e5l']
-hydro_target = 'q_mm_day'
+hydro_target = 'lvl_mbs'
 
 ws_file = gpd.read_file('../geo_data/great_db/geometry/russia_ws.gpkg')
 ws_file = ws_file.set_index('gauge_id')
-# ws_file = ws_file[ws_file['new_area'] <= 50000]
 
 file = open_for_tft(
-    nc_files=glob.glob('../geo_data/great_db/nc_all_q/*.nc'),
+    nc_files=glob.glob('../geo_data/great_db/nc_all_h/*.nc'),
     static_path='../geo_data/attributes/geo_vector.csv',
     area_index=ws_file.index,
-    meteo_predictors=meteo_input,
+    meteo_input=meteo_input,
     hydro_target=hydro_target,
-    with_static=False)
+    with_static=True,
+    shuffle_static=False)
 
 (train_ds, train_loader,
  val_ds, val_loader, val_df,
- scaler) = train_val_split(file, with_static=False)
+ scaler) = train_val_split(file, with_static=True)
 
 
 # configure network and trainer
 early_stop_callback = EarlyStopping(monitor="val_loss",
-                                    min_delta=1e-3, patience=6, verbose=True,
+                                    min_delta=1e-3, patience=3, verbose=True,
                                     mode="min")
 lr_logger = LearningRateMonitor()  # log the learning rate
 # logging results to a tensorboard
-logger = TensorBoardLogger("multi_gauge_256_no_static")
+logger = TensorBoardLogger("lvl_prediction_multi_gauge_NEXT")
 
 if device == 'cuda':
     accel = 'gpu'
@@ -59,14 +59,14 @@ else:
     accel = 'cpu'
 
 trainer = pl.Trainer(
-    max_epochs=30,
+    max_epochs=15,
     accelerator='auto',
     enable_model_summary=True,
     check_val_every_n_epoch=3,
     gradient_clip_val=0.5,
     log_every_n_steps=3,
     callbacks=[lr_logger, early_stop_callback],
-    logger=logger)
+    logger=logger,)
 
 tft = TemporalFusionTransformer.from_dataset(
     train_ds,
@@ -82,4 +82,5 @@ print(f"Number of parameters in network: {tft.size()/1e3:.1f}k")
 # fit network
 trainer.fit(tft,
             train_dataloaders=train_loader,
-            val_dataloaders=val_loader)
+            val_dataloaders=val_loader,
+            ckpt_path='/workspaces/my_dissertation/forecast/lvl_prediction_multi_gauge/lightning_logs/version_0/checkpoints/epoch=2-step=50232.ckpt')

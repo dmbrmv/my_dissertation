@@ -1,13 +1,14 @@
 from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_forecasting import TemporalFusionTransformer
 from pytorch_lightning.callbacks import EarlyStopping, LearningRateMonitor
+from pytorch_forecasting.metrics import RMSE
 import pytorch_lightning as pl
 from scripts.tft_data import open_for_tft, train_val_split
-from scripts.model_eval import nnse, pred_res_builder
+# from scripts.model_eval import nnse, pred_res_builder
 
 import glob
 import geopandas as gpd
-import pandas as pd
+# import pandas as pd
 
 import torch
 torch.set_float32_matmul_precision('medium')
@@ -27,7 +28,7 @@ if device.type == 'cuda':
 
 
 meteo_input = ['prcp_e5l',  't_max_e5l', 't_min_e5l']
-hydro_target = 'q_mm_day'
+hydro_target = 'lvl_mbs'
 static_parameters = ['for_pc_sse', 'crp_pc_sse',
                      'inu_pc_ult', 'ire_pc_sse',
                      'lka_pc_use', 'prm_pc_sse',
@@ -42,11 +43,10 @@ static_parameters = ['for_pc_sse', 'crp_pc_sse',
 
 ws_file = gpd.read_file('../geo_data/great_db/geometry/russia_ws.gpkg')
 ws_file = ws_file.set_index('gauge_id')
-ws_file = ws_file[ws_file['new_area'] <= 50000]
 tft_gauges = [f.split('/')[-1][:-4]
-              for f in glob.glob('./single_gauge_8epoch/')]
+              for f in glob.glob('./single_gauge_level_10epoch/')]
 
-for nc_file in glob.glob('../geo_data/great_db/nc_all_q/*.nc'):
+for nc_file in glob.glob('../geo_data/great_db/nc_all_h/*.nc'):
     gauge_id = nc_file.split('/')[-1][:-3]
     if gauge_id in tft_gauges:
         continue
@@ -56,7 +56,7 @@ for nc_file in glob.glob('../geo_data/great_db/nc_all_q/*.nc'):
                 nc_files=[nc_file],
                 static_path='../geo_data/attributes/geo_vector.csv',
                 area_index=ws_file.index,
-                meteo_predictors=meteo_input,
+                meteo_input=meteo_input,
                 hydro_target=hydro_target, allow_nan=True)
 
             (train_ds, train_loader,
@@ -70,7 +70,8 @@ for nc_file in glob.glob('../geo_data/great_db/nc_all_q/*.nc'):
             # log the learning rate
             lr_logger = LearningRateMonitor()
             # logging results to a tensorboard
-            logger = TensorBoardLogger(f"./single_gauge_8epoch/{gauge_id}_tft")
+            logger = TensorBoardLogger(
+                f"./single_gauge_level_10epoch/{gauge_id}_tft")
 
             if device == 'cuda':
                 accel = 'gpu'
@@ -78,7 +79,7 @@ for nc_file in glob.glob('../geo_data/great_db/nc_all_q/*.nc'):
                 accel = 'cpu'
 
             trainer = pl.Trainer(
-                max_epochs=8,
+                max_epochs=10,
                 accelerator='auto',
                 enable_model_summary=True,
                 check_val_every_n_epoch=3,
@@ -90,9 +91,9 @@ for nc_file in glob.glob('../geo_data/great_db/nc_all_q/*.nc'):
             tft = TemporalFusionTransformer.from_dataset(
                 train_ds,
                 learning_rate=1e-3,
-                hidden_size=64,
+                hidden_size=256,
                 dropout=0.4,
-                loss=nnse(),
+                loss=RMSE(),
                 optimizer='adam')
 
         # print(f"Number of parameters in network: {tft.size()/1e3:.1f}k")
