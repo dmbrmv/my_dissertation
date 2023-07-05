@@ -4,6 +4,7 @@ from sklearn.metrics import mean_squared_error
 import xarray as xr
 import pandas as pd
 import numpy as np
+from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 from pathlib import Path
 
@@ -15,25 +16,23 @@ def nse(predictions, targets):
 
 
 def kge(predictions, targets):
-    sim_mean = np.mean(targets, axis=0, dtype=np.float64)
-    obs_mean = np.mean(predictions, dtype=np.float64)
+    sim_mean = np.mean(targets, axis=0)
+    obs_mean = np.mean(predictions)
 
     r_num = np.sum((targets - sim_mean) * (predictions - obs_mean),
-                   axis=0, dtype=np.float64)
+                   axis=0)
     r_den = np.sqrt(np.sum((targets - sim_mean) ** 2,
-                           axis=0, dtype=np.float64)
-                    * np.sum((predictions - obs_mean) ** 2,
-                             dtype=np.float64))
+                           axis=0) * np.sum((predictions - obs_mean) ** 2,))
     r = r_num / r_den
     # calculate error in spread of flow alpha
-    alpha = np.std(targets, axis=0) / np.std(predictions, dtype=np.float64)
+    alpha = np.std(targets, axis=0) / np.std(predictions)
     # calculate error in volume beta (bias of mean discharge)
-    beta = (np.sum(targets, axis=0, dtype=np.float64)
-            / np.sum(predictions, dtype=np.float64))
+    beta = (np.sum(targets, axis=0)
+            / np.sum(predictions))
     # calculate the Kling-Gupta Efficiency KGE
     kge_ = 1 - np.sqrt((r - 1) ** 2 + (alpha - 1) ** 2 + (beta - 1) ** 2)
 
-    return np.vstack((kge_, r, alpha, beta))
+    return kge_, r, alpha, beta
 
 
 def rmse(predictions, targets):
@@ -41,7 +40,26 @@ def rmse(predictions, targets):
 
 
 def relative_error(predictions, targets):
-    return ((targets - predictions)/targets) * 100
+    return np.mean(((targets - predictions)/targets) * 100)
+
+
+def metric_df(gauge_id, predictions, targets):
+
+    res_df = pd.DataFrame()
+
+    res_df.loc[gauge_id, 'NSE'] = nse(predictions,
+                                      targets)
+
+    res_df.loc[gauge_id, ['KGE', 'r', 'alpha', 'beta']] = kge(predictions,
+                                                              targets)
+
+    res_df.loc[gauge_id, 'RMSE'] = rmse(predictions,
+                                        targets)
+
+    res_df.loc[gauge_id, 'delta'] = relative_error(predictions,
+                                                   targets)
+
+    return res_df
 
 
 def read_gauge(gauge_id: str,
@@ -75,6 +93,7 @@ def read_gauge(gauge_id: str,
 def get_params(model_name: str,
                params_path: Path,
                gauge_id: str,
+               iter_number: int,
                train: pd.DataFrame,
                test: pd.DataFrame,
                calibrate: bool = False,
@@ -83,7 +102,7 @@ def get_params(model_name: str,
         calibrate_gauge(df=train, hydro_models=[model_name],
                         res_calibrate=f'{params_path}/{gauge_id}',
                         # xD
-                        iterations=600)
+                        iterations=iter_number)
 
     lines = open(f'{params_path}/{gauge_id}', 'r').read().splitlines()
     params = eval(lines[3].split(':')[1])[0]

@@ -7,7 +7,7 @@ from spotpy.parameter import Uniform
 from spotpy.objectivefunctions import rmse
 import os
 
-from conceptual_runs.hydro_models import hbv, gr4j_cema_neige
+from hydro_models import hbv, gr4j_cema_neige
 
 
 class gr4j_setup(object):

@@ -4,7 +4,7 @@ import geopandas as gpd
 from pathlib import Path
 from tqdm import tqdm
 
-russia_ws = gpd.read_file('../geo_data/great_db/geometry/russia_ws.gpkg')
+russia_ws = gpd.read_file('../geo_data/great_db/geometry/cis_ws.gpkg')
 
 meteo_path = '../geo_data/meteorology'
 era5_land = Path(f'{meteo_path}/era5-land/russia')
@@ -38,7 +38,7 @@ ds_description = {**grid_descriptor(dataset_name='era5_land',
 #                     files=icon)
 
 
-place_to_save = '../geo_data/meteo_grids'
+place_to_save = '../geo_data/meteo_grids/'
 
 for dataset, settings in ds_description.items():
 
