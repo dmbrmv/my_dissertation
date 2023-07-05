@@ -12,7 +12,7 @@ import gc
 class WatershedGPKG():
 
     def __init__(self,
-                 config_info) -> None:
+                 config_info, xy_ready: bool = False) -> None:
 
         final_save = Path(f'{config_info.save_storage}')
         final_save.mkdir(exist_ok=True, parents=True)
@@ -40,7 +40,8 @@ class WatershedGPKG():
                              acc_faktor=1e3,
                              gauges_file=test_gauge,
                              save_p=f'{final_save}/catchments',
-                             region_name=f'{tile_tag}_mo')
+                             region_name=f'{tile_tag}_mo',
+                             xy_ready=xy_ready)
             gc.collect()
 
         res_folder = Path(f'{final_save}/res')

@@ -169,7 +169,8 @@ def my_catchment(grid_p: str,
                  acc_faktor: float,
                  gauges_file,
                  save_p: str,
-                 region_name: str):
+                 region_name: str,
+                 xy_ready: bool = False):
     """_summary_
 
     Args:
@@ -209,8 +210,11 @@ def my_catchment(grid_p: str,
         # Specify directional mapping
         dirmap = (64, 128, 1, 2, 4, 8, 16, 32)
         # Snap pour point to high accumulation cell
-        x_snap, y_snap = grid.snap_to_mask(
-            acc > acc_faktor, (x_coord, y_coord))          # type: ignore
+        if xy_ready:
+            x_snap, y_snap = x_coord, y_coord
+        else:
+            x_snap, y_snap = grid.snap_to_mask(
+                acc > acc_faktor, (x_coord, y_coord))          # type: ignore
 
         # Delineate the catchment
         catch = grid.catchment(x=x_snap, y=y_snap,

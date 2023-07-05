@@ -27,7 +27,7 @@ for tile_tag in tqdm(raster_tags, 'geometry ..'):
     river_net.river_separator()
 # create watershed geometry from points
 print('Catchments for gauges\n')
-WatershedGPKG(config_info)
+WatershedGPKG(config_info, xy_ready=True)
 # calculate meteorology from defined geometry
 meteo_path = f'{config_info.initial_meteo}'
 era5_land = Path(f'{meteo_path}/era5-land/russia')

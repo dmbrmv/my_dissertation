@@ -5,11 +5,11 @@ from scripts.feature_selection import featureXtractor, save_results
 # set path to shape file
 home_folder = '../geo_data'
 # path to geodataframe
-shape_file_path = f'{home_folder}/great_db/geometry/russia_ws_15.gpkg'
+shape_file_path = f'{home_folder}/great_db/geometry/cis_ws.gpkg'
 # set path to downloaded HydroATLAS
 gdb_file_path = f'{home_folder}/hydro_atlas/BasinATLAS_v10.gdb'
 # set path where results will be stored
-path_to_save = f'{home_folder}/static_attributes'
+path_to_save = f'{home_folder}/static_attributes/cis'
 
 # Read shape file with geometry column
 my_shape = gpd.read_file(shape_file_path)
