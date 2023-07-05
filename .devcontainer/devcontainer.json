@@ -14,27 +14,26 @@
 		"KevinRose.vsc-python-indent",
 		"VisualStudioExptTeam.vscodeintellicode",
 		"njpwerner.autodocstring",
-		"wholroyd.jinja",
 		"ms-toolsai.vscode-jupyter-powertoys",
 		"jithurjacob.nbpreviewer",
 		"yzhang.markdown-all-in-one",
 		"christian-kohler.path-intellisense",
 		"eamodio.gitlens",
-		"tamasfe.even-better-toml",
 		"PKief.material-icon-theme",
 		"ms-toolsai.jupyter-keymap",
 		"ms-python.autopep8",
-		"ms-python.flake8"
+		"ms-python.flake8",
+		"mutantdino.resourcemonitor"
 	],
 	"runArgs": [
-		// "--gpus",
+		"--gpus",
 		"all",
 		"--ipc=host"
 	],
 	"mounts": [
 		// server
-		"source=/home/anton/dima_experiments/geo_data,target=/workspaces/my_dissertation/geo_data,type=bind,consistency=cached"
+		// "source=/home/anton/dima_experiments/geo_data,target=/workspaces/my_dissertation/geo_data,type=bind,consistency=cached"
 		// home
-		// "source=/home/dima/Data/geo_data,target=/workspaces/my_dissertation/geo_data,type=bind,consistency=cached"
+		"source=/home/dima/Data/geo_data,target=/workspaces/my_dissertation/geo_data,type=bind,consistency=cached"
 	]
 }

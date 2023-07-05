@@ -1,5 +1,5 @@
 from scripts.tft_data import open_for_tft, train_val_split
-from scripts.model_eval import nnse
+# from scripts.model_eval import nnse
 
 import glob
 import geopandas as gpd
@@ -9,6 +9,7 @@ import torch
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import EarlyStopping, LearningRateMonitor
 from pytorch_forecasting import TemporalFusionTransformer
+from pytorch_forecasting.metrics import RMSE
 from pytorch_lightning.loggers import TensorBoardLogger
 
 # setting device on GPU if available, else CPU
@@ -25,30 +26,32 @@ if device.type == 'cuda':
 
 
 meteo_input = ['prcp_e5l',  't_max_e5l', 't_min_e5l']
-hydro_target = 'q_mm_day'
+hydro_target = 'lvl_mbs'
 
 ws_file = gpd.read_file('../geo_data/great_db/geometry/russia_ws.gpkg')
 ws_file = ws_file.set_index('gauge_id')
-ws_file = ws_file[ws_file['new_area'] <= 50000]
 
 file = open_for_tft(
-    nc_files=glob.glob('../geo_data/great_db/nc_all_q/*.nc'),
+    nc_files=glob.glob('../geo_data/great_db/nc_all_h/*.nc'),
     static_path='../geo_data/attributes/geo_vector.csv',
     area_index=ws_file.index,
-    meteo_predictors=meteo_input,
-    hydro_target=hydro_target)
+    meteo_input=meteo_input,
+    hydro_target=hydro_target,
+    with_static=True,
+    shuffle_static=False)
 
 (train_ds, train_loader,
  val_ds, val_loader, val_df,
- scaler) = train_val_split(file)
+ scaler) = train_val_split(file, with_static=True)
 
 
 # configure network and trainer
 early_stop_callback = EarlyStopping(monitor="val_loss",
-                                    min_delta=1e-3, patience=6, verbose=True,
+                                    min_delta=1e-3, patience=3, verbose=True,
                                     mode="min")
 lr_logger = LearningRateMonitor()  # log the learning rate
-logger = TensorBoardLogger("single_gauge")  # logging results to a tensorboard
+# logging results to a tensorboard
+logger = TensorBoardLogger("lvl_prediction_multi_gauge_NEXT")
 
 if device == 'cuda':
     accel = 'gpu'
@@ -56,21 +59,21 @@ else:
     accel = 'cpu'
 
 trainer = pl.Trainer(
-    max_epochs=30,
+    max_epochs=15,
     accelerator='auto',
     enable_model_summary=True,
     check_val_every_n_epoch=3,
     gradient_clip_val=0.5,
     log_every_n_steps=3,
     callbacks=[lr_logger, early_stop_callback],
-    logger=logger)
+    logger=logger,)
 
 tft = TemporalFusionTransformer.from_dataset(
     train_ds,
     learning_rate=1e-3,
-    hidden_size=6,
+    hidden_size=256,
     dropout=0.4,
-    loss=nnse(),
+    loss=RMSE(),
     reduce_on_plateau_patience=6,
     optimizer='adam')
 
@@ -79,4 +82,5 @@ print(f"Number of parameters in network: {tft.size()/1e3:.1f}k")
 # fit network
 trainer.fit(tft,
             train_dataloaders=train_loader,
-            val_dataloaders=val_loader)
+            val_dataloaders=val_loader,
+            ckpt_path='/workspaces/my_dissertation/forecast/lvl_prediction_multi_gauge/lightning_logs/version_0/checkpoints/epoch=2-step=50232.ckpt')

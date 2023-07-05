@@ -65,19 +65,19 @@ for nc_file in [file for file
          val_ds, val_loader, val_df,
          scaler) = train_val_split(file)
 
-        res_df, _ = pred_res_builder(gauge_id=gauge_id,
-                                     hydro_target=hydro_target,
-                                     meteo_input=meteo_input,
-                                     static_parameters=static_parameters,
-                                     model_checkpoint='/workspaces/my_dissertation/forecast/TFT_914/lightning_logs/version_0/checkpoints/epoch=2-step=78123.ckpt',
-                                     res_storage='./result/blind_gauge',
-                                     val_df=val_df,
-                                     scaler=scaler,
-                                     val_ts_ds=val_ds, with_plot=False)
+        res_df, _, _, _ = pred_res_builder(gauge_id=gauge_id,
+                                           hydro_target=hydro_target,
+                                           meteo_input=meteo_input,
+                                           static_parameters=static_parameters,
+                                           model_checkpoint='/workspaces/my_dissertation/forecast/multi_gauge_256/lightning_logs/version_0/checkpoints/epoch=20-step=274596.ckpt',
+                                           res_storage='./result/blind_gauge',
+                                           val_df=val_df,
+                                           scaler=scaler,
+                                           val_ts_ds=val_ds, with_plot=False)
         res_list.append(res_df)
     except Exception as e:
         with open('blind_errors.txt', 'a') as f:
             f.write(''.join(f'{e} -- for gauge {gauge_id}\n'))
 
 by_gauge_res = pd.concat(res_list)
-by_gauge_res.to_csv('./result/blind_forecast.csv', index=False)
+by_gauge_res.to_csv('./result/blind_forecast_tft_256_20epoch.csv', index=False)
