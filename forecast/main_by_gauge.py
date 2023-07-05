@@ -44,12 +44,13 @@ static_parameters = ['for_pc_sse', 'crp_pc_sse',
 ws_file = gpd.read_file('../geo_data/great_db/geometry/russia_ws.gpkg')
 ws_file = ws_file.set_index('gauge_id')
 tft_gauges = [f.split('/')[-1][:-4]
-              for f in glob.glob('./single_gauge_level_10epoch/')]
+              for f in glob.glob('./single_gauge_level_30epoch/')]
+print(tft_gauges)
 
 for nc_file in glob.glob('../geo_data/great_db/nc_all_h/*.nc'):
     gauge_id = nc_file.split('/')[-1][:-3]
     if gauge_id in tft_gauges:
-        continue
+        pass
     else:
         try:
             file = open_for_tft(
@@ -71,7 +72,7 @@ for nc_file in glob.glob('../geo_data/great_db/nc_all_h/*.nc'):
             lr_logger = LearningRateMonitor()
             # logging results to a tensorboard
             logger = TensorBoardLogger(
-                f"./single_gauge_level_10epoch/{gauge_id}_tft")
+                f"./single_gauge_level_30epoch/{gauge_id}_tft")
 
             if device == 'cuda':
                 accel = 'gpu'
@@ -79,7 +80,7 @@ for nc_file in glob.glob('../geo_data/great_db/nc_all_h/*.nc'):
                 accel = 'cpu'
 
             trainer = pl.Trainer(
-                max_epochs=10,
+                max_epochs=30,
                 accelerator='auto',
                 enable_model_summary=True,
                 check_val_every_n_epoch=3,

@@ -47,6 +47,7 @@ forecast/scripts/data_builders.py
 
 forecast/single_gauge
 forecast/single_gauge_8epoch
+forecast/single_gauge_level_30epoch
 forecast/TFT_914
 forecast/TFT_test_run_2gauges
 

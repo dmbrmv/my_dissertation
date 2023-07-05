@@ -92,3 +92,174 @@ No objects to concatenate -- for gauge 9053
 No objects to concatenate -- for gauge 10331
 No objects to concatenate -- for gauge 8013
 Found array with 0 sample(s) (shape=(0, 23)) while a minimum of 1 is required by MinMaxScaler. -- for gauge 2155
+[Errno 2] No such file or directory: b'./single_gauge_level_10epoch/5287_tft/lightning_logs/version_0/events.out.tfevents.1688454956.4e19d4d17dcb.2154.5' -- for gauge 5287
+Timeseries index should be of type integer -- for gauge 48043
+filters should not remove entries all entries - check encoder/decoder lengths and lags -- for gauge 83323
+Found array with 0 sample(s) (shape=(0, 23)) while a minimum of 1 is required by MinMaxScaler. -- for gauge 2111
+Timeseries index should be of type integer -- for gauge 74431
+Timeseries index should be of type integer -- for gauge 70169
+filters should not remove entries all entries - check encoder/decoder lengths and lags -- for gauge 9436
+filters should not remove entries all entries - check encoder/decoder lengths and lags -- for gauge 9429
+Timeseries index should be of type integer -- for gauge 9803
+filters should not remove entries all entries - check encoder/decoder lengths and lags -- for gauge 83137
+Timeseries index should be of type integer -- for gauge 10505
+filters should not remove entries all entries - check encoder/decoder lengths and lags -- for gauge 6334
+Timeseries index should be of type integer -- for gauge 75403
+filters should not remove entries all entries - check encoder/decoder lengths and lags -- for gauge 83385
+Timeseries index should be of type integer -- for gauge 48043
+filters should not remove entries all entries - check encoder/decoder lengths and lags -- for gauge 83323
+Found array with 0 sample(s) (shape=(0, 23)) while a minimum of 1 is required by MinMaxScaler. -- for gauge 2111
+Timeseries index should be of type integer -- for gauge 74431
+Timeseries index should be of type integer -- for gauge 70169
+filters should not remove entries all entries - check encoder/decoder lengths and lags -- for gauge 9436
+filters should not remove entries all entries - check encoder/decoder lengths and lags -- for gauge 9429
+Timeseries index should be of type integer -- for gauge 9803
+filters should not remove entries all entries - check encoder/decoder lengths and lags -- for gauge 83137
+Timeseries index should be of type integer -- for gauge 10505
+filters should not remove entries all entries - check encoder/decoder lengths and lags -- for gauge 6334
+Timeseries index should be of type integer -- for gauge 75403
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 10620
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 1010
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 4197
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 8306
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 78614
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 5287
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 9127
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 2198
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 10566
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 77112
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 3008
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 76646
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 78275
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 75033
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 71199
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 75236
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 11637
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 76489
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 70175
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 11411
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 8379
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 70242
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 82060
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 7029
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 78004
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 76324
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 8217
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 12115
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 2128
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 7022
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 77801
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 75520
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 72623
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 72007
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 76317
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 3424
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 2164
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 10202
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 11056
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 4105
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 75500
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 4226
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 75293
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 78499
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 76470
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 9370
+Timeseries index should be of type integer -- for gauge 48043
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 5055
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 5033
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 77156
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 76466
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 2226
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 7039
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 78512
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 2026
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 70617
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 7174
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 10329
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 49099
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 3068
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 84447
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 8230
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 19153
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 8162
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 12098
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 8198
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 6065
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 84019
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 3180
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 72588
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 83348
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 11379
+filters should not remove entries all entries - check encoder/decoder lengths and lags -- for gauge 83323
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 3404
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 10120
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 77298
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 78055
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 72113
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 49048
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 5555
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 11365
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 70152
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 70021
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 7202
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 72043
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 75674
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 78182
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 12651
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 10524
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 78510
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 12383
+Found array with 0 sample(s) (shape=(0, 23)) while a minimum of 1 is required by MinMaxScaler. -- for gauge 2111
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 70331
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 49110
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 79335
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 10015
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 3292
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 76295
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 49149
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 10583
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 3367
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 75239
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 78205
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 80424
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 11368
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 1596
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 9191
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 2126
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 75235
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 71165
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 11334
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 75367
+Timeseries index should be of type integer -- for gauge 74431
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 49047
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 2115
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 2193
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 75697
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 8359
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 9282
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 7012
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 10589
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 80230
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 10549
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 76653
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 11414
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 78196
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 10266
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 9207
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 7099
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 7047
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 75758
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 6506
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 6089
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 7152
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 79001
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 10455
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 9547
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 8288
+`model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `TemporalFusionTransformer` -- for gauge 2010
+Timeseries index should be of type integer -- for gauge 48043
+filters should not remove entries all entries - check encoder/decoder lengths and lags -- for gauge 83323
+Found array with 0 sample(s) (shape=(0, 23)) while a minimum of 1 is required by MinMaxScaler. -- for gauge 2111
+Timeseries index should be of type integer -- for gauge 74431
+Timeseries index should be of type integer -- for gauge 70169
+filters should not remove entries all entries - check encoder/decoder lengths and lags -- for gauge 9436
