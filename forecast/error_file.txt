@@ -263,3 +263,9 @@ Found array with 0 sample(s) (shape=(0, 23)) while a minimum of 1 is required by
 Timeseries index should be of type integer -- for gauge 74431
 Timeseries index should be of type integer -- for gauge 70169
 filters should not remove entries all entries - check encoder/decoder lengths and lags -- for gauge 9436
+filters should not remove entries all entries - check encoder/decoder lengths and lags -- for gauge 9429
+Timeseries index should be of type integer -- for gauge 48043
+filters should not remove entries all entries - check encoder/decoder lengths and lags -- for gauge 83323
+Found array with 0 sample(s) (shape=(0, 23)) while a minimum of 1 is required by MinMaxScaler. -- for gauge 2111
+Timeseries index should be of type integer -- for gauge 74431
+Timeseries index should be of type integer -- for gauge 70169
