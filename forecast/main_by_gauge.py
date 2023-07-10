@@ -45,7 +45,6 @@ ws_file = gpd.read_file('../geo_data/great_db/geometry/russia_ws.gpkg')
 ws_file = ws_file.set_index('gauge_id')
 tft_gauges = [f.split('/')[-1][:-4]
               for f in glob.glob('./single_gauge_level_30epoch/*')]
-print(tft_gauges)
 
 for nc_file in glob.glob('../geo_data/great_db/nc_all_h/*.nc'):
     try:
@@ -66,8 +65,8 @@ for nc_file in glob.glob('../geo_data/great_db/nc_all_h/*.nc'):
 
             # configure network and trainer
             early_stop_callback = EarlyStopping(monitor="val_loss",
-                                                min_delta=1e-3, patience=3,
-                                                verbose=True, mode="min")
+                                                min_delta=1e-3, patience=6,
+                                                verbose=False, mode="min")
             # log the learning rate
             lr_logger = LearningRateMonitor()
             # logging results to a tensorboard
@@ -80,20 +79,21 @@ for nc_file in glob.glob('../geo_data/great_db/nc_all_h/*.nc'):
                 accel = 'cpu'
 
             trainer = pl.Trainer(
-                max_epochs=30,
+                max_epochs=60,
                 accelerator='auto',
                 enable_model_summary=True,
-                check_val_every_n_epoch=3,
+                check_val_every_n_epoch=2,
                 gradient_clip_val=0.5,
-                log_every_n_steps=3,
+                log_every_n_steps=2,
                 callbacks=[lr_logger, early_stop_callback],
                 logger=logger)
 
             tft = TemporalFusionTransformer.from_dataset(
                 train_ds,
                 learning_rate=1e-3,
+                reduce_on_plateau_patience=3,
                 hidden_size=256,
-                dropout=0.4,
+                dropout=0.6,
                 loss=RMSE(),
                 optimizer='adam')
 
