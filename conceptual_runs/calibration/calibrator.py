@@ -1,6 +1,8 @@
-from .model_setups import gr4j_setup, hbv_setup
-import spotpy
 from spotpy.objectivefunctions import rmse
+import spotpy
+import sys
+sys.path.append('/workspaces/my_dissertation/conceptual_runs')
+from calibration.model_setups import gr4j_setup, hbv_setup
 
 models_dict = {
     "hbv": hbv_setup,

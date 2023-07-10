@@ -189,15 +189,15 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
                             subplot_kw={'projection': aea_crs})
 
     for i, ax in enumerate(np.ravel(axs)):
-        cmap = cm.get_cmap(cmap_name, 8)
+        cmap = cm.get_cmap(cmap_name, 4)
         vmin, vmax = cmap_lims
         # [-100, -75, -50, -25, 0, 25, 50, 75, 100]
         # [0.0, 0.50, 0.70, 0.80, 1.00]
         # bounds = [-100, -75, -50, -25, 0, 25, 50, 75, 100]
 
-        # norm_cmap = mpl.colors.BoundaryNorm([0.0, 0.50, 0.70, 0.80, 1.00],
-        #                                     4)
-        norm_cmap = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+        norm_cmap = mpl.colors.BoundaryNorm([0.0, 0.50, 0.70, 0.80, 1.00],
+                                            4)
+        # norm_cmap = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
         if i >= len(columns_from_gdf):
             ax.set_visible(False)
             break
@@ -252,13 +252,11 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
             # [-100, -75, -50, -25, 0,
             # 25, 50, 75, 100]
             # [0.00, 0.25, .50, .75, 1.00]
-            cb_ax.xaxis.set_major_locator(
-                mticker.FixedLocator([i for i
-                                      in [-100, -75, -50, -25, 0,
-                                          25, 50, 75, 100]]))
-            cb_ax.set_xticklabels([f'{i:.0f}'
-                                   for i in [-100, -75, -50, -25, 0,
-                                             25, 50, 75, 100]])
+            # cb_ax.xaxis.set_major_locator(
+            #     mticker.FixedLocator([i for i
+            #                           in [0.00, 0.25, .50, .75, 1.00]]))
+            # cb_ax.set_xticklabels([f'{i:.0f}'
+            #                        for i in [0.00, 0.25, .50, .75, 1.00]])
 
         if with_histogram:
             hist_df = pd.crosstab(
