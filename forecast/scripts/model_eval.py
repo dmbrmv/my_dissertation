@@ -65,9 +65,9 @@ def pred_res_builder(gauge_id: str,
     compare_res = val_df[val_df['gauge_id'] == gauge_id]
     compare_res = compare_res[[val in idx['time_idx'].values  # type: ignore
                                for val in compare_res['time_idx'].values]]
-    compare_res['q_mm_day_pred'] = res
+    compare_res[f'{hydro_target}_pred'] = res
     if with_static:
-        with_pred = compare_res[['q_mm_day_pred',
+        with_pred = compare_res[[f'{hydro_target}_pred',
                                 *meteo_input, *static_parameters]]
         with_obs = compare_res[[hydro_target,
                                 *meteo_input, *static_parameters]]
@@ -77,14 +77,14 @@ def pred_res_builder(gauge_id: str,
         new_scaler.min_, new_scaler.scale_ = scaler.min_, scaler.scale_
 
         # recalculate
-        with_pred[['q_mm_day_pred',
+        with_pred[[f'{hydro_target}_pred',
                    *meteo_input,
                    *static_parameters]] = new_scaler.inverse_transform(with_pred)
         with_obs[[hydro_target,
                   *meteo_input,
                   *static_parameters]] = scaler.inverse_transform(with_obs)
     else:
-        with_pred = compare_res[['q_mm_day_pred', *meteo_input]]
+        with_pred = compare_res[[f'{hydro_target}_pred', *meteo_input]]
         with_obs = compare_res[[hydro_target, *meteo_input]]
 
         new_scaler = MinMaxScaler()
@@ -92,20 +92,21 @@ def pred_res_builder(gauge_id: str,
         new_scaler.min_, new_scaler.scale_ = scaler.min_, scaler.scale_
 
         # recalculate
-        with_pred[['q_mm_day_pred',
+        with_pred[[f'{hydro_target}_pred',
                    *meteo_input]] = new_scaler.inverse_transform(with_pred)
         with_obs[[hydro_target,
                   *meteo_input]] = scaler.inverse_transform(with_obs)
 
-    compare_res = compare_res[['date', 'q_mm_day', 'q_mm_day_pred']]
-    compare_res['q_mm_day'] = with_obs[hydro_target]
-    compare_res['q_mm_day_pred'] = with_pred['q_mm_day_pred']
+    compare_res = compare_res[['date', f'{hydro_target}',
+                               f'{hydro_target}_pred']]
+    compare_res[f'{hydro_target}'] = with_obs[hydro_target]
+    compare_res[f'{hydro_target}_pred'] = with_pred[f'{hydro_target}_pred']
     compare_res = compare_res.set_index('date')
     compare_res.to_csv(f'{p}/{gauge_id}.csv')
 
     # get nse
-    pred_nse = nse(pred=compare_res['q_mm_day_pred'],
-                   target=compare_res['q_mm_day'])
+    pred_nse = nse(pred=compare_res[f'{hydro_target}_pred'],
+                   target=compare_res[f'{hydro_target}'])
     if with_plot:
         compare_res.plot()
         # get nse

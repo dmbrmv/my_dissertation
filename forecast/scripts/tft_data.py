@@ -114,11 +114,11 @@ def train_val_split(big_df: pd.DataFrame,
                                                'ele_mt_sav'],
                     encoder_length: int = 365,
                     prediction_length: int = 7,
-                    train_end: str = '2017-12-31',
+                    train_end: str = '2016-12-31',
                     train_start: str = '2008-01-01',
+                    val_end: str = '2018-12-31',
                     batch_size: int = 256,
-                    with_static: bool = True,
-                    require_train: bool = True):
+                    with_static: bool = True):
 
     if 'index' in big_df.columns:
         big_df = big_df.rename(columns={'index': 'date'})
@@ -147,11 +147,16 @@ def train_val_split(big_df: pd.DataFrame,
     # set time_idx in according to slice
     # with range from 0 to max for each gauge
     train_df['time_idx'] -= train_df['time_idx'].min()
+    # get validation period
     val_df = big_df[lambda x:
-                    x.date > train_end].reset_index(drop=True)  # type: ignore
+                    (x.date > train_end) &
+                    (x.date <= val_end)].reset_index(drop=True)  # type: ignore
     # set time_idx in according to slice
     # with range from 0 to max for each gauge
     val_df['time_idx'] -= val_df['time_idx'].min()
+    # create test period
+    test_df = big_df[lambda x: x.date > val_end].reset_index(
+        drop=True)  # type: ignore
     if with_static:
         train_ds = TimeSeriesDataSet(
             data=train_df,
@@ -180,14 +185,20 @@ def train_val_split(big_df: pd.DataFrame,
 
     val_ds = TimeSeriesDataSet.from_dataset(train_ds,
                                             val_df)
+    test_ds = TimeSeriesDataSet.from_dataset(train_ds,
+                                             test_df)
 
     train_dataloader = train_ds.to_dataloader(train=True,
                                               batch_size=batch_size,
-                                              num_workers=16)
+                                              num_workers=8)
     val_dataloader = val_ds.to_dataloader(train=False,
                                           batch_size=batch_size,
-                                          num_workers=16)
+                                          num_workers=8)
+    test_dataloader = test_ds.to_dataloader(train=False,
+                                            batch_size=batch_size,
+                                            num_workers=8)
 
     return (train_ds, train_dataloader,
             val_ds, val_dataloader, val_df,
+            test_ds, test_dataloader, test_df,
             scaler)

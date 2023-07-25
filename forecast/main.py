@@ -26,14 +26,40 @@ if device.type == 'cuda':
 
 
 meteo_input = ['prcp_e5l',  't_max_e5l', 't_min_e5l']
+# q_mm_day or lvl_mbs
 hydro_target = 'lvl_mbs'
+
+if hydro_target == 'lvl_mbs':
+    static_parameters = ['for_pc_sse', 'crp_pc_sse',
+                         'inu_pc_ult', 'ire_pc_sse',
+                         'lka_pc_use', 'prm_pc_sse',
+                         'pst_pc_sse', 'cly_pc_sav',
+                         'slt_pc_sav', 'snd_pc_sav',
+                         'kar_pc_sse', 'urb_pc_sse',
+                         'gwt_cm_sav', 'lkv_mc_usu',
+                         'rev_mc_usu', 'sgr_dk_sav',
+                         'slp_dg_sav', 'ws_area',
+                         'ele_mt_sav', 'height_bs']
+    nc_variable = 'nc_all_h'
+else:
+    static_parameters = ['for_pc_sse', 'crp_pc_sse',
+                         'inu_pc_ult', 'ire_pc_sse',
+                         'lka_pc_use', 'prm_pc_sse',
+                         'pst_pc_sse', 'cly_pc_sav',
+                         'slt_pc_sav', 'snd_pc_sav',
+                         'kar_pc_sse', 'urb_pc_sse',
+                         'gwt_cm_sav', 'lkv_mc_usu',
+                         'rev_mc_usu', 'sgr_dk_sav',
+                         'slp_dg_sav', 'ws_area',
+                         'ele_mt_sav']
+    nc_variable = 'nc_all_q'
 
 ws_file = gpd.read_file('../geo_data/great_db/geometry/russia_ws.gpkg')
 ws_file = ws_file.set_index('gauge_id')
 
 file = open_for_tft(
-    nc_files=glob.glob('../geo_data/great_db/nc_all_h/*.nc'),
-    static_path='../geo_data/attributes/geo_vector.csv',
+    nc_files=glob.glob(f'../geo_data/great_db/{nc_variable}/*.nc'),
+    static_path='../geo_data/attributes/static_with_height.csv',
     area_index=ws_file.index,
     meteo_input=meteo_input,
     hydro_target=hydro_target,
@@ -42,7 +68,10 @@ file = open_for_tft(
 
 (train_ds, train_loader,
  val_ds, val_loader, val_df,
- scaler) = train_val_split(file, with_static=True)
+ _, _, _,
+ scaler) = train_val_split(file,
+                           hydro_target=hydro_target,
+                           with_static=True)
 
 
 # configure network and trainer
@@ -51,7 +80,7 @@ early_stop_callback = EarlyStopping(monitor="val_loss",
                                     mode="min")
 lr_logger = LearningRateMonitor()  # log the learning rate
 # logging results to a tensorboard
-logger = TensorBoardLogger("lvl_prediction_multi_gauge_NEXT")
+logger = TensorBoardLogger("lvl_prediction_multi_gauge")
 
 if device == 'cuda':
     accel = 'gpu'
@@ -59,12 +88,12 @@ else:
     accel = 'cpu'
 
 trainer = pl.Trainer(
-    max_epochs=15,
+    max_epochs=30,
     accelerator='auto',
     enable_model_summary=True,
-    check_val_every_n_epoch=3,
+    check_val_every_n_epoch=1,
     gradient_clip_val=0.5,
-    log_every_n_steps=3,
+    log_every_n_steps=2,
     callbacks=[lr_logger, early_stop_callback],
     logger=logger,)
 
@@ -82,5 +111,4 @@ print(f"Number of parameters in network: {tft.size()/1e3:.1f}k")
 # fit network
 trainer.fit(tft,
             train_dataloaders=train_loader,
-            val_dataloaders=val_loader,
-            ckpt_path='/workspaces/my_dissertation/forecast/lvl_prediction_multi_gauge/lightning_logs/version_0/checkpoints/epoch=2-step=50232.ckpt')
+            val_dataloaders=val_loader)
