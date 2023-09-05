@@ -1,5 +1,6 @@
 import geopandas as gpd
 import cartopy.crs as ccrs
+from cartopy.mpl import geoaxes
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import matplotlib as mpl
@@ -128,7 +129,9 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
         extra_hist.set_xlabel(f'{metric_col}',
                               fontdict={'fontsize': 8}, loc='right')
         if len(specific_xlabel) == 0:
-            xlbl = [str(col)[1:-1].replace(', ', '-')
+            # xlbl = [str(col)[1:-1].replace(', ', '-')
+            #         for col in hist_df.columns]
+            xlbl = [str(col).replace(', ', '-')
                     for col in hist_df.columns]
 
             # def str_to_float(x):
@@ -155,7 +158,7 @@ def russia_plots(gdf_to_plot: gpd.GeoDataFrame,
     plt.title(f'{title_text}',
               fontdict={'size': 12})
 
-    return fig
+    return ax
 
 
 def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
@@ -217,9 +220,10 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
                 ax=ax,
                 column=columns_from_gdf[i],
                 cmap=cmap, norm=norm_cmap,
-                marker='o', markersize=1,
+                marker='o', markersize=8,
                 legend=True,
-                legend_kwds={"loc": "lower left",
+                legend_kwds={"loc": "lower center",
+                             "ncol": 2,
                              "fmt": "{:.0f}", 'fontsize': 8})
 
         else:
@@ -235,7 +239,7 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
                 ax=ax,
                 column=columns_from_gdf[i],
                 cmap=cmap, norm=norm_cmap,
-                marker='o', markersize=16,
+                marker='o', markersize=12,
                 edgecolor='black', linewidth=0.2,
                 legend=True,
                 legend_kwds={'orientation': 'horizontal',
@@ -259,11 +263,17 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
             #                        for i in [0.00, 0.25, .50, .75, 1.00]])
 
         if with_histogram:
-            hist_df = pd.crosstab(
-                gdf_to_plot[columns_from_gdf[i]],  # type: ignore
-                pd.cut(gdf_to_plot[columns_from_gdf[i]],  # type: ignore
-                       list_of_limits,
-                       include_lowest=False))
+            if just_points:
+                hist_df = pd.DataFrame()
+                for qual, idx in gdf_to_plot.groupby(
+                        f'{columns_from_gdf[i]}').groups.items():
+                    hist_df.loc[0, f'{qual}'] = len(idx)
+            else:
+                hist_df = pd.crosstab(
+                    gdf_to_plot[columns_from_gdf[i]],  # type: ignore
+                    pd.cut(gdf_to_plot[columns_from_gdf[i]],  # type: ignore
+                           list_of_limits,
+                           include_lowest=False))
 
             hist_df = hist_df.reset_index(drop=True)
             # x of borders, y of borders, weight, height
@@ -277,11 +287,16 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
             extra_hist.bar_label(extra_hist.containers[0], fmt='%.0f')
             extra_hist.set_facecolor('white')
             extra_hist.tick_params(width=1)
-            extra_hist.set_xlabel(f'{columns_from_gdf[i]}',
-                                  fontdict={'fontsize': 14}, loc='right')
+            # extra_hist.set_xlabel(f'{columns_from_gdf[i]}',
+            #                       fontdict={'fontsize': 14}, loc='right')
             extra_hist.grid(False)
-            xlbl = [str(col)[1:-1].replace(', ', '-')
-                    for col in hist_df.columns]
+
+            if just_points:
+                xlbl = [str(col).replace(', ', '-')
+                        for col in hist_df.columns]
+            else:
+                xlbl = [str(col)[1:-1].replace(', ', '-')
+                        for col in hist_df.columns]
 
             # def str_to_float(x):
             #     return list(map(float, x.split('-')))
