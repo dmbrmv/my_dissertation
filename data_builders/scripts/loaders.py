@@ -24,7 +24,8 @@ def aggregation_definer(dataset: str,
     if dataset == 'gleam':
         return 'sum'
     elif (('precipitation' in variable) |
-          ('evaporation' in variable) | ('tot_prec' in variable)):
+          ('evaporation' in variable) |
+          ('tot_prec' in variable) | ('pr' in variable)):
         return 'sum'
     else:
         return 'mean'
@@ -49,6 +50,10 @@ def grid_descriptor(dataset_name: str,
     return {dataset_name: {'res': half_resolution,
                            'f_path': multi_var_nc(path_to_nc=files,
                                                   file_extension=extension)}}
+
+
+def merge_cmip_pathes(*dicts):
+    return dict(j for i in dicts[0] for j in i.items())
 
 
 def read_with_date_index(file_path: str):

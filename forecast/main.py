@@ -1,4 +1,4 @@
-from scripts.tft_data import open_for_tft, train_val_split
+from scripts.tft_data import open_for_tft, train_val_split_std
 # from scripts.model_eval import nnse
 
 import glob
@@ -9,7 +9,7 @@ import torch
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import EarlyStopping, LearningRateMonitor
 from pytorch_forecasting import TemporalFusionTransformer
-from pytorch_forecasting.metrics import RMSE
+from pytorch_forecasting.metrics import QuantileLoss
 from pytorch_lightning.loggers import TensorBoardLogger
 
 # setting device on GPU if available, else CPU
@@ -66,12 +66,9 @@ file = open_for_tft(
     with_static=True,
     shuffle_static=False)
 
-(train_ds, train_loader,
- val_ds, val_loader, val_df,
- _, _, _,
- scaler) = train_val_split(file,
-                           hydro_target=hydro_target,
-                           with_static=True)
+train_val_data = train_val_split_std(file,
+                                     hydro_target=hydro_target,
+                                     with_static=True)
 
 
 # configure network and trainer
@@ -80,7 +77,7 @@ early_stop_callback = EarlyStopping(monitor="val_loss",
                                     mode="min")
 lr_logger = LearningRateMonitor()  # log the learning rate
 # logging results to a tensorboard
-logger = TensorBoardLogger("lvl_prediction_multi_gauge")
+logger = TensorBoardLogger("h_prediction_std_meteo_encoder")
 
 if device == 'cuda':
     accel = 'gpu'
@@ -88,27 +85,31 @@ else:
     accel = 'cpu'
 
 trainer = pl.Trainer(
-    max_epochs=30,
+    max_epochs=20,
     accelerator='auto',
     enable_model_summary=True,
     check_val_every_n_epoch=1,
-    gradient_clip_val=0.5,
-    log_every_n_steps=2,
+    gradient_clip_val=0.4,
+    log_every_n_steps=1,
     callbacks=[lr_logger, early_stop_callback],
     logger=logger,)
 
 tft = TemporalFusionTransformer.from_dataset(
-    train_ds,
+    train_val_data['train_ds'],
     learning_rate=1e-3,
     hidden_size=256,
+    hidden_continuous_size=128,
     dropout=0.4,
-    loss=RMSE(),
-    reduce_on_plateau_patience=6,
+    lstm_layers=2,
+    attention_head_size=8,
+    loss=QuantileLoss(),
+    # time_varying_reals_encoder=meteo_input,
+    # allowed_encoder_known_variable_names=meteo_input,
     optimizer='adam')
 
 print(f"Number of parameters in network: {tft.size()/1e3:.1f}k")
 
 # fit network
 trainer.fit(tft,
-            train_dataloaders=train_loader,
-            val_dataloaders=val_loader)
+            train_dataloaders=train_val_data['train_dl'],
+            val_dataloaders=train_val_data['val_dl'])

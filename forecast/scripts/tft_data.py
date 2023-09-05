@@ -263,6 +263,7 @@ def train_val_split_min_max(era_df: pd.DataFrame,
             max_prediction_length=prediction_length,
             static_reals=static_parameters,
             time_varying_known_reals=meteo_input,
+            target_normalizer=None,
             scalers={'name': 'None'})
     else:
         train_ds = TimeSeriesDataSet(
@@ -275,6 +276,7 @@ def train_val_split_min_max(era_df: pd.DataFrame,
             max_encoder_length=encoder_length,
             max_prediction_length=prediction_length,
             time_varying_known_reals=meteo_input,
+            target_normalizer=None,
             scalers={'name': 'None'})
 
     val_ds = TimeSeriesDataSet.from_dataset(train_ds, val_df,
@@ -397,6 +399,7 @@ def train_val_split_std(era_df: pd.DataFrame,
             max_prediction_length=prediction_length,
             static_reals=static_parameters,
             time_varying_known_reals=meteo_input,
+            target_normalizer=None,
             scalers={'name': 'None'})
     else:
         train_ds = TimeSeriesDataSet(
@@ -409,6 +412,7 @@ def train_val_split_std(era_df: pd.DataFrame,
             max_encoder_length=encoder_length,
             max_prediction_length=prediction_length,
             time_varying_known_reals=meteo_input,
+            target_normalizer=None,
             scalers={'name': 'None'})
 
     val_ds = TimeSeriesDataSet.from_dataset(train_ds, val_df,

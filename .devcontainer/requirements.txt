@@ -2,7 +2,7 @@
 pandas
 h5py
 numba
-xarray==0.21.1
+xarray
 dask
 netCDF4
 bottleneck
@@ -23,7 +23,7 @@ scipy
 catboost
 shap
 pytorch-forecasting==0.10.3
-neuralhydrology==1.5
+neuralhydrology
 # cute jupyter
 jupyter
 ipywidgets==7.

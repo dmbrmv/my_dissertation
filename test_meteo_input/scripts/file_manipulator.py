@@ -25,7 +25,7 @@ def file_checker(file_path: str,
     return condition_1
 
 
-def file_rewriter(q_pathes: list,
+def file_rewriter(file_pathes: list,
                   area_index,
                   ts_dir: Path,
                   hydro_target: str,
@@ -34,7 +34,7 @@ def file_rewriter(q_pathes: list,
     shutil.rmtree(ts_dir)
     ts_dir.mkdir(exist_ok=True, parents=True)
 
-    for file in q_pathes:
+    for file in file_pathes:
         gauge_id = file.split('/')[-1][:-3]
 
         if gauge_id in really_bad_gauges:
