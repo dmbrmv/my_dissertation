@@ -1,4 +1,5 @@
 FROM pytorch/pytorch
+ARG DEBIAN_FRONTEND=noninteractive
 RUN echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections
 RUN apt-get update && apt-get install -y git wget libspatialindex-dev vim git-lfs ttf-mscorefonts-installer
 # Default powerline10k theme, no plugins installed
