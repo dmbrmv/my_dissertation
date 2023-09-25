@@ -22,6 +22,7 @@ scikit-learn
 scipy
 catboost
 shap
+darts
 pytorch-forecasting==0.10.3
 neuralhydrology
 # cute jupyter
