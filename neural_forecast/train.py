@@ -11,10 +11,10 @@ from neuralhydrology.utils.config import Config
 
 era_input = ['prcp_e5l',  't_max_e5l', 't_min_e5l']
 # q_mm_day or lvl_mbs
-hydro_target = 'q_mm_day'
-q_h_relation = False
+hydro_target = 'lvl_sm'
+q_h_relation = True
 
-if hydro_target == 'lvl_mbs':
+if hydro_target == 'lvl_sm':
     static_parameters = ['for_pc_sse', 'crp_pc_sse',
                          'inu_pc_ult', 'ire_pc_sse',
                          'lka_pc_use', 'prm_pc_sse',
@@ -55,7 +55,7 @@ train_rewriter(era_pathes=glob.glob(
                ts_dir=ts_dir,
                hydro_target=hydro_target,
                area_index=ws_file.index,
-               predictors=era_input)
+               predictors=[*era_input])
 
 # define variables require to perform hindcast
 gauges = [file.split('/')[-1][:-3] for
@@ -73,11 +73,11 @@ cfg.update_config(yml_path_or_dict={
     # define storage and experiment
     'experiment_name': f'{model_name}_{hydro_target}',
     'model': f'{model_name}',
-    'run_dir': './',
+    'run_dir': './model_runs/',
     'data_dir': '../geo_data/',
     # define inner parameters
     'static_attributes': static_parameters,
-    'dynamic_inputs': era_input,
+    'dynamic_inputs': [*era_input],
     # 'hindcast_inputs': era_input,
     # 'forecast_inputs': era_input,
     'target_variables': [hydro_target],

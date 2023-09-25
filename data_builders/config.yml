@@ -19,22 +19,22 @@
 
 # # Necessary pathes to geometry manipulations
 # inside container ../ outside /home/dima/Data
-watershed_storage: '../geo_data/great_db/geometry/'
+watershed_storage: '/home/dima/Data/geo_data/great_db/geometry/'
 watershed_name : 'russia_ws'
-grid_storage: '../geo_data/cmip_result_585'
-save_storage: '../geo_data/great_db/geometry/example_ws'
+grid_storage: '/home/dima/Data/geo_data/cmip_result_585'
+save_storage: '/home/dima/Data/geo_data/great_db/geometry/example_ws'
 
 acc_faktor: 1000
-point_geometry: '../geo_data/great_db/geometry/russia_gauges.gpkg'
+point_geometry: '/home/dima/Data/geo_data/great_db/geometry/russia_gauges.gpkg'
 
-mask_storage: '../geo_data/great_db/geometry_builder/region_masks'
-accum_masks: '../geo_data/great_db/geometry_builder/accum_masks'
-raster_storage: '../geo_data/great_db/geometry_builder/aoi_rasters'
-initial_fdir: '../geo_data/great_db/geometry_builder'
+mask_storage: '/home/dima/Data/geo_data/great_db/geometry_builder/region_masks'
+accum_masks: '/home/dima/Data/geo_data/great_db/geometry_builder/accum_masks'
+raster_storage: '/home/dima/Data/geo_data/great_db/geometry_builder/aoi_rasters'
+initial_fdir: '/home/dima/Data/geo_data/great_db/geometry_builder'
 
-river_net_storage: '../geo_data/great_db/geometry/river_network'
+river_net_storage: '/home/dima/Data/geo_data/great_db/geometry/river_network'
 # Necessary pathes for meteo aggregations
-initial_meteo: '../geo_data/meteorology'
+initial_meteo: '/home/dima/Data/geo_data/meteorology'
 final_meteo: 
 
 #Parameters for ML model

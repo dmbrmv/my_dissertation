@@ -13,7 +13,7 @@ dynamic_inputs:
 dynamics_embedding:
 epochs: 30
 evolving_attributes:
-experiment_name: cudalstm_q_mm_day
+experiment_name: cudalstm_lvl_sm_cmip_val_noresm2
 forecast_hidden_size: 256
 forecast_overlap:
 head: regression
@@ -68,12 +68,13 @@ static_attributes:
 - slp_dg_sav
 - ws_area
 - ele_mt_sav
+- height_bs
 statics_embedding:
 target_noise_std: 0.005
 target_variables:
-- q_mm_day
+- lvl_sm
 test_basin_file: every_basin.txt
-test_end_date: 31/12/2020
+test_end_date: 31/12/2025
 test_start_date: 01/01/2019
 train_basin_file: every_basin.txt
 train_data_file: None
@@ -81,7 +82,7 @@ train_end_date: 31/12/2016
 train_start_date: 01/01/2009
 use_basin_id_encoding: false
 validate_every: 1
-validate_n_random_basins: 1112
+validate_n_random_basins: 1406
 validation_basin_file: every_basin.txt
 validation_end_date: 31/12/2018
 validation_start_date: 01/01/2017
