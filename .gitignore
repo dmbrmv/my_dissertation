@@ -7,7 +7,7 @@ __pycache__/
 .lr_find*
 test.ipynb
 test_2.ipynb
-# .devcontainer/
+.devcontainer/
 
 ## ignore in esimo
 chromedriver_linux64.zip
