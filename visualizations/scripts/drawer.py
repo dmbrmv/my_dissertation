@@ -212,7 +212,7 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
             # plot russia basemap
             basemap_data.to_crs(aea_crs_proj4).plot(  # type: ignore
                 ax=ax, color='grey', edgecolor='black',
-                legend=False, alpha=0.8)
+                legend=False, alpha=0.8, linewidth=0.6)
         gdf_to_plot = gdf_to_plot.to_crs(aea_crs_proj4)  # type: ignore
         # plot variable
         if just_points:
@@ -239,8 +239,8 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
                 ax=ax,
                 column=columns_from_gdf[i],
                 cmap=cmap, norm=norm_cmap,
-                marker='o', markersize=12,
-                edgecolor='black', linewidth=0.2,
+                marker='o', markersize=14,
+                edgecolor='black', linewidth=0.1,
                 legend=True,
                 legend_kwds={'orientation': 'horizontal',
                              'shrink': 0.3,
@@ -330,8 +330,10 @@ def metric_viewer(gauges_file: gpd.GeoDataFrame,
                                                 'gauge': 'gauge_id'})
     model_metric['gauge_id'] = model_metric['gauge_id'].astype('str')
     model_metric = model_metric.set_index('gauge_id')
-
-    res_file = gauges_file.set_index('gauge_id').join(model_metric).dropna()
+    if 'gauge_id' not in gauges_file.columns:
+        res_file = gauges_file.join(model_metric).dropna()
+    else:
+        res_file = gauges_file.set_index('gauge_id').join(model_metric).dropna()
     nse_median = res_file[metric_col].median()
     # res_file.loc[res_file[metric_col] < 0, metric_col] = 0
 
