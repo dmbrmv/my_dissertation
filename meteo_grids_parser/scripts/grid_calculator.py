@@ -5,7 +5,6 @@ from .nc_proc import nc_by_extent
 from dask import config as dask_cfg
 from shapely.geometry import Polygon
 import geopandas as gpd
-import regionmask
 import pandas as pd
 import numpy as np
 import xarray as xr
@@ -94,76 +93,65 @@ class Gridder:
                                    dataset=self.dataset)
         # calculate area of watershed to latter comparisons
         ws_area = polygon_area(geo_shape=ws_gdf.loc[0, 'geometry'])
-        if ws_area < 420:
-            # get lat, lon which help define area for intersection
-            nc_lat, nc_lon = mask_nc.lat.values, mask_nc.lon.values
+        # get lat, lon which help define area for intersection
+        nc_lat, nc_lon = mask_nc.lat.values, mask_nc.lon.values
 
-            # emulate polygons for grid
-            polygons = list()
-            for lat in nc_lat:
-                for lon in nc_lon:
-                    # h = 0.125 as a half of ERA5 resolution
-                    # phi rotation angle
-                    polygons.append(Polygon(
-                        getSquareVertices(mm=(lon, lat),
-                                          h=self.grid_res,
-                                          phi=0)))
-            # create geodataframe from each polygon from emulation
-            polygons = [create_gdf(poly) for poly in polygons]
-            # calculate area of watershed to latter comparisons
-            ws_area = polygon_area(geo_shape=ws_gdf.loc[0, 'geometry'])
-            # find intersection beetween grid cell and actual watershed
-            intersected = list()
-            for polygon in polygons:
-                try:
-                    intersected.append(gpd.overlay(df1=ws_gdf,
-                                                   df2=polygon,
-                                                   how='intersection'))
-                except KeyError:
-                    intersected.append(gpd.GeoDataFrame())
-            # find biggest intersection if it returns MultiPolygon instance
-            # select biggest Polygon in MultiPolygon
-            intersected = [create_gdf(
-                poly_from_multipoly(
-                    section.loc[0, 'geometry']))  # type: ignore
-                if len(section) != 0
-                else gpd.GeoDataFrame()
-                for section in intersected]
-            # create mask for intersection with net_cdf
-            inter_mask = np.array([False if section.empty is True
-                                   else True
-                                   for section in intersected])
-            # shape of initial coordindate size
-            grid_shape = (len(nc_lat), len(nc_lon))
+        # emulate polygons for grid
+        polygons = list()
+        for lat in nc_lat:
+            for lon in nc_lon:
+                # h = 0.125 as a half of ERA5 resolution
+                # phi rotation angle
+                polygons.append(Polygon(
+                    getSquareVertices(mm=(lon, lat),
+                                      h=self.grid_res,
+                                      phi=0)))
+        # create geodataframe from each polygon from emulation
+        polygons = [create_gdf(poly) for poly in polygons]
+        # calculate area of watershed to latter comparisons
+        ws_area = polygon_area(geo_shape=ws_gdf.loc[0, 'geometry'])
+        # find intersection beetween grid cell and actual watershed
+        intersected = list()
+        for polygon in polygons:
+            try:
+                intersected.append(gpd.overlay(df1=ws_gdf,
+                                               df2=polygon,
+                                               how='intersection'))
+            except KeyError:
+                intersected.append(gpd.GeoDataFrame())
+        # find biggest intersection if it returns MultiPolygon instance
+        # select biggest Polygon in MultiPolygon
+        intersected = [create_gdf(
+            poly_from_multipoly(
+                section.loc[0, 'geometry']))  # type: ignore
+            if len(section) != 0
+            else gpd.GeoDataFrame()
+            for section in intersected]
+        # create mask for intersection with net_cdf
+        inter_mask = np.array([False if section.empty is True
+                               else True
+                               for section in intersected])
+        # shape of initial coordindate size
+        grid_shape = (len(nc_lat), len(nc_lon))
 
-            inter_mask = inter_mask.reshape(grid_shape)
-            inter_mask = xr.DataArray(data=inter_mask,
-                                      dims=['lat', 'lon'],
-                                      coords=[nc_lat, nc_lon])
-            # calculate weights of each intersection correspond to net cdf grid
-            weights = np.array(
-                [0 if section.empty else
-                 polygon_area(geo_shape=section.loc[0, 'geometry']) / ws_area
-                 for i, section in enumerate(intersected)])
-            weights = weights.reshape(grid_shape)
-            # transform to DataArray for calculations
-            weights = xr.DataArray(data=weights,
-                                   dims=['lat', 'lon'])
-            weights.name = 'weights'
-            weights = weights.where(inter_mask, drop=True)
-            weights = weights.fillna(0)
-            weights.to_netcdf(f'{self.weight_folder}/{self.gauge_id}.nc')
-            gc.collect()
-
-        else:
-            weights = regionmask.mask_geopandas(self.ws_geom,
-                                                mask_nc['lon'],
-                                                mask_nc['lat'])
-            bool_mask = ~np.isnan(weights.values)
-            bool_mask = bool_mask.astype(int)
-            weights.values = bool_mask
-            weights.to_netcdf(f'{self.weight_folder}/{self.gauge_id}.nc')
-            gc.collect()
+        inter_mask = inter_mask.reshape(grid_shape)
+        inter_mask = xr.DataArray(data=inter_mask,
+                                  dims=['lat', 'lon'],
+                                  coords=[nc_lat, nc_lon])
+        # calculate weights of each intersection correspond to net cdf grid
+        weights = np.array(
+            [0 if section.empty else
+                polygon_area(geo_shape=section.loc[0, 'geometry']) / ws_area
+                for i, section in enumerate(intersected)])
+        weights = weights.reshape(grid_shape)
+        # transform to DataArray for calculations
+        weights = xr.DataArray(data=weights,
+                               dims=['lat', 'lon'])
+        weights.name = 'weights'
+        weights = weights.where(inter_mask, drop=True)
+        weights = weights.fillna(0)
+        weights.to_netcdf(f'{self.weight_folder}/{self.gauge_id}.nc')
+        gc.collect()
 
         return weights
 

@@ -16,8 +16,8 @@ train_start_date: '01/01/2009'
 train_end_date: '31/12/2016'
 validation_start_date: '01/01/2017'
 validation_end_date: '31/12/2018'
-test_start_date: '01/01/2019'
-test_end_date: '31/12/2020'
+test_start_date: '01/01/2009'
+test_end_date: '31/12/2016'
 
 # 2008 -- 2016
 # 2016 -- 2017
