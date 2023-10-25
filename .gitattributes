@@ -1,2 +1,2 @@
-icon_parser/data/static_icon/weights_icon_world.nc filter=lfs diff=lfs merge=lfs -text
 meteo_grids_parser/data/russia_ws.gpkg filter=lfs diff=lfs merge=lfs -text
+icon_parser/data/static_icon/icon_weights.nc filter=lfs diff=lfs merge=lfs -text

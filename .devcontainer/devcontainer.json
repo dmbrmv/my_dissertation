@@ -26,14 +26,14 @@
 		"mutantdino.resourcemonitor"
 	],
 	"runArgs": [
-		"--gpus",
+		// "--gpus",
 		"all",
 		"--ipc=host"
 	],
 	"mounts": [
 		// server
-		// "source=/home/anton/dima_experiments/geo_data,target=/workspaces/my_dissertation/geo_data,type=bind,consistency=cached"
+		"source=/home/anton/hdd/data/great_db,target=/workspaces/geo_data,type=bind,consistency=cached"
 		// home
-		"source=/home/dima/Data/geo_data,target=/workspaces/my_dissertation/geo_data,type=bind,consistency=cached"
+		// "source=/home/dima/Data/geo_data,target=/workspaces/my_dissertation/geo_data,type=bind,consistency=cached"
 	]
 }

@@ -76,9 +76,9 @@ def nc_by_extent(nc: xr.Dataset,
 
     # select nc inside of extent
     masked_nc = nc.where(
-        nc.lat >= min_lat, drop=True).where(
-        nc.lat <= max_lat, drop=True).where(
-        nc.lon >= min_lon, drop=True).where(
-        nc.lon <= max_lon, drop=True)
+        nc.lat >= min_lat-grid_res, drop=True).where(
+        nc.lat <= max_lat+grid_res, drop=True).where(
+        nc.lon >= min_lon-grid_res, drop=True).where(
+        nc.lon <= max_lon+grid_res, drop=True)
     masked_nc = masked_nc.chunk(chunks='auto')
     return masked_nc

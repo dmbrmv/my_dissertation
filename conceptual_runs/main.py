@@ -6,7 +6,7 @@ from pathlib import Path
 calibration_place = Path('./cal_res')
 hbv_calibration = Path(f'{calibration_place}/hbv_full')
 hbv_calibration.mkdir(exist_ok=True, parents=True)
-gr4j_calibration = Path(f'{calibration_place}/hbv_full')
+gr4j_calibration = Path(f'{calibration_place}/gr4j_full')
 gr4j_calibration.mkdir(exist_ok=True, parents=True)
 
 
@@ -30,13 +30,13 @@ for i, gauge in enumerate([i.split('/')[-1][:-3]
                     hbv_df.loc[i, 'NSE'] = get_params(
                         gauge_id=gauge,
                         model_name=model,
-                        iter_number=60000,
+                        iter_number=24000,
                         params_path=hbv_calibration,
                         train=train, test=test,
                         calibrate=True,
                         with_plot=False)
                 except Exception as e:
-                    with open('./hbv_error_full.txt', 'w') as f:
+                    with open('./hbv_error_full.txt', 'a') as f:
                         f.write(''.join(f'{gauge}\n'))
                     print(e)
                     continue
@@ -52,13 +52,13 @@ for i, gauge in enumerate([i.split('/')[-1][:-3]
                     gr4j_df.loc[i, 'NSE'] = get_params(
                         gauge_id=gauge,
                         model_name=model,
-                        iter_number=60000,
+                        iter_number=24000,
                         params_path=gr4j_calibration,
                         train=train, test=test,
                         calibrate=True,
                         with_plot=False)
                 except Exception:
-                    with open('./gr4j_error_full.txt', 'w') as f:
+                    with open('./gr4j_error_full.txt', 'a') as f:
                         f.write(''.join(f'{gauge}\n'))
                     continue
             else:

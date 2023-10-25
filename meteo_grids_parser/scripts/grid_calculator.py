@@ -92,6 +92,8 @@ class Gridder:
                                    shape=self.ws_geom,
                                    grid_res=self.grid_res,
                                    dataset=self.dataset)
+        # calculate area of watershed to latter comparisons
+        ws_area = polygon_area(geo_shape=ws_gdf.loc[0, 'geometry'])
 
         # get lat, lon which help define area for intersection
         nc_lat, nc_lon = mask_nc.lat.values, mask_nc.lon.values
@@ -108,8 +110,7 @@ class Gridder:
                                       phi=0)))
         # create geodataframe from each polygon from emulation
         polygons = [create_gdf(poly) for poly in polygons]
-        # calculate area of watershed to latter comparisons
-        ws_area = polygon_area(geo_shape=ws_gdf.loc[0, 'geometry'])
+
         # find intersection beetween grid cell and actual watershed
         intersected = list()
         for polygon in polygons:
@@ -122,7 +123,8 @@ class Gridder:
         # find biggest intersection if it returns MultiPolygon instance
         # select biggest Polygon in MultiPolygon
         intersected = [create_gdf(
-            poly_from_multipoly(section.loc[0, 'geometry']))  # type: ignore
+            poly_from_multipoly(
+                section.loc[0, 'geometry']))  # type: ignore
             if len(section) != 0
             else gpd.GeoDataFrame()
             for section in intersected]
@@ -140,8 +142,8 @@ class Gridder:
         # calculate weights of each intersection correspond to net cdf grid
         weights = np.array(
             [0 if section.empty else
-             polygon_area(geo_shape=section.loc[0, 'geometry']) / ws_area
-             for i, section in enumerate(intersected)])
+                polygon_area(geo_shape=section.loc[0, 'geometry']) / ws_area
+                for i, section in enumerate(intersected)])
         weights = weights.reshape(grid_shape)
         # transform to DataArray for calculations
         weights = xr.DataArray(data=weights,

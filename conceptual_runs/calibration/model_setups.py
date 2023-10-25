@@ -139,7 +139,7 @@ class hbv_setup(object):
     K1 = Uniform(low=0.01, high=0.8)
     K2 = Uniform(low=0.001, high=0.15)
     LP = Uniform(low=0.3, high=1.)
-    MAXBAS = Uniform(low=1., high=3.)
+    MAXBAS = Uniform(low=2., high=7.)
     PERC = Uniform(low=0., high=6.)
     UZL = Uniform(low=0., high=100.)
     PCORR = Uniform(low=0.5, high=2.)
