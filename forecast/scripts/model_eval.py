@@ -1,6 +1,7 @@
 from pytorch_forecasting import TimeSeriesDataSet
 from sklearn.preprocessing import MinMaxScaler
 from pytorch_forecasting.metrics.base_metrics import MultiHorizonMetric
+from sklearn.metrics import mean_squared_error
 from pytorch_forecasting import TemporalFusionTransformer
 import torch
 import pandas as pd
@@ -22,10 +23,57 @@ class nnse(MultiHorizonMetric):
         return nnse
 
 
-def nse(pred, target):
-    denom = np.sum((target-pred)**2)
-    divsr = np.sum((target-np.mean(target))**2)
-    return 1-(denom/divsr)
+def nse(predictions, targets):
+    return 1-(
+        np.nansum((targets-predictions)**2)/np.nansum(
+            (targets-np.nanmean(targets))**2))
+
+
+def kge(predictions, targets):
+    sim_mean = np.mean(targets, axis=0)
+    obs_mean = np.mean(predictions)
+
+    r_num = np.sum((targets - sim_mean) * (predictions - obs_mean),
+                   axis=0)
+    r_den = np.sqrt(np.sum((targets - sim_mean) ** 2,
+                           axis=0) * np.sum((predictions - obs_mean) ** 2,))
+    r = r_num / r_den
+    # calculate error in spread of flow alpha
+    alpha = np.std(targets, axis=0) / np.std(predictions)
+    # calculate error in volume beta (bias of mean discharge)
+    beta = (np.sum(targets, axis=0)
+            / np.sum(predictions))
+    # calculate the Kling-Gupta Efficiency KGE
+    kge_ = 1 - np.sqrt((r - 1) ** 2 + (alpha - 1) ** 2 + (beta - 1) ** 2)
+
+    return kge_, r, alpha, beta
+
+
+def rmse(predictions, targets):
+    return mean_squared_error(targets, predictions, squared=False)
+
+
+def relative_error(predictions, targets):
+    return np.mean(((targets - predictions)/targets) * 100)
+
+
+def metric_df(gauge_id, predictions, targets):
+
+    res_df = pd.DataFrame()
+
+    res_df.loc[gauge_id, 'NSE'] = nse(predictions,
+                                      targets)
+
+    res_df.loc[gauge_id, ['KGE', 'r', 'alpha', 'beta']] = kge(predictions,
+                                                              targets)
+
+    res_df.loc[gauge_id, 'RMSE'] = rmse(predictions,
+                                        targets)
+
+    res_df.loc[gauge_id, 'delta'] = relative_error(predictions,
+                                                   targets)
+
+    return res_df
 
 
 def pred_res_builder(gauge_id: str,
@@ -65,9 +113,9 @@ def pred_res_builder(gauge_id: str,
     compare_res = val_df[val_df['gauge_id'] == gauge_id]
     compare_res = compare_res[[val in idx['time_idx'].values  # type: ignore
                                for val in compare_res['time_idx'].values]]
-    compare_res['q_mm_day_pred'] = res
+    compare_res[f'{hydro_target}_pred'] = res
     if with_static:
-        with_pred = compare_res[['q_mm_day_pred',
+        with_pred = compare_res[[f'{hydro_target}_pred',
                                 *meteo_input, *static_parameters]]
         with_obs = compare_res[[hydro_target,
                                 *meteo_input, *static_parameters]]
@@ -77,14 +125,14 @@ def pred_res_builder(gauge_id: str,
         new_scaler.min_, new_scaler.scale_ = scaler.min_, scaler.scale_
 
         # recalculate
-        with_pred[['q_mm_day_pred',
+        with_pred[[f'{hydro_target}_pred',
                    *meteo_input,
                    *static_parameters]] = new_scaler.inverse_transform(with_pred)
         with_obs[[hydro_target,
                   *meteo_input,
                   *static_parameters]] = scaler.inverse_transform(with_obs)
     else:
-        with_pred = compare_res[['q_mm_day_pred', *meteo_input]]
+        with_pred = compare_res[[f'{hydro_target}_pred', *meteo_input]]
         with_obs = compare_res[[hydro_target, *meteo_input]]
 
         new_scaler = MinMaxScaler()
@@ -92,20 +140,21 @@ def pred_res_builder(gauge_id: str,
         new_scaler.min_, new_scaler.scale_ = scaler.min_, scaler.scale_
 
         # recalculate
-        with_pred[['q_mm_day_pred',
+        with_pred[[f'{hydro_target}_pred',
                    *meteo_input]] = new_scaler.inverse_transform(with_pred)
         with_obs[[hydro_target,
                   *meteo_input]] = scaler.inverse_transform(with_obs)
 
-    compare_res = compare_res[['date', 'q_mm_day', 'q_mm_day_pred']]
-    compare_res['q_mm_day'] = with_obs[hydro_target]
-    compare_res['q_mm_day_pred'] = with_pred['q_mm_day_pred']
+    compare_res = compare_res[['date', f'{hydro_target}',
+                               f'{hydro_target}_pred']]
+    compare_res[f'{hydro_target}'] = with_obs[hydro_target]
+    compare_res[f'{hydro_target}_pred'] = with_pred[f'{hydro_target}_pred']
     compare_res = compare_res.set_index('date')
     compare_res.to_csv(f'{p}/{gauge_id}.csv')
 
     # get nse
-    pred_nse = nse(pred=compare_res['q_mm_day_pred'],
-                   target=compare_res['q_mm_day'])
+    pred_nse = nse(predictions=compare_res[f'{hydro_target}_pred'],
+                   targets=compare_res[f'{hydro_target}'])
     if with_plot:
         compare_res.plot()
         # get nse
@@ -209,3 +258,74 @@ def interpretation_for_gauge(interp_dict: dict,
                   decoder_worth.max(axis=1)[0])
 
     return attnt.cpu(), static_worth, enc_col, dec_col
+
+
+def cmip_prediction(gauge_id: str,
+                    hydro_target: str,
+                    static_parameters: list,
+                    meteo_input: list,
+                    model_checkpoint: str,
+                    train_dataset: TimeSeriesDataSet,
+                    pred_df: pd.DataFrame,
+                    test_df: pd.DataFrame,
+                    scaler: MinMaxScaler,
+                    path_to_result: str):
+
+    p = Path(f'{path_to_result}')
+    p.mkdir(exist_ok=True, parents=True)
+    pred_ds = TimeSeriesDataSet.from_dataset(train_dataset,
+                                             pred_df,
+                                             scalers={'name': 'None'},
+                                             predict=False,
+                                             target_normalizer=None)
+    best_tft = TemporalFusionTransformer.load_from_checkpoint(
+        model_checkpoint)
+
+    raw_prediction, _, _ = best_tft.predict(
+        pred_ds.filter(lambda x: x.gauge_id == gauge_id),
+        mode="raw",
+        return_x=True,
+        return_index=True)
+    res = np.array([])
+    size_pred = len(raw_prediction['prediction'])  # type: ignore
+
+    for i, prediction in enumerate(raw_prediction['prediction']):
+        if i+6 == size_pred:
+            break
+        prediction = prediction.squeeze()  # type: ignore
+        res = np.concatenate([res[:i], prediction.cpu()])
+
+    new_scaler = MinMaxScaler()
+
+    new_scaler.min_, new_scaler.scale_ = (scaler.min_,
+                                          scaler.scale_)
+
+    test_df[[f'{hydro_target}',
+             *meteo_input,
+             *static_parameters]] = new_scaler.inverse_transform(
+                 test_df[[f'{hydro_target}',
+                          *meteo_input,
+                          *static_parameters]])
+    actual_df = test_df[test_df['gauge_id'] == gauge_id].set_index(
+        'date').loc['2019-01-01':'2020-12-25', :]
+
+    pred_df[[f'{hydro_target}',
+             *meteo_input,
+             *static_parameters]] = new_scaler.inverse_transform(
+                 pred_df[[f'{hydro_target}',
+                          *meteo_input,
+                          *static_parameters]])
+    predicted_df = pred_df[pred_df['gauge_id'] == gauge_id].set_index(
+        'date').loc['2019-01-01':'2020-12-25', :]
+
+    predicted_df['q_mm_day'] = res[:725]
+
+    res_df = pd.DataFrame()
+    res_df['date'] = pd.date_range(start='2019-01-01', end='2030-12-25')
+    res_df = res_df.set_index('date')
+    res_df['pred'] = predicted_df['q_mm_day']
+    res_df['obs'] = actual_df['q_mm_day']
+
+    res_df.to_csv(f'{p}/{gauge_id}.csv')
+
+    return res_df

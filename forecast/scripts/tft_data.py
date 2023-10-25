@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import xarray as xr
 from pytorch_forecasting import TimeSeriesDataSet
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import warnings
 warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 
@@ -23,8 +23,7 @@ def file_checker(file_path: str,
 def open_for_tft(nc_files: list,
                  static_path: str,
                  area_index,
-                 meteo_input: list = [
-                     'prcp_e5l',  't_max_e5l', 't_min_e5l'],
+                 meteo_input: list = ['prcp_e5l', 't_max_e5l', 't_min_e5l'],
                  hydro_target: str = 'q_mm_day',
                  static_parameters: list = ['for_pc_sse', 'crp_pc_sse',
                                             'inu_pc_ult', 'ire_pc_sse',
@@ -72,6 +71,7 @@ def open_for_tft(nc_files: list,
         except KeyError:
             print(f'No data for {gauge_id} !')
             continue
+
         cond = file_checker(file_path=file_path,
                             meteo_predictors=meteo_input,
                             hydro_target=hydro_target)
@@ -98,60 +98,159 @@ def open_for_tft(nc_files: list,
     return file
 
 
-def train_val_split(big_df: pd.DataFrame,
-                    meteo_input: list = [
-                        'prcp_e5l',  't_max_e5l', 't_min_e5l'],
-                    hydro_target: str = 'q_mm_day',
-                    static_parameters: list = ['for_pc_sse', 'crp_pc_sse',
-                                               'inu_pc_ult', 'ire_pc_sse',
-                                               'lka_pc_use', 'prm_pc_sse',
-                                               'pst_pc_sse', 'cly_pc_sav',
-                                               'slt_pc_sav', 'snd_pc_sav',
-                                               'kar_pc_sse', 'urb_pc_sse',
-                                               'gwt_cm_sav', 'lkv_mc_usu',
-                                               'rev_mc_usu', 'sgr_dk_sav',
-                                               'slp_dg_sav', 'ws_area',
-                                               'ele_mt_sav'],
-                    encoder_length: int = 365,
-                    prediction_length: int = 7,
-                    train_end: str = '2017-12-31',
-                    train_start: str = '2008-01-01',
-                    batch_size: int = 256,
-                    with_static: bool = True,
-                    require_train: bool = True):
+def open_cmip_tft(nc_files: list,
+                  static_path: str,
+                  area_index,
+                  era_index: list,
+                  cmip_index: list,
+                  hydro_target: str = 'q_mm_day',
+                  static_parameters: list = ['for_pc_sse', 'crp_pc_sse',
+                                             'inu_pc_ult', 'ire_pc_sse',
+                                             'lka_pc_use', 'prm_pc_sse',
+                                             'pst_pc_sse', 'cly_pc_sav',
+                                             'slt_pc_sav', 'snd_pc_sav',
+                                             'kar_pc_sse', 'urb_pc_sse',
+                                             'gwt_cm_sav', 'lkv_mc_usu',
+                                             'rev_mc_usu', 'sgr_dk_sav',
+                                             'slp_dg_sav', 'ws_area',
+                                             'ele_mt_sav'],
+                  with_static: bool = True,
+                  index_col: str = 'gauge_id') -> pd.DataFrame:
+    if with_static:
+        static_attributes = pd.read_csv(static_path,
+                                        index_col=index_col)
+        static_attributes.index = static_attributes.index.astype(str)
+        static_attributes = static_attributes.replace(np.NaN, 0.)
+    else:
+        static_attributes = None
 
-    if 'index' in big_df.columns:
-        big_df = big_df.rename(columns={'index': 'date'})
+    res_file = list()
+    for file_path in (nc_files):
+        gauge_id = file_path.split('/')[-1][:-3]
+        try:
+            if isinstance(static_attributes, pd.DataFrame):
+                static_attributes = static_attributes[[*static_parameters]]
+                gauge_static = static_attributes.loc[[gauge_id], :]
+            else:
+                gauge_static = None
+        except KeyError:
+            print(f'No data for {gauge_id} !')
+            continue
+
+        if gauge_id not in area_index:
+            continue
+        file = xr.open_dataset(file_path)
+        file = file.to_dataframe()
+        file = file[[*cmip_index]]
+        file = file.dropna(axis=0)
+        file = file.reset_index()
+        file['time_idx'] = file.index
+
+        if isinstance(gauge_static, pd.DataFrame):
+            for col in gauge_static.columns:
+                file[col] = gauge_static.loc[gauge_id, col]
+
+        res_file.append(file)
+
+    res_df = pd.concat(res_file, axis=0)
+    res_df[hydro_target] = 0.01
+    res_df = res_df[['date', 'gauge_id', 'time_idx',
+                     hydro_target, *cmip_index, *static_parameters]]
+    res_df = res_df.rename(columns={cmip: tft_name
+                                    for cmip, tft_name
+                                    in zip(cmip_index,
+                                           era_index)})
+    res_df = res_df.reset_index(drop=True)
+
+    return res_df
+
+
+def train_val_split_min_max(era_df: pd.DataFrame,
+                            cmip_df: pd.DataFrame = pd.DataFrame(),
+                            meteo_input: list = [
+                                'prcp_e5l', 't_max_e5l', 't_min_e5l'],
+                            hydro_target: str = 'q_mm_day',
+                            static_parameters: list = [
+                                'for_pc_sse', 'crp_pc_sse',
+                                'inu_pc_ult', 'ire_pc_sse',
+                                'lka_pc_use', 'prm_pc_sse',
+                                'pst_pc_sse', 'cly_pc_sav',
+                                'slt_pc_sav', 'snd_pc_sav',
+                                'kar_pc_sse', 'urb_pc_sse',
+                                'gwt_cm_sav', 'lkv_mc_usu',
+                                'rev_mc_usu', 'sgr_dk_sav',
+                                'slp_dg_sav', 'ws_area',
+                                'ele_mt_sav'],
+                            encoder_length: int = 365,
+                            prediction_length: int = 7,
+                            train_end: str = '2016-12-31',
+                            train_start: str = '2008-01-01',
+                            val_end: str = '2018-12-31',
+                            pred_start: str = '2018-01-01',
+                            pred_end: str = '2030-12-31',
+                            batch_size: int = 256,
+                            with_static: bool = True):
+
+    if 'index' in era_df.columns:
+        era_df = era_df.rename(columns={'index': 'date'})
 
     if with_static:
-        big_df = big_df[['date', 'time_idx', 'gauge_id',
+        era_df = era_df[['date', 'time_idx', 'gauge_id',
                         hydro_target, *meteo_input, *static_parameters]]
+        if not cmip_df.empty:
+            cmip_df = cmip_df[['date', 'time_idx', 'gauge_id',
+                               hydro_target, *meteo_input, *static_parameters]]
     else:
-        big_df = big_df[['date', 'time_idx', 'gauge_id',
+        era_df = era_df[['date', 'time_idx', 'gauge_id',
                         hydro_target, *meteo_input]]
-    big_df = big_df.dropna().reset_index(drop=True)
+        if not cmip_df.empty:
+            cmip_df = cmip_df[['date', 'time_idx', 'gauge_id',
+                               hydro_target, *meteo_input]]
+    era_df = era_df.dropna().reset_index(drop=True)
 
     scaler = MinMaxScaler(feature_range=(1, 10))
     if with_static:
-        big_df[[hydro_target, *meteo_input,
+        era_df[[hydro_target, *meteo_input,
                 *static_parameters]] = scaler.fit_transform(
-            big_df[[hydro_target, *meteo_input, *static_parameters]])
+            era_df[[hydro_target, *meteo_input, *static_parameters]])
+        if not cmip_df.empty:
+            cmip_df[[hydro_target, *meteo_input,
+                     *static_parameters]] = scaler.transform(
+                cmip_df[[hydro_target, *meteo_input, *static_parameters]])
     else:
-        big_df[[hydro_target, *meteo_input]] = scaler.fit_transform(
-            big_df[[hydro_target, *meteo_input]])
-
-    train_df = big_df[lambda x:
-                      (train_start <= x.date) &
-                      (x.date <= train_end)].reset_index(
-                          drop=True)  # type: ignore
+        era_df[[hydro_target, *meteo_input]] = scaler.fit_transform(
+            era_df[[hydro_target, *meteo_input]])
+        if not cmip_df.empty:
+            cmip_df[[hydro_target, *meteo_input]] = scaler.transform(
+                cmip_df[[hydro_target, *meteo_input]])
+    # cmip_df[hydro_target] = 1.0
+    train_df = era_df[
+        lambda x: (train_start <= x.date) &
+        (x.date <= train_end)].reset_index(drop=True)  # type: ignore
     # set time_idx in according to slice
     # with range from 0 to max for each gauge
     train_df['time_idx'] -= train_df['time_idx'].min()
-    val_df = big_df[lambda x:
-                    x.date > train_end].reset_index(drop=True)  # type: ignore
+    # get validation period
+    val_df = era_df[lambda x:
+                    (x.date > train_end) &
+                    (x.date <= val_end)].reset_index(drop=True)  # type: ignore
     # set time_idx in according to slice
     # with range from 0 to max for each gauge
     val_df['time_idx'] -= val_df['time_idx'].min()
+    # create test period
+    test_df = era_df[lambda x: x.date > val_end].reset_index(
+        drop=True)  # type: ignore
+    # create predict period
+    if not cmip_df.empty:
+        pred_df = cmip_df[lambda x: (pred_start <= x.date) &
+                          (x.date <= pred_end)].reset_index(drop=True)
+        pred_df['time_idx'] -= pred_df['time_idx'].min()
+    else:
+        pred_df = pd.DataFrame()
+    # clear memory
+    del (era_df)
+    del (cmip_df)
+
     if with_static:
         train_ds = TimeSeriesDataSet(
             data=train_df,
@@ -164,6 +263,7 @@ def train_val_split(big_df: pd.DataFrame,
             max_prediction_length=prediction_length,
             static_reals=static_parameters,
             time_varying_known_reals=meteo_input,
+            target_normalizer=None,
             scalers={'name': 'None'})
     else:
         train_ds = TimeSeriesDataSet(
@@ -176,18 +276,166 @@ def train_val_split(big_df: pd.DataFrame,
             max_encoder_length=encoder_length,
             max_prediction_length=prediction_length,
             time_varying_known_reals=meteo_input,
+            target_normalizer=None,
             scalers={'name': 'None'})
 
-    val_ds = TimeSeriesDataSet.from_dataset(train_ds,
-                                            val_df)
+    val_ds = TimeSeriesDataSet.from_dataset(train_ds, val_df,
+                                            predict=True,
+                                            stop_randomization=True)
+    # test_ds = TimeSeriesDataSet.from_dataset(train_ds,
+    #                                          test_df)
+    # if not pred_df.empty:
+    #     pred_ds = TimeSeriesDataSet.from_dataset(train_ds,
+    #                                              pred_df)
+    # else:
+    #     pred_ds = None
+    train_dl = train_ds.to_dataloader(train=True,
+                                      batch_size=batch_size,
+                                      num_workers=8,
+                                      pin_memory=True)
+    val_dl = val_ds.to_dataloader(train=False,
+                                  batch_size=batch_size,
+                                  num_workers=8,
+                                  pin_memory=True)
 
-    train_dataloader = train_ds.to_dataloader(train=True,
-                                              batch_size=batch_size,
-                                              num_workers=16)
-    val_dataloader = val_ds.to_dataloader(train=False,
-                                          batch_size=batch_size,
-                                          num_workers=16)
+    return {'train_ds': train_ds, 'train_loader': train_dl,
+            'train_df': train_df, 'test_df': test_df,
+            'val_loader': val_dl, 'pred_df': pred_df,
+            'scaler': scaler}
 
-    return (train_ds, train_dataloader,
-            val_ds, val_dataloader, val_df,
-            scaler)
+
+def train_val_split_std(era_df: pd.DataFrame,
+                        cmip_df: pd.DataFrame = pd.DataFrame(),
+                        meteo_input: list = [
+                            'prcp_e5l', 't_max_e5l', 't_min_e5l'],
+                        hydro_target: str = 'q_mm_day',
+                        static_parameters: list = ['for_pc_sse', 'crp_pc_sse',
+                                                   'inu_pc_ult', 'ire_pc_sse',
+                                                   'lka_pc_use', 'prm_pc_sse',
+                                                   'pst_pc_sse', 'cly_pc_sav',
+                                                   'slt_pc_sav', 'snd_pc_sav',
+                                                   'kar_pc_sse', 'urb_pc_sse',
+                                                   'gwt_cm_sav', 'lkv_mc_usu',
+                                                   'rev_mc_usu', 'sgr_dk_sav',
+                                                   'slp_dg_sav', 'ws_area',
+                                                   'ele_mt_sav'],
+                        encoder_length: int = 365,
+                        prediction_length: int = 7,
+                        train_end: str = '2016-12-31',
+                        train_start: str = '2008-01-01',
+                        val_end: str = '2018-12-31',
+                        pred_start: str = '2019-01-01',
+                        pred_end: str = '2030-12-31',
+                        batch_size: int = 256,
+                        with_static: bool = True):
+
+    if 'index' in era_df.columns:
+        era_df = era_df.rename(columns={'index': 'date'})
+
+    if with_static:
+        era_df = era_df[['date', 'time_idx', 'gauge_id',
+                        hydro_target, *meteo_input, *static_parameters]]
+        if not cmip_df.empty:
+            cmip_df = cmip_df[['date', 'time_idx', 'gauge_id',
+                               hydro_target, *meteo_input, *static_parameters]]
+    else:
+        era_df = era_df[['date', 'time_idx', 'gauge_id',
+                        hydro_target, *meteo_input]]
+        if not cmip_df.empty:
+            cmip_df = cmip_df[['date', 'time_idx', 'gauge_id',
+                               hydro_target, *meteo_input]]
+    era_df = era_df.dropna().reset_index(drop=True)
+    scaler = StandardScaler()
+    if with_static:
+        era_df[[hydro_target, *meteo_input,
+                *static_parameters]] = scaler.fit_transform(
+            era_df[[hydro_target, *meteo_input, *static_parameters]])
+        if not cmip_df.empty:
+            cmip_df[[hydro_target, *meteo_input,
+                     *static_parameters]] = scaler.transform(
+                cmip_df[[hydro_target, *meteo_input, *static_parameters]])
+    else:
+        era_df[[hydro_target, *meteo_input]] = scaler.fit_transform(
+            era_df[[hydro_target, *meteo_input]])
+        if not cmip_df.empty:
+            cmip_df[[hydro_target, *meteo_input]] = scaler.transform(
+                cmip_df[[hydro_target, *meteo_input]])
+    train_df = era_df[
+        lambda x: (train_start <= x.date) &
+        (x.date <= train_end)].reset_index(drop=True)  # type: ignore
+    # set time_idx in according to slice
+    # with range from 0 to max for each gauge
+    train_df['time_idx'] -= train_df['time_idx'].min()
+    # get validation period
+    val_df = era_df[lambda x:
+                    (x.date > train_end) &
+                    (x.date <= val_end)].reset_index(drop=True)  # type: ignore
+    # set time_idx in according to slice
+    # with range from 0 to max for each gauge
+    val_df['time_idx'] -= val_df['time_idx'].min()
+    # create test period
+    test_df = era_df[lambda x: x.date > val_end].reset_index(
+        drop=True)  # type: ignore
+    # create predict period
+    if not cmip_df.empty:
+        pred_df = cmip_df[lambda x: (pred_start <= x.date) &
+                          (x.date <= pred_end)].reset_index(drop=True)
+        pred_df['time_idx'] -= pred_df['time_idx'].min()
+    else:
+        pred_df = pd.DataFrame()
+    # clear memory
+    del (era_df)
+    del (cmip_df)
+
+    if with_static:
+        train_ds = TimeSeriesDataSet(
+            data=train_df,
+            allow_missing_timesteps=True,
+            time_idx="time_idx",
+            target=hydro_target,
+            group_ids=["gauge_id"],
+            time_varying_unknown_reals=[hydro_target],
+            max_encoder_length=encoder_length,
+            max_prediction_length=prediction_length,
+            static_reals=static_parameters,
+            time_varying_known_reals=meteo_input,
+            target_normalizer=None,
+            scalers={'name': 'None'})
+    else:
+        train_ds = TimeSeriesDataSet(
+            data=train_df,
+            allow_missing_timesteps=True,
+            time_idx="time_idx",
+            target=hydro_target,
+            group_ids=["gauge_id"],
+            time_varying_unknown_reals=[hydro_target],
+            max_encoder_length=encoder_length,
+            max_prediction_length=prediction_length,
+            time_varying_known_reals=meteo_input,
+            target_normalizer=None,
+            scalers={'name': 'None'})
+
+    val_ds = TimeSeriesDataSet.from_dataset(train_ds, val_df,
+                                            predict=True,
+                                            stop_randomization=True)
+    # test_ds = TimeSeriesDataSet.from_dataset(train_ds,
+    #                                          test_df)
+    # if not pred_df.empty:
+    #     pred_ds = TimeSeriesDataSet.from_dataset(train_ds,
+    #                                              pred_df)
+    # else:
+    #     pred_ds = None
+    train_dl = train_ds.to_dataloader(train=True,
+                                      batch_size=batch_size,
+                                      num_workers=8,
+                                      pin_memory=True)
+    val_dl = val_ds.to_dataloader(train=False,
+                                  batch_size=batch_size,
+                                  num_workers=8,
+                                  pin_memory=True)
+
+    return {'train_ds': train_ds,
+            'train_dl': train_dl, 'val_dl': val_dl,
+            'train_df': train_df, 'val_df': val_df,
+            'test_df': test_df, 'pred_df': pred_df,
+            'scaler': scaler}

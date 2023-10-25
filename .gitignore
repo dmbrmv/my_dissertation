@@ -7,7 +7,7 @@ __pycache__/
 .lr_find*
 test.ipynb
 test_2.ipynb
-# .devcontainer/
+.devcontainer/
 
 ## ignore in esimo
 chromedriver_linux64.zip
@@ -55,7 +55,11 @@ forecast/result/blind_gauge
 forecast/result/lost_gauge
 forecast/result/tft_single_8epoch
 forecast/result/tft_20epoch_256_RMSE
+forecast/result/tft_level_multi_256
 forecast/result/tft_no_static_20epoch_256_RMSE
+
+forecast/tft_prediction_troubles
+forecast/kinda_inference
 
 conceptual_runs/cal_res
 conclusions/results
@@ -63,3 +67,5 @@ conclusions/results
 metric_viewer/
 
 icon_parser/data
+neural_forecast/model_runs
+geometry/

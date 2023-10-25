@@ -1,77 +1,65 @@
 # Parameters necessary for data creation from zero
 
 # Necessary pathes to geometry manipulations
-save_storage: './test_data/geometry/example_ws'
-watershed_name : 'test_builder'
-acc_faktor: 1000
-point_geometry: './test_data/geometry/example_gauges.gpkg'
+# save_storage: './test_data/geometry/example_ws'
+# watershed_name : 'test_builder'
+# acc_faktor: 1000
+# point_geometry: './test_data/geometry/example_gauges.gpkg'
 
-mask_storage: './test_data/geometry_builder/region_masks'
-accum_masks: './test_data/geometry_builder/accum_masks'
-raster_storage: './test_data/geometry_builder/aoi_rasters'
-initial_fdir: './test_data/geometry_builder'
+# mask_storage: './test_data/geometry_builder/region_masks'
+# accum_masks: './test_data/geometry_builder/accum_masks'
+# raster_storage: './test_data/geometry_builder/aoi_rasters'
+# initial_fdir: './test_data/geometry_builder'
 
-watershed_storage: './test_data/geometry/example_ws/res'
-river_net_storage: './test_data/geometry/river_network'
-# Necessary pathes for meteo aggregations
-initial_meteo: './test_data/meteorology'
-grid_storage: './test_data/meteo_grids'
-final_meteo: './test_data/xr_meteo'
+# watershed_storage: './test_data/geometry/example_ws/res'
+# river_net_storage: './test_data/geometry/river_network'
+# # Necessary pathes for meteo aggregationsfinal
+# grid_storage: './test_data/meteo_grids'
+# final_meteo: './test_data/xr_meteo'
 
 # # Necessary pathes to geometry manipulations
-# save_storage: '../geo_data/great_db/geometry/example_ws'
-# watershed_name : 'russia_ws'
-# acc_faktor: 1000
-# point_geometry: '../geo_data/great_db/geometry/russia_gauges.gpkg'
+# inside container ../ outside /home/dima/Data
+watershed_storage: '/home/dima/Data/geo_data/great_db/geometry/'
+watershed_name : 'russia_ws'
+grid_storage: '/home/dima/Data/geo_data/cmip_result_585'
+save_storage: '/home/dima/Data/geo_data/great_db/geometry/example_ws'
 
-# mask_storage: '../geo_data/great_db/geometry_builder/region_masks'
-# accum_masks: '../geo_data/great_db/geometry_builder/accum_masks'
-# raster_storage: '../geo_data/great_db/geometry_builder/aoi_rasters'
-# initial_fdir: '../geo_data/great_db/geometry_builder'
+acc_faktor: 1000
+point_geometry: '/home/dima/Data/geo_data/great_db/geometry/russia_gauges.gpkg'
 
-# watershed_storage: '../geo_data/great_db/geometry/example_ws/res'
-# river_net_storage: '../geo_data/great_db/geometry/river_network'
-# # Necessary pathes for meteo aggregations
-# initial_meteo: '../geo_data/meteorology'
-# grid_storage: '../geo_data/meteo_grids'
+mask_storage: '/home/dima/Data/geo_data/great_db/geometry_builder/region_masks'
+accum_masks: '/home/dima/Data/geo_data/great_db/geometry_builder/accum_masks'
+raster_storage: '/home/dima/Data/geo_data/great_db/geometry_builder/aoi_rasters'
+initial_fdir: '/home/dima/Data/geo_data/great_db/geometry_builder'
 
-
-
-
-
-
-
-
-
-# Parameters for statistical model
-posts_path: posts.yml
-points_path: points.yml
-geom_path: data/geometry/gauges_openf.shp
-levels_path: data/hydro/level/levels.pkl
+river_net_storage: '/home/dima/Data/geo_data/great_db/geometry/river_network'
+# Necessary pathes for meteo aggregations
+initial_meteo: '/home/dima/Data/geo_data/meteorology'
+final_meteo: 
 
 #Parameters for ML model
-ml_posts_path: ml_posts.yml
+ml_posts_path: 
 ais_first_date: '01-01-2008'
 ais_last_date: '12-31-2017'
-forecast_predictors: [ 'tas', 'pr' ]
+forecast_predictors:
 forecast_start_date: '01-01-2018'
-forecast_end_date: '12-31-2019'  # max 12-31-2019
+forecast_end_date: '12-31-2020'  # max 12-31-2019
 roc_auc_year: '2018'
 
 #Common parameters
-ws_path: data/geometry/watersheds_openf/watersheds_openf.shp
-layers_path: data/hydro/layer/all_layers.pkl
-id_label_path: data/hydro/level/label_id.pkl
-cmip_path: data/cmip
-meteo_path: data/meteo
-features_path: data/features
+ws_path: 
+layers_path: 
+id_label_path: 
+cmip_path: 
+meteo_path: 
+features_path: 
 
-water_cons_path: data/hydro/discharge/water_consumption.pkl
-water_lvl_path: data/hydro/level/levels_base.pkl
+water_cons_path: 
+water_lvl_path: 
 
-elevations_path: data/elevations/MERIT
-results_path: Results/inundation
-dzz_path: data/dzz_masks  # path to dzz masks
-mask_type: flood_mask  # flood_mask or still_mask
-sat_images_path: data/sat_images/
-max_distance_to_post_km: 10.0
+elevations_path: 
+results_path: 
+dzz_path: 
+mask_type: 
+sat_images_path: 
+max_distance_to_post_km: 

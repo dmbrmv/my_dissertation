@@ -2,7 +2,7 @@
 pandas
 h5py
 numba
-xarray==0.21.1
+xarray
 dask
 netCDF4
 bottleneck
@@ -14,6 +14,7 @@ descartes
 pyepsg
 cartopy
 rtree
+regionmask
 # machine learning
 tensorboard
 torch_tb_profiler
@@ -21,8 +22,9 @@ scikit-learn
 scipy
 catboost
 shap
-pytorch-forecasting
-neuralhydrology==1.5
+darts
+neuralhydrology
+darts
 # cute jupyter
 jupyter
 ipywidgets==7.

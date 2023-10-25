@@ -86,7 +86,6 @@ class Gridder:
         """
         # watershed boundaries geometry as geodataframe
         ws_gdf = create_gdf(self.ws_geom)
-
         with dask_cfg.set(**{'array.slicing.split_large_chunks': True}):
             mask_nc = nc_by_extent(nc=self.nc_data,
                                    shape=self.ws_geom,
@@ -94,7 +93,6 @@ class Gridder:
                                    dataset=self.dataset)
         # calculate area of watershed to latter comparisons
         ws_area = polygon_area(geo_shape=ws_gdf.loc[0, 'geometry'])
-
         # get lat, lon which help define area for intersection
         nc_lat, nc_lon = mask_nc.lat.values, mask_nc.lon.values
 
