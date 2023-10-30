@@ -22,7 +22,10 @@ class Gridder:
                  nc_pathes: list, var: str, dataset: str,
                  aggregation_type: str = 'sum',
                  force_weights: bool = False,
-                 weight_mark: str = '') -> None:
+                 weight_mark: str = '',
+                 prcp_coef: float = 1e2,
+                 extend_data: bool = False,
+                 merge_data: bool = False) -> None:
         """_summary_
 
         Args:
@@ -49,6 +52,9 @@ class Gridder:
         self.var = var
         self.force_weights = force_weights
         self.wm = weight_mark
+        self.prcp_coef = prcp_coef
+        self.extend_data = extend_data
+        self.merge_data = merge_data
 
         self.aggregation_type = aggregation_type
         if self.aggregation_type not in ['sum', 'mean']:
@@ -199,14 +205,75 @@ class Gridder:
             res_df[var] = ws_nc.weighted(weights=self.weights).sum(
                 dim=['lat', 'lon'])[var].values
             res_df = res_df.set_index('date')
-            res_df.to_csv(f'{final_save}/{self.gauge_id}.csv')
+            res_df *= self.prcp_coef
+            self.res_df = res_df
+            if self.extend_data:
+                try:
+                    # extend existed forecast, update from day to future
+                    old_data = pd.read_csv(f'{final_save}/{self.gauge_id}.csv')
+                    old_data['date'] = pd.to_datetime(old_data['date'])
+                    old_data = old_data.set_index('date')
+                    new_data = res_df.combine_first(old_data)
+                    new_data.to_csv(f'{final_save}/{self.gauge_id}.csv')
+                except FileNotFoundError:
+                    res_df.to_csv(f'{final_save}/{self.gauge_id}.csv')
+            elif self.merge_data:
+                try:
+                    # create long list with different forecast horizons
+                    old_data = pd.read_csv(f'{final_save}/{self.gauge_id}.csv')
+                    old_data['date'] = pd.to_datetime(old_data['date'])
+                    res_df = res_df.reset_index()
+                    res_df['forecast_horizon'] = [i
+                                                  for i in range(len(res_df))]
+                    new_data = pd.concat(
+                        [old_data, res_df]).sort_values(
+                            by='date').reset_index(drop=True)
+                    new_data.to_csv(f'{final_save}/{self.gauge_id}.csv',
+                                    index=False)
+                except FileNotFoundError:
+                    res_df = res_df.reset_index()
+                    res_df['forecast_horizon'] = [
+                        i for i in range(len(res_df))]
+                    res_df.to_csv(f'{final_save}/{self.gauge_id}.csv',
+                                  index=False)
+            else:
+                res_df.to_csv(f'{final_save}/{self.gauge_id}.csv')
 
         else:
             res_df['date'] = ws_nc.time.values
             res_df[var] = ws_nc.weighted(weights=self.weights).mean(
                 dim=['lat', 'lon'])[var].values
             res_df = res_df.set_index('date')
-            res_df.to_csv(f'{final_save}/{self.gauge_id}.csv')
+            if self.extend_data:
+                try:
+                    old_data = pd.read_csv(f'{final_save}/{self.gauge_id}.csv')
+                    old_data['date'] = pd.to_datetime(old_data['date'])
+                    old_data = old_data.set_index('date')
+                    new_data = res_df.combine_first(old_data)
+                    new_data.to_csv(f'{final_save}/{self.gauge_id}.csv')
+                except FileNotFoundError:
+                    res_df.to_csv(f'{final_save}/{self.gauge_id}.csv')
+            elif self.merge_data:
+                try:
+                    # create long list with different forecast horizons
+                    old_data = pd.read_csv(f'{final_save}/{self.gauge_id}.csv')
+                    old_data['date'] = pd.to_datetime(old_data['date'])
+                    res_df = res_df.reset_index()
+                    res_df['forecast_horizon'] = [
+                        i for i in range(len(res_df))]
+                    new_data = pd.concat(
+                        [old_data, res_df]).sort_values(
+                            by='date').reset_index(drop=True)
+                    new_data.to_csv(f'{final_save}/{self.gauge_id}.csv',
+                                    index=False)
+                except FileNotFoundError:
+                    res_df = res_df.reset_index()
+                    res_df['forecast_horizon'] = [i
+                                                  for i in range(len(res_df))]
+                    res_df.to_csv(f'{final_save}/{self.gauge_id}.csv',
+                                  index=False)
+            else:
+                res_df.to_csv(f'{final_save}/{self.gauge_id}.csv')
 
         gc.collect()
 

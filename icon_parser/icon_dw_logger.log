@@ -124,3 +124,1038 @@ Data for 20231025 downloaded
 ###########################################################
 ###########################################################
 
+scripts.loaders 2023-10-26 04:20:00,000 INFO Variable t_2m is downloading ..
+scripts.loaders 2023-10-26 04:23:12,661 INFO Variable t_2m has been downloaded
+
+scripts.loaders 2023-10-26 04:23:12,661 INFO Variable tmax_2m is downloading ..
+scripts.loaders 2023-10-26 04:27:34,173 INFO Variable tmax_2m has been downloaded
+
+scripts.loaders 2023-10-26 04:27:34,174 INFO Variable tmin_2m is downloading ..
+scripts.loaders 2023-10-26 04:31:33,921 INFO Variable tmin_2m has been downloaded
+
+scripts.loaders 2023-10-26 04:31:33,922 INFO Variable tot_prec is downloading ..
+scripts.loaders 2023-10-26 04:34:00,518 INFO Variable tot_prec has been downloaded
+
+scripts.loaders 2023-10-26 04:34:00,519 INFO Variable alb_rad is downloading ..
+scripts.loaders 2023-10-26 04:36:26,269 INFO Variable alb_rad has been downloaded
+
+scripts.loaders 2023-10-26 04:36:26,269 INFO Unarchive t_2m ..
+scripts.loaders 2023-10-26 04:37:00,020 INFO Unarchive for t_2m has been finished
+
+scripts.loaders 2023-10-26 04:37:00,021 INFO Unarchive tmax_2m ..
+scripts.loaders 2023-10-26 04:37:33,736 INFO Unarchive for tmax_2m has been finished
+
+scripts.loaders 2023-10-26 04:37:33,736 INFO Unarchive tmin_2m ..
+scripts.loaders 2023-10-26 04:38:07,364 INFO Unarchive for tmin_2m has been finished
+
+scripts.loaders 2023-10-26 04:38:07,364 INFO Unarchive tot_prec ..
+scripts.loaders 2023-10-26 04:38:33,974 INFO Unarchive for tot_prec has been finished
+
+scripts.loaders 2023-10-26 04:38:33,974 INFO Unarchive alb_rad ..
+scripts.loaders 2023-10-26 04:39:02,271 INFO Unarchive for alb_rad has been finished
+
+scripts.loaders 2023-10-26 04:39:02,271 INFO Nc coversion for t_2m ..
+scripts.loaders 2023-10-26 04:40:08,007 INFO Nc coversion for t_2m has been finished
+
+scripts.loaders 2023-10-26 04:40:08,007 INFO Nc coversion for tmax_2m ..
+scripts.loaders 2023-10-26 04:41:12,275 INFO Nc coversion for tmax_2m has been finished
+
+scripts.loaders 2023-10-26 04:41:12,276 INFO Nc coversion for tmin_2m ..
+scripts.loaders 2023-10-26 04:42:17,086 INFO Nc coversion for tmin_2m has been finished
+
+scripts.loaders 2023-10-26 04:42:17,086 INFO Nc coversion for tot_prec ..
+scripts.loaders 2023-10-26 04:43:21,894 INFO Nc coversion for tot_prec has been finished
+
+scripts.loaders 2023-10-26 04:43:21,894 INFO Nc coversion for alb_rad ..
+scripts.loaders 2023-10-26 04:44:27,037 INFO Nc coversion for alb_rad has been finished
+
+scripts.loaders 2023-10-26 04:44:27,037 INFO Nc aggregation for t_2m ..
+scripts.loaders 2023-10-26 04:44:33,518 INFO Nc aggregation for t_2m has been finished
+
+scripts.loaders 2023-10-26 04:44:33,518 INFO Nc aggregation for tmax_2m ..
+scripts.loaders 2023-10-26 04:44:36,929 INFO Nc aggregation for tmax_2m has been finished
+
+scripts.loaders 2023-10-26 04:44:36,930 INFO Nc aggregation for tmin_2m ..
+scripts.loaders 2023-10-26 04:44:40,231 INFO Nc aggregation for tmin_2m has been finished
+
+scripts.loaders 2023-10-26 04:44:40,231 INFO Nc aggregation for tot_prec ..
+scripts.loaders 2023-10-26 04:44:43,092 INFO Nc aggregation for tot_prec has been finished
+
+scripts.loaders 2023-10-26 04:44:43,093 INFO Nc aggregation for alb_rad ..
+scripts.loaders 2023-10-26 04:44:46,379 INFO Nc aggregation for alb_rad has been finished
+
+scripts.loaders 2023-10-26 04:44:48,114 INFO 
+###########################################################
+###########################################################
+
+Data for 20231026 downloaded
+
+###########################################################
+###########################################################
+
+scripts.loaders 2023-10-27 04:20:00,002 INFO Variable t_2m is downloading ..
+scripts.loaders 2023-10-27 04:20:00,002 INFO Variable t_2m is downloading ..
+scripts.loaders 2023-10-27 04:23:01,989 INFO Variable t_2m has been downloaded
+
+scripts.loaders 2023-10-27 04:23:01,989 INFO Variable t_2m has been downloaded
+
+scripts.loaders 2023-10-27 04:23:01,990 INFO Variable tmax_2m is downloading ..
+scripts.loaders 2023-10-27 04:23:01,990 INFO Variable tmax_2m is downloading ..
+scripts.loaders 2023-10-27 04:25:40,831 INFO Variable tmax_2m has been downloaded
+
+scripts.loaders 2023-10-27 04:25:40,831 INFO Variable tmax_2m has been downloaded
+
+scripts.loaders 2023-10-27 04:25:40,832 INFO Variable tmin_2m is downloading ..
+scripts.loaders 2023-10-27 04:25:40,832 INFO Variable tmin_2m is downloading ..
+scripts.loaders 2023-10-27 04:28:29,906 INFO Variable tmin_2m has been downloaded
+
+scripts.loaders 2023-10-27 04:28:29,906 INFO Variable tmin_2m has been downloaded
+
+scripts.loaders 2023-10-27 04:28:29,907 INFO Variable tot_prec is downloading ..
+scripts.loaders 2023-10-27 04:28:29,907 INFO Variable tot_prec is downloading ..
+scripts.loaders 2023-10-27 04:32:37,197 INFO Variable tot_prec has been downloaded
+
+scripts.loaders 2023-10-27 04:32:37,197 INFO Variable tot_prec has been downloaded
+
+scripts.loaders 2023-10-27 04:32:37,198 INFO Variable alb_rad is downloading ..
+scripts.loaders 2023-10-27 04:32:37,198 INFO Variable alb_rad is downloading ..
+scripts.loaders 2023-10-27 04:35:03,284 INFO Variable alb_rad has been downloaded
+
+scripts.loaders 2023-10-27 04:35:03,284 INFO Variable alb_rad has been downloaded
+
+scripts.loaders 2023-10-27 04:35:03,286 INFO Unarchive t_2m ..
+scripts.loaders 2023-10-27 04:35:03,286 INFO Unarchive t_2m ..
+scripts.loaders 2023-10-27 04:35:35,968 INFO Unarchive for t_2m has been finished
+
+scripts.loaders 2023-10-27 04:35:35,968 INFO Unarchive for t_2m has been finished
+
+scripts.loaders 2023-10-27 04:35:35,968 INFO Unarchive tmax_2m ..
+scripts.loaders 2023-10-27 04:35:35,968 INFO Unarchive tmax_2m ..
+scripts.loaders 2023-10-27 04:36:08,612 INFO Unarchive for tmax_2m has been finished
+
+scripts.loaders 2023-10-27 04:36:08,612 INFO Unarchive for tmax_2m has been finished
+
+scripts.loaders 2023-10-27 04:36:08,613 INFO Unarchive tmin_2m ..
+scripts.loaders 2023-10-27 04:36:08,613 INFO Unarchive tmin_2m ..
+scripts.loaders 2023-10-27 04:36:41,322 INFO Unarchive for tmin_2m has been finished
+
+scripts.loaders 2023-10-27 04:36:41,322 INFO Unarchive for tmin_2m has been finished
+
+scripts.loaders 2023-10-27 04:36:41,322 INFO Unarchive tot_prec ..
+scripts.loaders 2023-10-27 04:36:41,322 INFO Unarchive tot_prec ..
+scripts.loaders 2023-10-27 04:37:06,817 INFO Unarchive for tot_prec has been finished
+
+scripts.loaders 2023-10-27 04:37:06,817 INFO Unarchive for tot_prec has been finished
+
+scripts.loaders 2023-10-27 04:37:06,817 INFO Unarchive alb_rad ..
+scripts.loaders 2023-10-27 04:37:06,817 INFO Unarchive alb_rad ..
+scripts.loaders 2023-10-27 04:37:34,696 INFO Unarchive for alb_rad has been finished
+
+scripts.loaders 2023-10-27 04:37:34,696 INFO Unarchive for alb_rad has been finished
+
+scripts.loaders 2023-10-27 04:37:34,696 INFO Nc coversion for t_2m ..
+scripts.loaders 2023-10-27 04:37:34,696 INFO Nc coversion for t_2m ..
+scripts.loaders 2023-10-27 04:38:47,256 INFO Nc coversion for t_2m has been finished
+
+scripts.loaders 2023-10-27 04:38:47,256 INFO Nc coversion for t_2m has been finished
+
+scripts.loaders 2023-10-27 04:38:47,256 INFO Nc coversion for tmax_2m ..
+scripts.loaders 2023-10-27 04:38:47,256 INFO Nc coversion for tmax_2m ..
+scripts.loaders 2023-10-27 04:39:52,146 INFO Nc coversion for tmax_2m has been finished
+
+scripts.loaders 2023-10-27 04:39:52,146 INFO Nc coversion for tmax_2m has been finished
+
+scripts.loaders 2023-10-27 04:39:52,147 INFO Nc coversion for tmin_2m ..
+scripts.loaders 2023-10-27 04:39:52,147 INFO Nc coversion for tmin_2m ..
+scripts.loaders 2023-10-27 04:40:56,808 INFO Nc coversion for tmin_2m has been finished
+
+scripts.loaders 2023-10-27 04:40:56,808 INFO Nc coversion for tmin_2m has been finished
+
+scripts.loaders 2023-10-27 04:40:56,808 INFO Nc coversion for tot_prec ..
+scripts.loaders 2023-10-27 04:40:56,808 INFO Nc coversion for tot_prec ..
+scripts.loaders 2023-10-27 04:42:02,304 INFO Nc coversion for tot_prec has been finished
+
+scripts.loaders 2023-10-27 04:42:02,304 INFO Nc coversion for tot_prec has been finished
+
+scripts.loaders 2023-10-27 04:42:02,304 INFO Nc coversion for alb_rad ..
+scripts.loaders 2023-10-27 04:42:02,304 INFO Nc coversion for alb_rad ..
+scripts.loaders 2023-10-27 04:43:07,469 INFO Nc coversion for alb_rad has been finished
+
+scripts.loaders 2023-10-27 04:43:07,469 INFO Nc coversion for alb_rad has been finished
+
+scripts.loaders 2023-10-27 04:43:07,470 INFO Nc aggregation for t_2m ..
+scripts.loaders 2023-10-27 04:43:07,470 INFO Nc aggregation for t_2m ..
+scripts.loaders 2023-10-27 04:43:11,352 INFO Nc aggregation for t_2m has been finished
+
+scripts.loaders 2023-10-27 04:43:11,352 INFO Nc aggregation for t_2m has been finished
+
+scripts.loaders 2023-10-27 04:43:11,352 INFO Nc aggregation for tmax_2m ..
+scripts.loaders 2023-10-27 04:43:11,352 INFO Nc aggregation for tmax_2m ..
+scripts.loaders 2023-10-27 04:43:15,113 INFO Nc aggregation for tmax_2m has been finished
+
+scripts.loaders 2023-10-27 04:43:15,113 INFO Nc aggregation for tmax_2m has been finished
+
+scripts.loaders 2023-10-27 04:43:15,115 INFO Nc aggregation for tmin_2m ..
+scripts.loaders 2023-10-27 04:43:15,115 INFO Nc aggregation for tmin_2m ..
+scripts.loaders 2023-10-27 04:43:18,363 INFO Nc aggregation for tmin_2m has been finished
+
+scripts.loaders 2023-10-27 04:43:18,363 INFO Nc aggregation for tmin_2m has been finished
+
+scripts.loaders 2023-10-27 04:43:18,363 INFO Nc aggregation for tot_prec ..
+scripts.loaders 2023-10-27 04:43:18,363 INFO Nc aggregation for tot_prec ..
+scripts.loaders 2023-10-27 04:43:21,219 INFO Nc aggregation for tot_prec has been finished
+
+scripts.loaders 2023-10-27 04:43:21,219 INFO Nc aggregation for tot_prec has been finished
+
+scripts.loaders 2023-10-27 04:43:21,220 INFO Nc aggregation for alb_rad ..
+scripts.loaders 2023-10-27 04:43:21,220 INFO Nc aggregation for alb_rad ..
+scripts.loaders 2023-10-27 04:43:24,320 INFO Nc aggregation for alb_rad has been finished
+
+scripts.loaders 2023-10-27 04:43:24,320 INFO Nc aggregation for alb_rad has been finished
+
+scripts.loaders 2023-10-27 04:43:26,140 INFO 
+###########################################################
+###########################################################
+
+Data for 20231027 downloaded
+
+###########################################################
+###########################################################
+
+scripts.loaders 2023-10-27 04:43:26,140 INFO 
+###########################################################
+###########################################################
+
+Data for 20231027 downloaded
+
+###########################################################
+###########################################################
+
+scripts.loaders 2023-10-28 04:20:00,001 INFO Variable t_2m is downloading ..
+scripts.loaders 2023-10-28 04:20:00,001 INFO Variable t_2m is downloading ..
+scripts.loaders 2023-10-28 04:20:00,001 INFO Variable t_2m is downloading ..
+scripts.loaders 2023-10-28 04:23:22,288 INFO Variable t_2m has been downloaded
+
+scripts.loaders 2023-10-28 04:23:22,288 INFO Variable t_2m has been downloaded
+
+scripts.loaders 2023-10-28 04:23:22,288 INFO Variable t_2m has been downloaded
+
+scripts.loaders 2023-10-28 04:23:22,289 INFO Variable tmax_2m is downloading ..
+scripts.loaders 2023-10-28 04:23:22,289 INFO Variable tmax_2m is downloading ..
+scripts.loaders 2023-10-28 04:23:22,289 INFO Variable tmax_2m is downloading ..
+scripts.loaders 2023-10-28 04:28:19,354 INFO Variable tmax_2m has been downloaded
+
+scripts.loaders 2023-10-28 04:28:19,354 INFO Variable tmax_2m has been downloaded
+
+scripts.loaders 2023-10-28 04:28:19,354 INFO Variable tmax_2m has been downloaded
+
+scripts.loaders 2023-10-28 04:28:19,354 INFO Variable tmin_2m is downloading ..
+scripts.loaders 2023-10-28 04:28:19,354 INFO Variable tmin_2m is downloading ..
+scripts.loaders 2023-10-28 04:28:19,354 INFO Variable tmin_2m is downloading ..
+scripts.loaders 2023-10-28 04:31:03,006 INFO Variable tmin_2m has been downloaded
+
+scripts.loaders 2023-10-28 04:31:03,006 INFO Variable tmin_2m has been downloaded
+
+scripts.loaders 2023-10-28 04:31:03,006 INFO Variable tmin_2m has been downloaded
+
+scripts.loaders 2023-10-28 04:31:03,007 INFO Variable tot_prec is downloading ..
+scripts.loaders 2023-10-28 04:31:03,007 INFO Variable tot_prec is downloading ..
+scripts.loaders 2023-10-28 04:31:03,007 INFO Variable tot_prec is downloading ..
+scripts.loaders 2023-10-28 04:36:40,452 INFO Variable tot_prec has been downloaded
+
+scripts.loaders 2023-10-28 04:36:40,452 INFO Variable tot_prec has been downloaded
+
+scripts.loaders 2023-10-28 04:36:40,452 INFO Variable tot_prec has been downloaded
+
+scripts.loaders 2023-10-28 04:36:40,453 INFO Variable alb_rad is downloading ..
+scripts.loaders 2023-10-28 04:36:40,453 INFO Variable alb_rad is downloading ..
+scripts.loaders 2023-10-28 04:36:40,453 INFO Variable alb_rad is downloading ..
+scripts.loaders 2023-10-28 04:39:57,862 INFO Variable alb_rad has been downloaded
+
+scripts.loaders 2023-10-28 04:39:57,862 INFO Variable alb_rad has been downloaded
+
+scripts.loaders 2023-10-28 04:39:57,862 INFO Variable alb_rad has been downloaded
+
+scripts.loaders 2023-10-28 04:39:57,863 INFO Unarchive t_2m ..
+scripts.loaders 2023-10-28 04:39:57,863 INFO Unarchive t_2m ..
+scripts.loaders 2023-10-28 04:39:57,863 INFO Unarchive t_2m ..
+scripts.loaders 2023-10-28 04:40:31,032 INFO Unarchive for t_2m has been finished
+
+scripts.loaders 2023-10-28 04:40:31,032 INFO Unarchive for t_2m has been finished
+
+scripts.loaders 2023-10-28 04:40:31,032 INFO Unarchive for t_2m has been finished
+
+scripts.loaders 2023-10-28 04:40:31,033 INFO Unarchive tmax_2m ..
+scripts.loaders 2023-10-28 04:40:31,033 INFO Unarchive tmax_2m ..
+scripts.loaders 2023-10-28 04:40:31,033 INFO Unarchive tmax_2m ..
+scripts.loaders 2023-10-28 04:41:04,083 INFO Unarchive for tmax_2m has been finished
+
+scripts.loaders 2023-10-28 04:41:04,083 INFO Unarchive for tmax_2m has been finished
+
+scripts.loaders 2023-10-28 04:41:04,083 INFO Unarchive for tmax_2m has been finished
+
+scripts.loaders 2023-10-28 04:41:04,083 INFO Unarchive tmin_2m ..
+scripts.loaders 2023-10-28 04:41:04,083 INFO Unarchive tmin_2m ..
+scripts.loaders 2023-10-28 04:41:04,083 INFO Unarchive tmin_2m ..
+scripts.loaders 2023-10-28 04:41:37,087 INFO Unarchive for tmin_2m has been finished
+
+scripts.loaders 2023-10-28 04:41:37,087 INFO Unarchive for tmin_2m has been finished
+
+scripts.loaders 2023-10-28 04:41:37,087 INFO Unarchive for tmin_2m has been finished
+
+scripts.loaders 2023-10-28 04:41:37,089 INFO Unarchive tot_prec ..
+scripts.loaders 2023-10-28 04:41:37,089 INFO Unarchive tot_prec ..
+scripts.loaders 2023-10-28 04:41:37,089 INFO Unarchive tot_prec ..
+scripts.loaders 2023-10-28 04:42:03,401 INFO Unarchive for tot_prec has been finished
+
+scripts.loaders 2023-10-28 04:42:03,401 INFO Unarchive for tot_prec has been finished
+
+scripts.loaders 2023-10-28 04:42:03,401 INFO Unarchive for tot_prec has been finished
+
+scripts.loaders 2023-10-28 04:42:03,401 INFO Unarchive alb_rad ..
+scripts.loaders 2023-10-28 04:42:03,401 INFO Unarchive alb_rad ..
+scripts.loaders 2023-10-28 04:42:03,401 INFO Unarchive alb_rad ..
+scripts.loaders 2023-10-28 04:42:30,952 INFO Unarchive for alb_rad has been finished
+
+scripts.loaders 2023-10-28 04:42:30,952 INFO Unarchive for alb_rad has been finished
+
+scripts.loaders 2023-10-28 04:42:30,952 INFO Unarchive for alb_rad has been finished
+
+scripts.loaders 2023-10-28 04:42:30,952 INFO Nc coversion for t_2m ..
+scripts.loaders 2023-10-28 04:42:30,952 INFO Nc coversion for t_2m ..
+scripts.loaders 2023-10-28 04:42:30,952 INFO Nc coversion for t_2m ..
+scripts.loaders 2023-10-28 04:43:32,604 INFO Nc coversion for t_2m has been finished
+
+scripts.loaders 2023-10-28 04:43:32,604 INFO Nc coversion for t_2m has been finished
+
+scripts.loaders 2023-10-28 04:43:32,604 INFO Nc coversion for t_2m has been finished
+
+scripts.loaders 2023-10-28 04:43:32,604 INFO Nc coversion for tmax_2m ..
+scripts.loaders 2023-10-28 04:43:32,604 INFO Nc coversion for tmax_2m ..
+scripts.loaders 2023-10-28 04:43:32,604 INFO Nc coversion for tmax_2m ..
+scripts.loaders 2023-10-28 04:44:34,606 INFO Nc coversion for tmax_2m has been finished
+
+scripts.loaders 2023-10-28 04:44:34,606 INFO Nc coversion for tmax_2m has been finished
+
+scripts.loaders 2023-10-28 04:44:34,606 INFO Nc coversion for tmax_2m has been finished
+
+scripts.loaders 2023-10-28 04:44:34,607 INFO Nc coversion for tmin_2m ..
+scripts.loaders 2023-10-28 04:44:34,607 INFO Nc coversion for tmin_2m ..
+scripts.loaders 2023-10-28 04:44:34,607 INFO Nc coversion for tmin_2m ..
+scripts.loaders 2023-10-28 04:45:36,762 INFO Nc coversion for tmin_2m has been finished
+
+scripts.loaders 2023-10-28 04:45:36,762 INFO Nc coversion for tmin_2m has been finished
+
+scripts.loaders 2023-10-28 04:45:36,762 INFO Nc coversion for tmin_2m has been finished
+
+scripts.loaders 2023-10-28 04:45:36,762 INFO Nc coversion for tot_prec ..
+scripts.loaders 2023-10-28 04:45:36,762 INFO Nc coversion for tot_prec ..
+scripts.loaders 2023-10-28 04:45:36,762 INFO Nc coversion for tot_prec ..
+scripts.loaders 2023-10-28 04:46:39,065 INFO Nc coversion for tot_prec has been finished
+
+scripts.loaders 2023-10-28 04:46:39,065 INFO Nc coversion for tot_prec has been finished
+
+scripts.loaders 2023-10-28 04:46:39,065 INFO Nc coversion for tot_prec has been finished
+
+scripts.loaders 2023-10-28 04:46:39,065 INFO Nc coversion for alb_rad ..
+scripts.loaders 2023-10-28 04:46:39,065 INFO Nc coversion for alb_rad ..
+scripts.loaders 2023-10-28 04:46:39,065 INFO Nc coversion for alb_rad ..
+scripts.loaders 2023-10-28 04:47:41,517 INFO Nc coversion for alb_rad has been finished
+
+scripts.loaders 2023-10-28 04:47:41,517 INFO Nc coversion for alb_rad has been finished
+
+scripts.loaders 2023-10-28 04:47:41,517 INFO Nc coversion for alb_rad has been finished
+
+scripts.loaders 2023-10-28 04:47:41,518 INFO Nc aggregation for t_2m ..
+scripts.loaders 2023-10-28 04:47:41,518 INFO Nc aggregation for t_2m ..
+scripts.loaders 2023-10-28 04:47:41,518 INFO Nc aggregation for t_2m ..
+scripts.loaders 2023-10-28 04:47:45,719 INFO Nc aggregation for t_2m has been finished
+
+scripts.loaders 2023-10-28 04:47:45,719 INFO Nc aggregation for t_2m has been finished
+
+scripts.loaders 2023-10-28 04:47:45,719 INFO Nc aggregation for t_2m has been finished
+
+scripts.loaders 2023-10-28 04:47:45,722 INFO Nc aggregation for tmax_2m ..
+scripts.loaders 2023-10-28 04:47:45,722 INFO Nc aggregation for tmax_2m ..
+scripts.loaders 2023-10-28 04:47:45,722 INFO Nc aggregation for tmax_2m ..
+scripts.loaders 2023-10-28 04:47:48,838 INFO Nc aggregation for tmax_2m has been finished
+
+scripts.loaders 2023-10-28 04:47:48,838 INFO Nc aggregation for tmax_2m has been finished
+
+scripts.loaders 2023-10-28 04:47:48,838 INFO Nc aggregation for tmax_2m has been finished
+
+scripts.loaders 2023-10-28 04:47:48,839 INFO Nc aggregation for tmin_2m ..
+scripts.loaders 2023-10-28 04:47:48,839 INFO Nc aggregation for tmin_2m ..
+scripts.loaders 2023-10-28 04:47:48,839 INFO Nc aggregation for tmin_2m ..
+scripts.loaders 2023-10-28 04:47:52,160 INFO Nc aggregation for tmin_2m has been finished
+
+scripts.loaders 2023-10-28 04:47:52,160 INFO Nc aggregation for tmin_2m has been finished
+
+scripts.loaders 2023-10-28 04:47:52,160 INFO Nc aggregation for tmin_2m has been finished
+
+scripts.loaders 2023-10-28 04:47:52,161 INFO Nc aggregation for tot_prec ..
+scripts.loaders 2023-10-28 04:47:52,161 INFO Nc aggregation for tot_prec ..
+scripts.loaders 2023-10-28 04:47:52,161 INFO Nc aggregation for tot_prec ..
+scripts.loaders 2023-10-28 04:47:54,928 INFO Nc aggregation for tot_prec has been finished
+
+scripts.loaders 2023-10-28 04:47:54,928 INFO Nc aggregation for tot_prec has been finished
+
+scripts.loaders 2023-10-28 04:47:54,928 INFO Nc aggregation for tot_prec has been finished
+
+scripts.loaders 2023-10-28 04:47:54,929 INFO Nc aggregation for alb_rad ..
+scripts.loaders 2023-10-28 04:47:54,929 INFO Nc aggregation for alb_rad ..
+scripts.loaders 2023-10-28 04:47:54,929 INFO Nc aggregation for alb_rad ..
+scripts.loaders 2023-10-28 04:47:58,093 INFO Nc aggregation for alb_rad has been finished
+
+scripts.loaders 2023-10-28 04:47:58,093 INFO Nc aggregation for alb_rad has been finished
+
+scripts.loaders 2023-10-28 04:47:58,093 INFO Nc aggregation for alb_rad has been finished
+
+scripts.loaders 2023-10-28 04:47:59,903 INFO 
+###########################################################
+###########################################################
+
+Data for 20231028 downloaded
+
+###########################################################
+###########################################################
+
+scripts.loaders 2023-10-28 04:47:59,903 INFO 
+###########################################################
+###########################################################
+
+Data for 20231028 downloaded
+
+###########################################################
+###########################################################
+
+scripts.loaders 2023-10-28 04:47:59,903 INFO 
+###########################################################
+###########################################################
+
+Data for 20231028 downloaded
+
+###########################################################
+###########################################################
+
+scripts.loaders 2023-10-29 04:20:00,001 INFO Variable t_2m is downloading ..
+scripts.loaders 2023-10-29 04:20:00,001 INFO Variable t_2m is downloading ..
+scripts.loaders 2023-10-29 04:20:00,001 INFO Variable t_2m is downloading ..
+scripts.loaders 2023-10-29 04:20:00,001 INFO Variable t_2m is downloading ..
+scripts.loaders 2023-10-29 04:24:00,612 INFO Variable t_2m has been downloaded
+
+scripts.loaders 2023-10-29 04:24:00,612 INFO Variable t_2m has been downloaded
+
+scripts.loaders 2023-10-29 04:24:00,612 INFO Variable t_2m has been downloaded
+
+scripts.loaders 2023-10-29 04:24:00,612 INFO Variable t_2m has been downloaded
+
+scripts.loaders 2023-10-29 04:24:00,613 INFO Variable tmax_2m is downloading ..
+scripts.loaders 2023-10-29 04:24:00,613 INFO Variable tmax_2m is downloading ..
+scripts.loaders 2023-10-29 04:24:00,613 INFO Variable tmax_2m is downloading ..
+scripts.loaders 2023-10-29 04:24:00,613 INFO Variable tmax_2m is downloading ..
+scripts.loaders 2023-10-29 04:26:27,584 INFO Variable tmax_2m has been downloaded
+
+scripts.loaders 2023-10-29 04:26:27,584 INFO Variable tmax_2m has been downloaded
+
+scripts.loaders 2023-10-29 04:26:27,584 INFO Variable tmax_2m has been downloaded
+
+scripts.loaders 2023-10-29 04:26:27,584 INFO Variable tmax_2m has been downloaded
+
+scripts.loaders 2023-10-29 04:26:27,585 INFO Variable tmin_2m is downloading ..
+scripts.loaders 2023-10-29 04:26:27,585 INFO Variable tmin_2m is downloading ..
+scripts.loaders 2023-10-29 04:26:27,585 INFO Variable tmin_2m is downloading ..
+scripts.loaders 2023-10-29 04:26:27,585 INFO Variable tmin_2m is downloading ..
+scripts.loaders 2023-10-29 04:29:16,377 INFO Variable tmin_2m has been downloaded
+
+scripts.loaders 2023-10-29 04:29:16,377 INFO Variable tmin_2m has been downloaded
+
+scripts.loaders 2023-10-29 04:29:16,377 INFO Variable tmin_2m has been downloaded
+
+scripts.loaders 2023-10-29 04:29:16,377 INFO Variable tmin_2m has been downloaded
+
+scripts.loaders 2023-10-29 04:29:16,379 INFO Variable tot_prec is downloading ..
+scripts.loaders 2023-10-29 04:29:16,379 INFO Variable tot_prec is downloading ..
+scripts.loaders 2023-10-29 04:29:16,379 INFO Variable tot_prec is downloading ..
+scripts.loaders 2023-10-29 04:29:16,379 INFO Variable tot_prec is downloading ..
+scripts.loaders 2023-10-29 04:31:36,583 INFO Variable tot_prec has been downloaded
+
+scripts.loaders 2023-10-29 04:31:36,583 INFO Variable tot_prec has been downloaded
+
+scripts.loaders 2023-10-29 04:31:36,583 INFO Variable tot_prec has been downloaded
+
+scripts.loaders 2023-10-29 04:31:36,583 INFO Variable tot_prec has been downloaded
+
+scripts.loaders 2023-10-29 04:31:36,585 INFO Variable alb_rad is downloading ..
+scripts.loaders 2023-10-29 04:31:36,585 INFO Variable alb_rad is downloading ..
+scripts.loaders 2023-10-29 04:31:36,585 INFO Variable alb_rad is downloading ..
+scripts.loaders 2023-10-29 04:31:36,585 INFO Variable alb_rad is downloading ..
+scripts.loaders 2023-10-29 04:33:53,796 INFO Variable alb_rad has been downloaded
+
+scripts.loaders 2023-10-29 04:33:53,796 INFO Variable alb_rad has been downloaded
+
+scripts.loaders 2023-10-29 04:33:53,796 INFO Variable alb_rad has been downloaded
+
+scripts.loaders 2023-10-29 04:33:53,796 INFO Variable alb_rad has been downloaded
+
+scripts.loaders 2023-10-29 04:33:53,798 INFO Unarchive t_2m ..
+scripts.loaders 2023-10-29 04:33:53,798 INFO Unarchive t_2m ..
+scripts.loaders 2023-10-29 04:33:53,798 INFO Unarchive t_2m ..
+scripts.loaders 2023-10-29 04:33:53,798 INFO Unarchive t_2m ..
+scripts.loaders 2023-10-29 04:34:26,923 INFO Unarchive for t_2m has been finished
+
+scripts.loaders 2023-10-29 04:34:26,923 INFO Unarchive for t_2m has been finished
+
+scripts.loaders 2023-10-29 04:34:26,923 INFO Unarchive for t_2m has been finished
+
+scripts.loaders 2023-10-29 04:34:26,923 INFO Unarchive for t_2m has been finished
+
+scripts.loaders 2023-10-29 04:34:26,923 INFO Unarchive tmax_2m ..
+scripts.loaders 2023-10-29 04:34:26,923 INFO Unarchive tmax_2m ..
+scripts.loaders 2023-10-29 04:34:26,923 INFO Unarchive tmax_2m ..
+scripts.loaders 2023-10-29 04:34:26,923 INFO Unarchive tmax_2m ..
+scripts.loaders 2023-10-29 04:34:59,945 INFO Unarchive for tmax_2m has been finished
+
+scripts.loaders 2023-10-29 04:34:59,945 INFO Unarchive for tmax_2m has been finished
+
+scripts.loaders 2023-10-29 04:34:59,945 INFO Unarchive for tmax_2m has been finished
+
+scripts.loaders 2023-10-29 04:34:59,945 INFO Unarchive for tmax_2m has been finished
+
+scripts.loaders 2023-10-29 04:34:59,945 INFO Unarchive tmin_2m ..
+scripts.loaders 2023-10-29 04:34:59,945 INFO Unarchive tmin_2m ..
+scripts.loaders 2023-10-29 04:34:59,945 INFO Unarchive tmin_2m ..
+scripts.loaders 2023-10-29 04:34:59,945 INFO Unarchive tmin_2m ..
+scripts.loaders 2023-10-29 04:35:32,943 INFO Unarchive for tmin_2m has been finished
+
+scripts.loaders 2023-10-29 04:35:32,943 INFO Unarchive for tmin_2m has been finished
+
+scripts.loaders 2023-10-29 04:35:32,943 INFO Unarchive for tmin_2m has been finished
+
+scripts.loaders 2023-10-29 04:35:32,943 INFO Unarchive for tmin_2m has been finished
+
+scripts.loaders 2023-10-29 04:35:32,943 INFO Unarchive tot_prec ..
+scripts.loaders 2023-10-29 04:35:32,943 INFO Unarchive tot_prec ..
+scripts.loaders 2023-10-29 04:35:32,943 INFO Unarchive tot_prec ..
+scripts.loaders 2023-10-29 04:35:32,943 INFO Unarchive tot_prec ..
+scripts.loaders 2023-10-29 04:35:58,715 INFO Unarchive for tot_prec has been finished
+
+scripts.loaders 2023-10-29 04:35:58,715 INFO Unarchive for tot_prec has been finished
+
+scripts.loaders 2023-10-29 04:35:58,715 INFO Unarchive for tot_prec has been finished
+
+scripts.loaders 2023-10-29 04:35:58,715 INFO Unarchive for tot_prec has been finished
+
+scripts.loaders 2023-10-29 04:35:58,715 INFO Unarchive alb_rad ..
+scripts.loaders 2023-10-29 04:35:58,715 INFO Unarchive alb_rad ..
+scripts.loaders 2023-10-29 04:35:58,715 INFO Unarchive alb_rad ..
+scripts.loaders 2023-10-29 04:35:58,715 INFO Unarchive alb_rad ..
+scripts.loaders 2023-10-29 04:36:26,167 INFO Unarchive for alb_rad has been finished
+
+scripts.loaders 2023-10-29 04:36:26,167 INFO Unarchive for alb_rad has been finished
+
+scripts.loaders 2023-10-29 04:36:26,167 INFO Unarchive for alb_rad has been finished
+
+scripts.loaders 2023-10-29 04:36:26,167 INFO Unarchive for alb_rad has been finished
+
+scripts.loaders 2023-10-29 04:36:26,167 INFO Nc coversion for t_2m ..
+scripts.loaders 2023-10-29 04:36:26,167 INFO Nc coversion for t_2m ..
+scripts.loaders 2023-10-29 04:36:26,167 INFO Nc coversion for t_2m ..
+scripts.loaders 2023-10-29 04:36:26,167 INFO Nc coversion for t_2m ..
+scripts.loaders 2023-10-29 04:37:28,159 INFO Nc coversion for t_2m has been finished
+
+scripts.loaders 2023-10-29 04:37:28,159 INFO Nc coversion for t_2m has been finished
+
+scripts.loaders 2023-10-29 04:37:28,159 INFO Nc coversion for t_2m has been finished
+
+scripts.loaders 2023-10-29 04:37:28,159 INFO Nc coversion for t_2m has been finished
+
+scripts.loaders 2023-10-29 04:37:28,159 INFO Nc coversion for tmax_2m ..
+scripts.loaders 2023-10-29 04:37:28,159 INFO Nc coversion for tmax_2m ..
+scripts.loaders 2023-10-29 04:37:28,159 INFO Nc coversion for tmax_2m ..
+scripts.loaders 2023-10-29 04:37:28,159 INFO Nc coversion for tmax_2m ..
+scripts.loaders 2023-10-29 04:38:30,907 INFO Nc coversion for tmax_2m has been finished
+
+scripts.loaders 2023-10-29 04:38:30,907 INFO Nc coversion for tmax_2m has been finished
+
+scripts.loaders 2023-10-29 04:38:30,907 INFO Nc coversion for tmax_2m has been finished
+
+scripts.loaders 2023-10-29 04:38:30,907 INFO Nc coversion for tmax_2m has been finished
+
+scripts.loaders 2023-10-29 04:38:30,908 INFO Nc coversion for tmin_2m ..
+scripts.loaders 2023-10-29 04:38:30,908 INFO Nc coversion for tmin_2m ..
+scripts.loaders 2023-10-29 04:38:30,908 INFO Nc coversion for tmin_2m ..
+scripts.loaders 2023-10-29 04:38:30,908 INFO Nc coversion for tmin_2m ..
+scripts.loaders 2023-10-29 04:39:33,577 INFO Nc coversion for tmin_2m has been finished
+
+scripts.loaders 2023-10-29 04:39:33,577 INFO Nc coversion for tmin_2m has been finished
+
+scripts.loaders 2023-10-29 04:39:33,577 INFO Nc coversion for tmin_2m has been finished
+
+scripts.loaders 2023-10-29 04:39:33,577 INFO Nc coversion for tmin_2m has been finished
+
+scripts.loaders 2023-10-29 04:39:33,578 INFO Nc coversion for tot_prec ..
+scripts.loaders 2023-10-29 04:39:33,578 INFO Nc coversion for tot_prec ..
+scripts.loaders 2023-10-29 04:39:33,578 INFO Nc coversion for tot_prec ..
+scripts.loaders 2023-10-29 04:39:33,578 INFO Nc coversion for tot_prec ..
+scripts.loaders 2023-10-29 04:40:36,217 INFO Nc coversion for tot_prec has been finished
+
+scripts.loaders 2023-10-29 04:40:36,217 INFO Nc coversion for tot_prec has been finished
+
+scripts.loaders 2023-10-29 04:40:36,217 INFO Nc coversion for tot_prec has been finished
+
+scripts.loaders 2023-10-29 04:40:36,217 INFO Nc coversion for tot_prec has been finished
+
+scripts.loaders 2023-10-29 04:40:36,217 INFO Nc coversion for alb_rad ..
+scripts.loaders 2023-10-29 04:40:36,217 INFO Nc coversion for alb_rad ..
+scripts.loaders 2023-10-29 04:40:36,217 INFO Nc coversion for alb_rad ..
+scripts.loaders 2023-10-29 04:40:36,217 INFO Nc coversion for alb_rad ..
+scripts.loaders 2023-10-29 04:41:38,841 INFO Nc coversion for alb_rad has been finished
+
+scripts.loaders 2023-10-29 04:41:38,841 INFO Nc coversion for alb_rad has been finished
+
+scripts.loaders 2023-10-29 04:41:38,841 INFO Nc coversion for alb_rad has been finished
+
+scripts.loaders 2023-10-29 04:41:38,841 INFO Nc coversion for alb_rad has been finished
+
+scripts.loaders 2023-10-29 04:41:38,841 INFO Nc aggregation for t_2m ..
+scripts.loaders 2023-10-29 04:41:38,841 INFO Nc aggregation for t_2m ..
+scripts.loaders 2023-10-29 04:41:38,841 INFO Nc aggregation for t_2m ..
+scripts.loaders 2023-10-29 04:41:38,841 INFO Nc aggregation for t_2m ..
+scripts.loaders 2023-10-29 04:41:42,781 INFO Nc aggregation for t_2m has been finished
+
+scripts.loaders 2023-10-29 04:41:42,781 INFO Nc aggregation for t_2m has been finished
+
+scripts.loaders 2023-10-29 04:41:42,781 INFO Nc aggregation for t_2m has been finished
+
+scripts.loaders 2023-10-29 04:41:42,781 INFO Nc aggregation for t_2m has been finished
+
+scripts.loaders 2023-10-29 04:41:42,781 INFO Nc aggregation for tmax_2m ..
+scripts.loaders 2023-10-29 04:41:42,781 INFO Nc aggregation for tmax_2m ..
+scripts.loaders 2023-10-29 04:41:42,781 INFO Nc aggregation for tmax_2m ..
+scripts.loaders 2023-10-29 04:41:42,781 INFO Nc aggregation for tmax_2m ..
+scripts.loaders 2023-10-29 04:41:46,291 INFO Nc aggregation for tmax_2m has been finished
+
+scripts.loaders 2023-10-29 04:41:46,291 INFO Nc aggregation for tmax_2m has been finished
+
+scripts.loaders 2023-10-29 04:41:46,291 INFO Nc aggregation for tmax_2m has been finished
+
+scripts.loaders 2023-10-29 04:41:46,291 INFO Nc aggregation for tmax_2m has been finished
+
+scripts.loaders 2023-10-29 04:41:46,291 INFO Nc aggregation for tmin_2m ..
+scripts.loaders 2023-10-29 04:41:46,291 INFO Nc aggregation for tmin_2m ..
+scripts.loaders 2023-10-29 04:41:46,291 INFO Nc aggregation for tmin_2m ..
+scripts.loaders 2023-10-29 04:41:46,291 INFO Nc aggregation for tmin_2m ..
+scripts.loaders 2023-10-29 04:41:49,785 INFO Nc aggregation for tmin_2m has been finished
+
+scripts.loaders 2023-10-29 04:41:49,785 INFO Nc aggregation for tmin_2m has been finished
+
+scripts.loaders 2023-10-29 04:41:49,785 INFO Nc aggregation for tmin_2m has been finished
+
+scripts.loaders 2023-10-29 04:41:49,785 INFO Nc aggregation for tmin_2m has been finished
+
+scripts.loaders 2023-10-29 04:41:49,787 INFO Nc aggregation for tot_prec ..
+scripts.loaders 2023-10-29 04:41:49,787 INFO Nc aggregation for tot_prec ..
+scripts.loaders 2023-10-29 04:41:49,787 INFO Nc aggregation for tot_prec ..
+scripts.loaders 2023-10-29 04:41:49,787 INFO Nc aggregation for tot_prec ..
+scripts.loaders 2023-10-29 04:41:52,636 INFO Nc aggregation for tot_prec has been finished
+
+scripts.loaders 2023-10-29 04:41:52,636 INFO Nc aggregation for tot_prec has been finished
+
+scripts.loaders 2023-10-29 04:41:52,636 INFO Nc aggregation for tot_prec has been finished
+
+scripts.loaders 2023-10-29 04:41:52,636 INFO Nc aggregation for tot_prec has been finished
+
+scripts.loaders 2023-10-29 04:41:52,636 INFO Nc aggregation for alb_rad ..
+scripts.loaders 2023-10-29 04:41:52,636 INFO Nc aggregation for alb_rad ..
+scripts.loaders 2023-10-29 04:41:52,636 INFO Nc aggregation for alb_rad ..
+scripts.loaders 2023-10-29 04:41:52,636 INFO Nc aggregation for alb_rad ..
+scripts.loaders 2023-10-29 04:41:56,243 INFO Nc aggregation for alb_rad has been finished
+
+scripts.loaders 2023-10-29 04:41:56,243 INFO Nc aggregation for alb_rad has been finished
+
+scripts.loaders 2023-10-29 04:41:56,243 INFO Nc aggregation for alb_rad has been finished
+
+scripts.loaders 2023-10-29 04:41:56,243 INFO Nc aggregation for alb_rad has been finished
+
+scripts.loaders 2023-10-29 04:41:58,005 INFO 
+###########################################################
+###########################################################
+
+Data for 20231029 downloaded
+
+###########################################################
+###########################################################
+
+scripts.loaders 2023-10-29 04:41:58,005 INFO 
+###########################################################
+###########################################################
+
+Data for 20231029 downloaded
+
+###########################################################
+###########################################################
+
+scripts.loaders 2023-10-29 04:41:58,005 INFO 
+###########################################################
+###########################################################
+
+Data for 20231029 downloaded
+
+###########################################################
+###########################################################
+
+scripts.loaders 2023-10-29 04:41:58,005 INFO 
+###########################################################
+###########################################################
+
+Data for 20231029 downloaded
+
+###########################################################
+###########################################################
+
+scripts.loaders 2023-10-30 04:20:00,001 INFO Variable t_2m is downloading ..
+scripts.loaders 2023-10-30 04:20:00,001 INFO Variable t_2m is downloading ..
+scripts.loaders 2023-10-30 04:20:00,001 INFO Variable t_2m is downloading ..
+scripts.loaders 2023-10-30 04:20:00,001 INFO Variable t_2m is downloading ..
+scripts.loaders 2023-10-30 04:20:00,001 INFO Variable t_2m is downloading ..
+scripts.loaders 2023-10-30 04:23:40,602 INFO Variable t_2m has been downloaded
+
+scripts.loaders 2023-10-30 04:23:40,602 INFO Variable t_2m has been downloaded
+
+scripts.loaders 2023-10-30 04:23:40,602 INFO Variable t_2m has been downloaded
+
+scripts.loaders 2023-10-30 04:23:40,602 INFO Variable t_2m has been downloaded
+
+scripts.loaders 2023-10-30 04:23:40,602 INFO Variable t_2m has been downloaded
+
+scripts.loaders 2023-10-30 04:23:40,603 INFO Variable tmax_2m is downloading ..
+scripts.loaders 2023-10-30 04:23:40,603 INFO Variable tmax_2m is downloading ..
+scripts.loaders 2023-10-30 04:23:40,603 INFO Variable tmax_2m is downloading ..
+scripts.loaders 2023-10-30 04:23:40,603 INFO Variable tmax_2m is downloading ..
+scripts.loaders 2023-10-30 04:23:40,603 INFO Variable tmax_2m is downloading ..
+scripts.loaders 2023-10-30 04:27:32,011 INFO Variable tmax_2m has been downloaded
+
+scripts.loaders 2023-10-30 04:27:32,011 INFO Variable tmax_2m has been downloaded
+
+scripts.loaders 2023-10-30 04:27:32,011 INFO Variable tmax_2m has been downloaded
+
+scripts.loaders 2023-10-30 04:27:32,011 INFO Variable tmax_2m has been downloaded
+
+scripts.loaders 2023-10-30 04:27:32,011 INFO Variable tmax_2m has been downloaded
+
+scripts.loaders 2023-10-30 04:27:32,012 INFO Variable tmin_2m is downloading ..
+scripts.loaders 2023-10-30 04:27:32,012 INFO Variable tmin_2m is downloading ..
+scripts.loaders 2023-10-30 04:27:32,012 INFO Variable tmin_2m is downloading ..
+scripts.loaders 2023-10-30 04:27:32,012 INFO Variable tmin_2m is downloading ..
+scripts.loaders 2023-10-30 04:27:32,012 INFO Variable tmin_2m is downloading ..
+scripts.loaders 2023-10-30 04:29:31,323 INFO Variable tmin_2m has been downloaded
+
+scripts.loaders 2023-10-30 04:29:31,323 INFO Variable tmin_2m has been downloaded
+
+scripts.loaders 2023-10-30 04:29:31,323 INFO Variable tmin_2m has been downloaded
+
+scripts.loaders 2023-10-30 04:29:31,323 INFO Variable tmin_2m has been downloaded
+
+scripts.loaders 2023-10-30 04:29:31,323 INFO Variable tmin_2m has been downloaded
+
+scripts.loaders 2023-10-30 04:29:31,324 INFO Variable tot_prec is downloading ..
+scripts.loaders 2023-10-30 04:29:31,324 INFO Variable tot_prec is downloading ..
+scripts.loaders 2023-10-30 04:29:31,324 INFO Variable tot_prec is downloading ..
+scripts.loaders 2023-10-30 04:29:31,324 INFO Variable tot_prec is downloading ..
+scripts.loaders 2023-10-30 04:29:31,324 INFO Variable tot_prec is downloading ..
+scripts.loaders 2023-10-30 04:32:35,060 INFO Variable tot_prec has been downloaded
+
+scripts.loaders 2023-10-30 04:32:35,060 INFO Variable tot_prec has been downloaded
+
+scripts.loaders 2023-10-30 04:32:35,060 INFO Variable tot_prec has been downloaded
+
+scripts.loaders 2023-10-30 04:32:35,060 INFO Variable tot_prec has been downloaded
+
+scripts.loaders 2023-10-30 04:32:35,060 INFO Variable tot_prec has been downloaded
+
+scripts.loaders 2023-10-30 04:32:35,061 INFO Variable alb_rad is downloading ..
+scripts.loaders 2023-10-30 04:32:35,061 INFO Variable alb_rad is downloading ..
+scripts.loaders 2023-10-30 04:32:35,061 INFO Variable alb_rad is downloading ..
+scripts.loaders 2023-10-30 04:32:35,061 INFO Variable alb_rad is downloading ..
+scripts.loaders 2023-10-30 04:32:35,061 INFO Variable alb_rad is downloading ..
+scripts.loaders 2023-10-30 04:34:21,787 INFO Variable alb_rad has been downloaded
+
+scripts.loaders 2023-10-30 04:34:21,787 INFO Variable alb_rad has been downloaded
+
+scripts.loaders 2023-10-30 04:34:21,787 INFO Variable alb_rad has been downloaded
+
+scripts.loaders 2023-10-30 04:34:21,787 INFO Variable alb_rad has been downloaded
+
+scripts.loaders 2023-10-30 04:34:21,787 INFO Variable alb_rad has been downloaded
+
+scripts.loaders 2023-10-30 04:34:21,788 INFO Unarchive t_2m ..
+scripts.loaders 2023-10-30 04:34:21,788 INFO Unarchive t_2m ..
+scripts.loaders 2023-10-30 04:34:21,788 INFO Unarchive t_2m ..
+scripts.loaders 2023-10-30 04:34:21,788 INFO Unarchive t_2m ..
+scripts.loaders 2023-10-30 04:34:21,788 INFO Unarchive t_2m ..
+scripts.loaders 2023-10-30 04:34:54,527 INFO Unarchive for t_2m has been finished
+
+scripts.loaders 2023-10-30 04:34:54,527 INFO Unarchive for t_2m has been finished
+
+scripts.loaders 2023-10-30 04:34:54,527 INFO Unarchive for t_2m has been finished
+
+scripts.loaders 2023-10-30 04:34:54,527 INFO Unarchive for t_2m has been finished
+
+scripts.loaders 2023-10-30 04:34:54,527 INFO Unarchive for t_2m has been finished
+
+scripts.loaders 2023-10-30 04:34:54,528 INFO Unarchive tmax_2m ..
+scripts.loaders 2023-10-30 04:34:54,528 INFO Unarchive tmax_2m ..
+scripts.loaders 2023-10-30 04:34:54,528 INFO Unarchive tmax_2m ..
+scripts.loaders 2023-10-30 04:34:54,528 INFO Unarchive tmax_2m ..
+scripts.loaders 2023-10-30 04:34:54,528 INFO Unarchive tmax_2m ..
+scripts.loaders 2023-10-30 04:35:27,190 INFO Unarchive for tmax_2m has been finished
+
+scripts.loaders 2023-10-30 04:35:27,190 INFO Unarchive for tmax_2m has been finished
+
+scripts.loaders 2023-10-30 04:35:27,190 INFO Unarchive for tmax_2m has been finished
+
+scripts.loaders 2023-10-30 04:35:27,190 INFO Unarchive for tmax_2m has been finished
+
+scripts.loaders 2023-10-30 04:35:27,190 INFO Unarchive for tmax_2m has been finished
+
+scripts.loaders 2023-10-30 04:35:27,190 INFO Unarchive tmin_2m ..
+scripts.loaders 2023-10-30 04:35:27,190 INFO Unarchive tmin_2m ..
+scripts.loaders 2023-10-30 04:35:27,190 INFO Unarchive tmin_2m ..
+scripts.loaders 2023-10-30 04:35:27,190 INFO Unarchive tmin_2m ..
+scripts.loaders 2023-10-30 04:35:27,190 INFO Unarchive tmin_2m ..
+scripts.loaders 2023-10-30 04:35:59,754 INFO Unarchive for tmin_2m has been finished
+
+scripts.loaders 2023-10-30 04:35:59,754 INFO Unarchive for tmin_2m has been finished
+
+scripts.loaders 2023-10-30 04:35:59,754 INFO Unarchive for tmin_2m has been finished
+
+scripts.loaders 2023-10-30 04:35:59,754 INFO Unarchive for tmin_2m has been finished
+
+scripts.loaders 2023-10-30 04:35:59,754 INFO Unarchive for tmin_2m has been finished
+
+scripts.loaders 2023-10-30 04:35:59,755 INFO Unarchive tot_prec ..
+scripts.loaders 2023-10-30 04:35:59,755 INFO Unarchive tot_prec ..
+scripts.loaders 2023-10-30 04:35:59,755 INFO Unarchive tot_prec ..
+scripts.loaders 2023-10-30 04:35:59,755 INFO Unarchive tot_prec ..
+scripts.loaders 2023-10-30 04:35:59,755 INFO Unarchive tot_prec ..
+scripts.loaders 2023-10-30 04:36:25,005 INFO Unarchive for tot_prec has been finished
+
+scripts.loaders 2023-10-30 04:36:25,005 INFO Unarchive for tot_prec has been finished
+
+scripts.loaders 2023-10-30 04:36:25,005 INFO Unarchive for tot_prec has been finished
+
+scripts.loaders 2023-10-30 04:36:25,005 INFO Unarchive for tot_prec has been finished
+
+scripts.loaders 2023-10-30 04:36:25,005 INFO Unarchive for tot_prec has been finished
+
+scripts.loaders 2023-10-30 04:36:25,005 INFO Unarchive alb_rad ..
+scripts.loaders 2023-10-30 04:36:25,005 INFO Unarchive alb_rad ..
+scripts.loaders 2023-10-30 04:36:25,005 INFO Unarchive alb_rad ..
+scripts.loaders 2023-10-30 04:36:25,005 INFO Unarchive alb_rad ..
+scripts.loaders 2023-10-30 04:36:25,005 INFO Unarchive alb_rad ..
+scripts.loaders 2023-10-30 04:36:52,336 INFO Unarchive for alb_rad has been finished
+
+scripts.loaders 2023-10-30 04:36:52,336 INFO Unarchive for alb_rad has been finished
+
+scripts.loaders 2023-10-30 04:36:52,336 INFO Unarchive for alb_rad has been finished
+
+scripts.loaders 2023-10-30 04:36:52,336 INFO Unarchive for alb_rad has been finished
+
+scripts.loaders 2023-10-30 04:36:52,336 INFO Unarchive for alb_rad has been finished
+
+scripts.loaders 2023-10-30 04:36:52,337 INFO Nc coversion for t_2m ..
+scripts.loaders 2023-10-30 04:36:52,337 INFO Nc coversion for t_2m ..
+scripts.loaders 2023-10-30 04:36:52,337 INFO Nc coversion for t_2m ..
+scripts.loaders 2023-10-30 04:36:52,337 INFO Nc coversion for t_2m ..
+scripts.loaders 2023-10-30 04:36:52,337 INFO Nc coversion for t_2m ..
+scripts.loaders 2023-10-30 04:37:54,196 INFO Nc coversion for t_2m has been finished
+
+scripts.loaders 2023-10-30 04:37:54,196 INFO Nc coversion for t_2m has been finished
+
+scripts.loaders 2023-10-30 04:37:54,196 INFO Nc coversion for t_2m has been finished
+
+scripts.loaders 2023-10-30 04:37:54,196 INFO Nc coversion for t_2m has been finished
+
+scripts.loaders 2023-10-30 04:37:54,196 INFO Nc coversion for t_2m has been finished
+
+scripts.loaders 2023-10-30 04:37:54,197 INFO Nc coversion for tmax_2m ..
+scripts.loaders 2023-10-30 04:37:54,197 INFO Nc coversion for tmax_2m ..
+scripts.loaders 2023-10-30 04:37:54,197 INFO Nc coversion for tmax_2m ..
+scripts.loaders 2023-10-30 04:37:54,197 INFO Nc coversion for tmax_2m ..
+scripts.loaders 2023-10-30 04:37:54,197 INFO Nc coversion for tmax_2m ..
+scripts.loaders 2023-10-30 04:38:56,032 INFO Nc coversion for tmax_2m has been finished
+
+scripts.loaders 2023-10-30 04:38:56,032 INFO Nc coversion for tmax_2m has been finished
+
+scripts.loaders 2023-10-30 04:38:56,032 INFO Nc coversion for tmax_2m has been finished
+
+scripts.loaders 2023-10-30 04:38:56,032 INFO Nc coversion for tmax_2m has been finished
+
+scripts.loaders 2023-10-30 04:38:56,032 INFO Nc coversion for tmax_2m has been finished
+
+scripts.loaders 2023-10-30 04:38:56,032 INFO Nc coversion for tmin_2m ..
+scripts.loaders 2023-10-30 04:38:56,032 INFO Nc coversion for tmin_2m ..
+scripts.loaders 2023-10-30 04:38:56,032 INFO Nc coversion for tmin_2m ..
+scripts.loaders 2023-10-30 04:38:56,032 INFO Nc coversion for tmin_2m ..
+scripts.loaders 2023-10-30 04:38:56,032 INFO Nc coversion for tmin_2m ..
+scripts.loaders 2023-10-30 04:39:58,695 INFO Nc coversion for tmin_2m has been finished
+
+scripts.loaders 2023-10-30 04:39:58,695 INFO Nc coversion for tmin_2m has been finished
+
+scripts.loaders 2023-10-30 04:39:58,695 INFO Nc coversion for tmin_2m has been finished
+
+scripts.loaders 2023-10-30 04:39:58,695 INFO Nc coversion for tmin_2m has been finished
+
+scripts.loaders 2023-10-30 04:39:58,695 INFO Nc coversion for tmin_2m has been finished
+
+scripts.loaders 2023-10-30 04:39:58,696 INFO Nc coversion for tot_prec ..
+scripts.loaders 2023-10-30 04:39:58,696 INFO Nc coversion for tot_prec ..
+scripts.loaders 2023-10-30 04:39:58,696 INFO Nc coversion for tot_prec ..
+scripts.loaders 2023-10-30 04:39:58,696 INFO Nc coversion for tot_prec ..
+scripts.loaders 2023-10-30 04:39:58,696 INFO Nc coversion for tot_prec ..
+scripts.loaders 2023-10-30 04:41:01,336 INFO Nc coversion for tot_prec has been finished
+
+scripts.loaders 2023-10-30 04:41:01,336 INFO Nc coversion for tot_prec has been finished
+
+scripts.loaders 2023-10-30 04:41:01,336 INFO Nc coversion for tot_prec has been finished
+
+scripts.loaders 2023-10-30 04:41:01,336 INFO Nc coversion for tot_prec has been finished
+
+scripts.loaders 2023-10-30 04:41:01,336 INFO Nc coversion for tot_prec has been finished
+
+scripts.loaders 2023-10-30 04:41:01,337 INFO Nc coversion for alb_rad ..
+scripts.loaders 2023-10-30 04:41:01,337 INFO Nc coversion for alb_rad ..
+scripts.loaders 2023-10-30 04:41:01,337 INFO Nc coversion for alb_rad ..
+scripts.loaders 2023-10-30 04:41:01,337 INFO Nc coversion for alb_rad ..
+scripts.loaders 2023-10-30 04:41:01,337 INFO Nc coversion for alb_rad ..
+scripts.loaders 2023-10-30 04:42:03,827 INFO Nc coversion for alb_rad has been finished
+
+scripts.loaders 2023-10-30 04:42:03,827 INFO Nc coversion for alb_rad has been finished
+
+scripts.loaders 2023-10-30 04:42:03,827 INFO Nc coversion for alb_rad has been finished
+
+scripts.loaders 2023-10-30 04:42:03,827 INFO Nc coversion for alb_rad has been finished
+
+scripts.loaders 2023-10-30 04:42:03,827 INFO Nc coversion for alb_rad has been finished
+
+scripts.loaders 2023-10-30 04:42:03,827 INFO Nc aggregation for t_2m ..
+scripts.loaders 2023-10-30 04:42:03,827 INFO Nc aggregation for t_2m ..
+scripts.loaders 2023-10-30 04:42:03,827 INFO Nc aggregation for t_2m ..
+scripts.loaders 2023-10-30 04:42:03,827 INFO Nc aggregation for t_2m ..
+scripts.loaders 2023-10-30 04:42:03,827 INFO Nc aggregation for t_2m ..
+scripts.loaders 2023-10-30 04:42:07,419 INFO Nc aggregation for t_2m has been finished
+
+scripts.loaders 2023-10-30 04:42:07,419 INFO Nc aggregation for t_2m has been finished
+
+scripts.loaders 2023-10-30 04:42:07,419 INFO Nc aggregation for t_2m has been finished
+
+scripts.loaders 2023-10-30 04:42:07,419 INFO Nc aggregation for t_2m has been finished
+
+scripts.loaders 2023-10-30 04:42:07,419 INFO Nc aggregation for t_2m has been finished
+
+scripts.loaders 2023-10-30 04:42:07,419 INFO Nc aggregation for tmax_2m ..
+scripts.loaders 2023-10-30 04:42:07,419 INFO Nc aggregation for tmax_2m ..
+scripts.loaders 2023-10-30 04:42:07,419 INFO Nc aggregation for tmax_2m ..
+scripts.loaders 2023-10-30 04:42:07,419 INFO Nc aggregation for tmax_2m ..
+scripts.loaders 2023-10-30 04:42:07,419 INFO Nc aggregation for tmax_2m ..
+scripts.loaders 2023-10-30 04:42:11,030 INFO Nc aggregation for tmax_2m has been finished
+
+scripts.loaders 2023-10-30 04:42:11,030 INFO Nc aggregation for tmax_2m has been finished
+
+scripts.loaders 2023-10-30 04:42:11,030 INFO Nc aggregation for tmax_2m has been finished
+
+scripts.loaders 2023-10-30 04:42:11,030 INFO Nc aggregation for tmax_2m has been finished
+
+scripts.loaders 2023-10-30 04:42:11,030 INFO Nc aggregation for tmax_2m has been finished
+
+scripts.loaders 2023-10-30 04:42:11,032 INFO Nc aggregation for tmin_2m ..
+scripts.loaders 2023-10-30 04:42:11,032 INFO Nc aggregation for tmin_2m ..
+scripts.loaders 2023-10-30 04:42:11,032 INFO Nc aggregation for tmin_2m ..
+scripts.loaders 2023-10-30 04:42:11,032 INFO Nc aggregation for tmin_2m ..
+scripts.loaders 2023-10-30 04:42:11,032 INFO Nc aggregation for tmin_2m ..
+scripts.loaders 2023-10-30 04:42:14,477 INFO Nc aggregation for tmin_2m has been finished
+
+scripts.loaders 2023-10-30 04:42:14,477 INFO Nc aggregation for tmin_2m has been finished
+
+scripts.loaders 2023-10-30 04:42:14,477 INFO Nc aggregation for tmin_2m has been finished
+
+scripts.loaders 2023-10-30 04:42:14,477 INFO Nc aggregation for tmin_2m has been finished
+
+scripts.loaders 2023-10-30 04:42:14,477 INFO Nc aggregation for tmin_2m has been finished
+
+scripts.loaders 2023-10-30 04:42:14,478 INFO Nc aggregation for tot_prec ..
+scripts.loaders 2023-10-30 04:42:14,478 INFO Nc aggregation for tot_prec ..
+scripts.loaders 2023-10-30 04:42:14,478 INFO Nc aggregation for tot_prec ..
+scripts.loaders 2023-10-30 04:42:14,478 INFO Nc aggregation for tot_prec ..
+scripts.loaders 2023-10-30 04:42:14,478 INFO Nc aggregation for tot_prec ..
+scripts.loaders 2023-10-30 04:42:17,315 INFO Nc aggregation for tot_prec has been finished
+
+scripts.loaders 2023-10-30 04:42:17,315 INFO Nc aggregation for tot_prec has been finished
+
+scripts.loaders 2023-10-30 04:42:17,315 INFO Nc aggregation for tot_prec has been finished
+
+scripts.loaders 2023-10-30 04:42:17,315 INFO Nc aggregation for tot_prec has been finished
+
+scripts.loaders 2023-10-30 04:42:17,315 INFO Nc aggregation for tot_prec has been finished
+
+scripts.loaders 2023-10-30 04:42:17,315 INFO Nc aggregation for alb_rad ..
+scripts.loaders 2023-10-30 04:42:17,315 INFO Nc aggregation for alb_rad ..
+scripts.loaders 2023-10-30 04:42:17,315 INFO Nc aggregation for alb_rad ..
+scripts.loaders 2023-10-30 04:42:17,315 INFO Nc aggregation for alb_rad ..
+scripts.loaders 2023-10-30 04:42:17,315 INFO Nc aggregation for alb_rad ..
+scripts.loaders 2023-10-30 04:42:20,636 INFO Nc aggregation for alb_rad has been finished
+
+scripts.loaders 2023-10-30 04:42:20,636 INFO Nc aggregation for alb_rad has been finished
+
+scripts.loaders 2023-10-30 04:42:20,636 INFO Nc aggregation for alb_rad has been finished
+
+scripts.loaders 2023-10-30 04:42:20,636 INFO Nc aggregation for alb_rad has been finished
+
+scripts.loaders 2023-10-30 04:42:20,636 INFO Nc aggregation for alb_rad has been finished
+
+scripts.loaders 2023-10-30 04:42:22,410 INFO 
+###########################################################
+###########################################################
+
+Data for 20231030 downloaded
+
+###########################################################
+###########################################################
+
+scripts.loaders 2023-10-30 04:42:22,410 INFO 
+###########################################################
+###########################################################
+
+Data for 20231030 downloaded
+
+###########################################################
+###########################################################
+
+scripts.loaders 2023-10-30 04:42:22,410 INFO 
+###########################################################
+###########################################################
+
+Data for 20231030 downloaded
+
+###########################################################
+###########################################################
+
+scripts.loaders 2023-10-30 04:42:22,410 INFO 
+###########################################################
+###########################################################
+
+Data for 20231030 downloaded
+
+###########################################################
+###########################################################
+
+scripts.loaders 2023-10-30 04:42:22,410 INFO 
+###########################################################
+###########################################################
+
+Data for 20231030 downloaded
+
+###########################################################
+###########################################################
+
