@@ -31,7 +31,8 @@ def downloader():
     loader.clean_temp_files()
     # clear garbage
     gc.collect()
-    subprocess.run(['python', './icon_merger.py'])
+    subprocess.run(['python', './icon_merger_kamchatka.py'])
+    subprocess.run(['python', './icon_merger_russia.py'])
 
 
 while True:
