@@ -9,6 +9,7 @@ from functools import reduce
 import glob
 from pathlib import Path
 from tqdm import tqdm
+import json
 
 
 class Icon_merger:
@@ -28,6 +29,19 @@ class Icon_merger:
         ds_description = {**grid_descriptor(dataset_name=f'{self.dataset_name}',
                                             half_resolution=0.0625,
                                             files=Path(self.icon_gauges))}
+        try:
+            with open(f'{self.place_to_save}/merged_files.json') as json_file:
+                merged_files = json.load(json_file)
+        except FileNotFoundError:
+            merged_files = {}
+
+        if merged_files:
+            pass
+        else:
+            for dataset, settings in ds_description.items():
+                merged_files[dataset] = dict()
+                for variable, pathes in settings['f_path'].items():
+                    merged_files[dataset][variable] = []
 
         for dataset, settings in ds_description.items():
 
@@ -38,20 +52,30 @@ class Icon_merger:
                 for variable, pathes in settings['f_path'].items():
                     aggregation = aggregation_definer(dataset, variable)
                     for path in pathes:
-                        meteo_grid = Gridder(half_grid_resolution=grid_res,
-                                             ws_geom=ws_geometry,
-                                             gauge_id=gauge_id,
-                                             path_to_save=Path(
-                                                 f'{self.place_to_save}'),
-                                             nc_pathes=path,
-                                             dataset=dataset,
-                                             var=variable,
-                                             aggregation_type=aggregation,
-                                             prcp_coef=1e-2,
-                                             weight_mark='icon',
-                                             extend_data=False,
-                                             merge_data=True)
-                        meteo_grid.grid_value_ws()
+                        if path in merged_files[dataset][variable]:
+                            continue
+                        else:
+                            meteo_grid = Gridder(half_grid_resolution=grid_res,
+                                                ws_geom=ws_geometry,
+                                                gauge_id=gauge_id,
+                                                path_to_save=Path(
+                                                    f'{self.place_to_save}'),
+                                                nc_pathes=path,
+                                                dataset=dataset,
+                                                var=variable,
+                                                aggregation_type=aggregation,
+                                                prcp_coef=1e-2,
+                                                weight_mark='icon',
+                                                extend_data=False,
+                                                merge_data=True)
+                            meteo_grid.grid_value_ws()
+
+        for dataset, settings in ds_description.items():
+            merged_files[dataset] = dict()
+            for variable, pathes in settings['f_path'].items():
+                merged_files[dataset][variable] = pathes
+        with open(f'{self.place_to_save}/merged_files.json', 'w') as fp:
+            json.dump(merged_files, fp)
 
         save_folder = Path(f'{self.place_to_save}/merge_result')
         save_folder.mkdir(exist_ok=True, parents=True)

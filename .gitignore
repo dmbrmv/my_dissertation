@@ -14,6 +14,7 @@ chromedriver_linux64.zip
 google-chrome-stable_current_amd64.deb
 LICENSE.chromedriver
 esimo_loader/dw_folder
+esimo_loader/chrome_folder
 esimo_loader/esimo_dw_logger.log
 esimo_loader/data.csv
 

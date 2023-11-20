@@ -168,6 +168,7 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
                    nrows: int,
                    ncols: int,
                    title_text: list = [''],
+                   hist_name: list = [''],
                    rus_extent: list = [50, 140, 32, 90],
                    list_of_limits: list = [0.0, 0.5, 0.7, 0.8, 1.0],
                    cmap_lims: tuple = (0, 1),
@@ -192,14 +193,14 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
                             subplot_kw={'projection': aea_crs})
 
     for i, ax in enumerate(np.ravel(axs)):
-        cmap = cm.get_cmap(cmap_name, 4)
+        cmap = cm.get_cmap(cmap_name, len(list_of_limits)-1)
         vmin, vmax = cmap_lims
         # [-100, -75, -50, -25, 0, 25, 50, 75, 100]
         # [0.0, 0.50, 0.70, 0.80, 1.00]
         # bounds = [-100, -75, -50, -25, 0, 25, 50, 75, 100]
 
-        norm_cmap = mpl.colors.BoundaryNorm([0.0, 0.50, 0.70, 0.80, 1.00],
-                                            4)
+        norm_cmap = mpl.colors.BoundaryNorm(list_of_limits,
+                                            len(list_of_limits)-1)
         # norm_cmap = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
         if i >= len(columns_from_gdf):
             ax.set_visible(False)
@@ -240,7 +241,7 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
                 column=columns_from_gdf[i],
                 cmap=cmap, norm=norm_cmap,
                 marker='o', markersize=14,
-                edgecolor='black', linewidth=0.1,
+                edgecolor='black', linewidth=0.3,
                 legend=True,
                 legend_kwds={'orientation': 'horizontal',
                              'shrink': 0.3,
@@ -276,6 +277,7 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
                            include_lowest=False))
 
             hist_df = hist_df.reset_index(drop=True)
+            hist_df.columns.name = hist_name[i]
             # x of borders, y of borders, weight, height
             ax_hist = ax.inset_axes([0.00, 0.05, 0.33, 0.24])
             extra_hist = hist_df.sum(axis=0).plot.bar(ax=ax_hist,
@@ -297,6 +299,10 @@ def russia_plots_n(gdf_to_plot: gpd.GeoDataFrame,
             else:
                 xlbl = [str(col)[1:-1].replace(', ', '-')
                         for col in hist_df.columns]
+            if len(xlbl) > 4:
+                xlbl = [lbl if not (i % 2)
+                        else ''
+                        for i, lbl in enumerate(xlbl)]
 
             # def str_to_float(x):
             #     return list(map(float, x.split('-')))
