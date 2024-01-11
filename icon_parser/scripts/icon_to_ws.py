@@ -64,7 +64,7 @@ class Icon_merger:
                                                 dataset=dataset,
                                                 var=variable,
                                                 aggregation_type=aggregation,
-                                                prcp_coef=1e-2,
+                                                prcp_coef=1e-1,
                                                 weight_mark='icon',
                                                 extend_data=False,
                                                 merge_data=True)
