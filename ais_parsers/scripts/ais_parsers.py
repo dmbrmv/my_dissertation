@@ -2,6 +2,9 @@ import pandas as pd
 import numpy as np
 import re
 from pathlib import Path
+from tqdm import tqdm
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 def df_from_excel(observations: np.ndarray,
@@ -44,18 +47,30 @@ def discharge_to_csv(data_path: str,
 
     save_path.mkdir(exist_ok=True, parents=True)
     month_days = 31
-    # if 0 -- ID of gauge, 2 -- river name
-    river_step = 4
-    river_label = 6
-    year_step = 5
 
-    month_step = 9
-    # jump over year fro gauge
-    table_step = 47
+    try:
+        # if 0 -- ID of gauge, 2 -- river name
+        river_step = 4
+        river_label = 6
+        year_step = 5
+        skip_top = 18
 
-    # file = pd.read_excel(data_path, skiprows=skip_top, skipfooter=0)
-    xml = pd.read_html(data_path, decimal='.', thousands=" ")
-    file = xml[0]
+        month_step = 9
+        # jump over year fro gauge
+        table_step = 47
+        xml = pd.read_html(data_path, decimal='.', thousands=" ")
+        file = xml[0]
+    except UnicodeDecodeError:
+        # if 0 -- ID of gauge, 2 -- river name
+        river_step = 0
+        river_label = 2
+        year_step = 1
+        skip_top = 18
+
+        month_step = 5
+        # jump over year fro gauge
+        table_step = 53
+        file = pd.read_excel(data_path, skiprows=skip_top, skipfooter=0)
 
     monthes_range = list(range(month_step, file.shape[0], table_step))
     river_fields = list(range(river_step, file.shape[0], table_step))
@@ -218,18 +233,29 @@ def level_to_csv(data_path: str,
 
     month_days = 31
 
-    # if 0 -- ID of gauge, 2 -- river name
-    river_step = 52
-    river_label = 54
-    year_step = 53
-    m_bs = 55
+    try:
+        # if 0 -- ID of gauge, 2 -- river name
+        river_step = 52
+        river_label = 54
+        year_step = 53
+        m_bs = 55
 
-    month_step = 59
-    table_step = 49
+        month_step = 59
+        table_step = 49
 
-    # file = pd.read_excel(data_path, skiprows=skip_top, skipfooter=0)
-    xml = pd.read_html(data_path, decimal='.', thousands=" ")
-    file = xml[0]
+        xml = pd.read_html(data_path, decimal='.', thousands=" ")
+        file = xml[0]
+    except UnicodeDecodeError:
+        # if 0 -- ID of gauge, 2 -- river name
+        river_step = 0
+        river_label = 2
+        year_step = 1
+        m_bs = 3
+        skip_top = 39
+
+        month_step = 7
+        table_step = 55
+        file = pd.read_excel(data_path, skiprows=skip_top, skipfooter=0)
 
     monthes_range = list(range(month_step, file.shape[0], table_step))
     river_fields = list(range(river_step, file.shape[0], table_step))
@@ -372,3 +398,37 @@ def level_to_csv(data_path: str,
         data.to_csv(f'{save_path}/{river_name}.csv')
 
     return label_id
+
+
+def file_extender(files_by_district: list,
+                  save_storage: Path):
+    save_storage.mkdir(exist_ok=True, parents=True)
+    # for file in tqdm(glob.glob('./data/lvl_district_csv/*/*.csv')):
+    for file in tqdm(files_by_district, 'Parsing files from districts'):
+        year = file.split('/')[-2].split('_')[-1]
+        gauge = file.split('/')[-1][:-4]
+        # read existing file
+        old_file = pd.read_csv(file, index_col='date')
+        old_file.index = pd.to_datetime(old_file.index)
+        old_file = old_file.rename(columns={f'{gauge}': 'level'})
+        old_file = old_file.drop('Unnamed: 0', axis=1)
+        # read new file to extension
+        # old_file.to_csv(f'{./data/res/levels}/{gauge}.csv')
+        try:
+            new_file = pd.read_csv(f'{save_storage}/{gauge}.csv',
+                                   index_col='date')
+            new_file.index = pd.to_datetime(new_file.index)
+            # new_file = new_file.drop('Unnamed: 0', axis=1)
+
+            res_file = old_file.combine_first(new_file)
+
+            res_file.to_csv(f'{save_storage}/{gauge}.csv')
+        except FileNotFoundError:
+            new_file = pd.DataFrame()
+            new_file['date'] = pd.date_range(start=f'01/01/{year}',
+                                             end=f'12/31/{year}')
+            new_file = new_file.set_index('date')
+            new_file['level'] = np.NaN
+            res_file = old_file.combine_first(new_file)
+
+            res_file.to_csv(f'{save_storage}/{gauge}.csv')

@@ -16,8 +16,11 @@ def gauge_cmip(gauge_id: str,
                era_storage: str,
                compare_start: str = '2018-01-01',
                compare_end: str = '2020-01-01'):
-    cmip_gauge = xr.open_dataset(f'{cmip_storage}/{gauge_id}.nc')
-    era_gauge = xr.open_dataset(f'{era_storage}/{gauge_id}.nc')
+    with xr.open_dataset(f'{cmip_storage}/{gauge_id}.nc') as cmip_f:
+        cmip_gauge = cmip_f
+    with xr.open_dataset(f'{era_storage}/{gauge_id}.nc') as era_f:
+        era_gauge = era_f
+        
     # select range from era5l
     if 'index' in era_gauge.coords:
         era_prcp = era_gauge[['prcp_e5l']].rename({'index': 'date'}).sel(

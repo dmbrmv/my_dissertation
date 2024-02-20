@@ -1,10 +1,10 @@
 import sys
-sys.path.append('/home/anton/dima_experiments/my_dissertation')
-# sys.path.append('/workspaces/my_dissertation')
+# sys.path.append('/home/anton/dima_experiments/my_dissertation')
+sys.path.append('/workspaces/my_dissertation')
 
 from conceptual_runs.calibration.calibrator import calibrate_gauge
 from conceptual_runs.hydro_models import hbv, gr4j_cema_neige
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, root_mean_squared_error
 import xarray as xr
 import pandas as pd
 import numpy as np
@@ -56,8 +56,8 @@ def metric_df(gauge_id, predictions, targets):
     res_df.loc[gauge_id, ['KGE', 'r', 'alpha', 'beta']] = kge(predictions,
                                                               targets)
 
-    res_df.loc[gauge_id, 'RMSE'] = rmse(predictions,
-                                        targets)
+    res_df.loc[gauge_id, 'RMSE'] = root_mean_squared_error(predictions,
+                                                           targets)
 
     res_df.loc[gauge_id, 'delta'] = relative_error(predictions,
                                                    targets)

@@ -1,5 +1,5 @@
 # data manipulation
-pandas
+pandas==2.0
 h5py
 numba
 xarray
@@ -7,6 +7,10 @@ dask
 netCDF4
 bottleneck
 spotpy
+lxml
+html5lib
+xlrd
+openpyxl
 # geometry packages
 shapely
 geopandas
@@ -22,12 +26,11 @@ scikit-learn
 scipy
 catboost
 shap
-darts
 neuralhydrology
 darts
 # cute jupyter
 jupyter
-ipywidgets==7.
+ipywidgets
 autopep8
 pep8
 ipykernel

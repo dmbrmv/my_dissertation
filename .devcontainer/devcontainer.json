@@ -4,27 +4,6 @@
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
-	"extensions": [
-		"ms-python.python",
-		"ms-azuretools.vscode-docker",
-		"ms-toolsai.jupyter",
-		"ms-toolsai.jupyter-renderers",
-		"ms-python.vscode-pylance",
-		"mechatroner.rainbow-csv",
-		"KevinRose.vsc-python-indent",
-		"VisualStudioExptTeam.vscodeintellicode",
-		"njpwerner.autodocstring",
-		"ms-toolsai.vscode-jupyter-powertoys",
-		"jithurjacob.nbpreviewer",
-		"yzhang.markdown-all-in-one",
-		"christian-kohler.path-intellisense",
-		"eamodio.gitlens",
-		"PKief.material-icon-theme",
-		"ms-toolsai.jupyter-keymap",
-		"ms-python.autopep8",
-		"ms-python.flake8",
-		"mutantdino.resourcemonitor"
-	],
 	"runArgs": [
 		// macOS
 		// "--ipc=host"
@@ -38,8 +17,31 @@
 		// server
 		// "source=/home/anton/dima_experiments/geo_data,target=/workspaces/my_dissertation/geo_data,type=bind,consistency=cached"
 		// home
-		"source=/home/dima/Data/geo_data,target=/workspaces/my_dissertation/geo_data,type=bind,consistency=cached"
+		// "source=/home/dima/Coding/geo_data,target=/workspace/my_dissertation/geo_data,type=bind,consistency=cached"
 		// macOS
 		// "source=/Users/dmbrmv/Development/geo_data,target=/workspaces/my_dissertation/geo_data,type=bind,consistency=cached"
-	]
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"njpwerner.autodocstring",
+				"ms-toolsai.jupyter",
+				"ms-toolsai.vscode-jupyter-cell-tags",
+				"ms-toolsai.jupyter-renderers",
+				"ms-toolsai.vscode-jupyter-powertoys",
+				"ms-toolsai.vscode-jupyter-slideshow",
+				"yzhang.markdown-all-in-one",
+				"ionutvmi.path-autocomplete",
+				"christian-kohler.path-intellisense",
+				"ms-python.vscode-pylance",
+				"ms-python.python",
+				"ms-python.debugpy",
+				"mutantdino.resourcemonitor",
+				"charliermarsh.ruff",
+				"yy0931.save-as-root",
+				"sberworks.gigacode-vscode",
+				"ms-azuretools.vscode-docker"
+			]
+		}
+	}
 }

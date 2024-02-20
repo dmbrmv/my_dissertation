@@ -20,6 +20,9 @@ esimo_loader/data.csv
 
 ## ignore in parsers
 ais_parsers/data
+ais_parsers/data_2
+ais_parsers/ais_results_2021
+ais_parsers/results_2024
 
 ## ignore inputer
 
@@ -63,6 +66,8 @@ forecast/kinda_inference
 
 conceptual_runs/cal_res
 conclusions/results
+
+darts_forecast/model
 
 metric_viewer/
 

@@ -1,9 +1,9 @@
+"""Store files from AIS gmvo in table form."""
 import pandas as pd
 import xarray as xr
 
 
 def ais_reader(file_path: str):
-
     data = pd.read_csv(file_path)
     if 'Unnamed: 0' in data.columns:
         data = data.drop('Unnamed: 0', axis=1)
@@ -16,16 +16,16 @@ def ais_reader(file_path: str):
 def file_by_district(all_files: list,
                      save_storage: str,
                      variable_tag: str,
-                     height_bs: pd.DataFrame):
-    lvl_dict = {}
-    for gauge in height_bs.index:
+                     index_list: list) -> None:
+    files_dict = {}
+    for gauge in index_list:
         gauge = str(gauge)
-        lvl_dict[gauge] = []
+        files_dict[gauge] = []
         for lvl_f in all_files:
             if gauge == lvl_f.split('/')[-1][:-4]:
-                lvl_dict[gauge].append(lvl_f)
+                files_dict[gauge].append(lvl_f)
 
-    for gauge, files in lvl_dict.items():
+    for gauge, files in files_dict.items():
         try:
             res_df = pd.concat([ais_reader(file)
                                 for file in files]).sort_index()
@@ -35,7 +35,6 @@ def file_by_district(all_files: list,
 
 
 def read_with_date_index(file_path: str):
-
     data = pd.read_csv(file_path)
     data['date'] = pd.to_datetime(data['date'])
     data = data.set_index('date')

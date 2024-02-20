@@ -118,15 +118,21 @@ def find_extent(ws: Polygon,
         return [x_round(min_LON), x_round(max_LON),
                 x_round(min_LAT), x_round(max_LAT)]
     elif bool(dataset):
-        return [round_nearest(min_LON, grid_res),
-                round_nearest(max_LON, grid_res),
-                round_nearest(min_LAT, grid_res),
-                round_nearest(max_LAT, grid_res)]
+        # find extent coordinates
+        min_lon, max_lon, min_lat, max_lat = (round_nearest(min_LON, grid_res),
+                                              round_nearest(max_LON, grid_res),
+                                              round_nearest(min_LAT, grid_res),
+                                              round_nearest(max_LAT, grid_res))
+        # if max_lat == min_lat:
+        #     max_lat += grid_res*2
+        # if max_lon == min_lon:
+        #     max_lon += grid_res*2
+        return [min_lon, max_lon, min_lat, max_lat]
     else:
         raise Exception(f'Something wrong ! {dataset} -- {grid_res}')
 
 
-def create_gdf(shape: Union[Polygon, MultiPolygon]):
+def create_gdf(shape: Union[Polygon, MultiPolygon]) -> gpd.GeoDataFrame:
     """
 
     create geodataframe with given shape
@@ -135,10 +141,10 @@ def create_gdf(shape: Union[Polygon, MultiPolygon]):
     """
     gdf_your_WS = poly_from_multipoly(ws_geom=shape)
     # WS from your data
-    gdf_your_WS = gpd.GeoSeries([gdf_your_WS])
+    gdf_your_WS = gpd.GeoSeries(data=[gdf_your_WS])
 
     # Create extra gdf to use geopandas functions
-    gdf_your_WS = gpd.GeoDataFrame({'geometry': gdf_your_WS})
+    gdf_your_WS = gpd.GeoDataFrame(data={'geometry': gdf_your_WS})
     gdf_your_WS = gdf_your_WS.set_crs('EPSG:4326')
 
     return gdf_your_WS

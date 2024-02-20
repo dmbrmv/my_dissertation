@@ -1,5 +1,5 @@
 import numpy as np
-from hydro_models import cema_neige
+from . import cema_neige
 
 
 def simulation(data, params):

@@ -15,7 +15,6 @@ RUN conda install -c conda-forge cartopy
 RUN mkdir /init
 COPY ./requirements.txt /init/requirements.txt
 RUN pip install -r /init/requirements.txt
-
 RUN rm ~/.cache/matplotlib -rf
 
 RUN zsh
