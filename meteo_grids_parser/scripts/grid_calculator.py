@@ -1,5 +1,6 @@
 import gc
 from pathlib import Path
+import json
 
 import geopandas as gpd
 import pandas as pd
@@ -37,7 +38,7 @@ class Gridder:
             nc_pathes (list): _description_
             var (str): _description_
             dataset (str): _description_
-            aggregation_type (str, optional): _description_. Defaults to 'sum'.
+            aggregation_type (str, optional): _description_. Defaults to "sum".
             force_weights (bool, optional): _description_. Defaults to False.
 
         Raises:
@@ -120,11 +121,15 @@ class Gridder:
         # get indexes with data in initial file
         sjoin_idx = ws_gdf.sjoin(poly_gdf).index_right.sort_values().values
         # get fraction of overlay
-        overlay_area = ws_gdf.overlay(poly_gdf).to_crs(epsg=tiff_epsg).area.values
-        # calculate area of each polygon
-        initial_area = poly_gdf.to_crs(epsg=tiff_epsg).area.values[sjoin_idx]
-        # get weights of intersection
-        poly_gdf.loc[sjoin_idx, "weights"] = overlay_area / initial_area
+        try:
+            overlay_area = ws_gdf.overlay(poly_gdf, keep_geom_type=False).to_crs(epsg=tiff_epsg).area.values
+            # calculate area of each polygon
+            initial_area = poly_gdf.to_crs(epsg=tiff_epsg).area.values[sjoin_idx]
+            # get weights of intersection
+            poly_gdf.loc[sjoin_idx, "weights"] = overlay_area / initial_area
+        except ValueError as e:
+            with open("corrupted_gauges.txt", "a", encoding="utf-8") as f:
+                f.write(f"{self.gauge_id}-{self.dataset}-weight receiver - {e}" + "\n")
         weights = poly_gdf["weights"].values
         # shape of initial coordindate size
         grid_shape = (len(nc_lat), len(nc_lon))
@@ -150,7 +155,7 @@ class Gridder:
             gauge_id (str): _description_
             var_folder (str): _description_
             path_to_save (str): _description_
-            aggregation_type (str, optional): _description_. Defaults to 'sum'.
+            aggregation_type (str, optional): _description_. Defaults to "sum".
 
         Raises:
             Exception: _description_
@@ -173,32 +178,42 @@ class Gridder:
 
         inter_mask = self.weights.astype(bool)
         # create final instersection
-        ws_nc = mask_nc.where(inter_mask, drop=True)
+        try:
+            ws_nc = mask_nc.where(inter_mask, drop=True)
+        except ValueError as e:
+            with open("corrupted_gauges.txt", "a", encoding="utf-8") as f:
+                f.write(f"{self.gauge_id}-{self.dataset}-weighted value - {e}" + "\n")
+
         final_save = Path(f"{self.path_to_save}/{self.dataset}/{self.var}")
         final_save.mkdir(exist_ok=True, parents=True)
 
         res_df = pd.DataFrame()
+        try:
+            if self.aggregation_type == "sum":
+                res_df["date"] = ws_nc.time.values
+                res_df[var] = (
+                    ws_nc.weighted(weights=self.weights)
+                    .sum(dim=["lat", "lon"])[var]
+                    .values
+                )
+                res_df = res_df.set_index("date")
+                res_df.to_csv(f"{final_save}/{self.gauge_id}.csv")
 
-        if self.aggregation_type == "sum":
-            res_df["date"] = ws_nc.time.values
-            res_df[var] = (
-                ws_nc.weighted(weights=self.weights)
-                .sum(dim=["lat", "lon"])[var]
-                .values
-            )
-            res_df = res_df.set_index("date")
-            res_df.to_csv(f"{final_save}/{self.gauge_id}.csv")
-
-        else:
-            res_df["date"] = ws_nc.time.values
-            res_df[var] = (
-                ws_nc.weighted(weights=self.weights)
-                .mean(dim=["lat", "lon"])[var]
-                .values
-            )
-            res_df = res_df.set_index("date")
-            res_df.to_csv(f"{final_save}/{self.gauge_id}.csv")
-
+            else:
+                res_df["date"] = ws_nc.time.values
+                res_df[var] = (
+                    ws_nc.weighted(weights=self.weights)
+                    .mean(dim=["lat", "lon"])[var]
+                    .values
+                )
+                res_df = res_df.set_index("date")
+                res_df.to_csv(f"{final_save}/{self.gauge_id}.csv")
+        except ValueError as e:
+            with open("corrupted_gauges.txt", "a", encoding="utf-8") as f:
+                f.write(f"{self.gauge_id}-{self.dataset}-weighted value - {e}" + "\n")
+        except UnboundLocalError as e:
+            with open("corrupted_gauges.txt", "a", encoding="utf-8") as f:
+                f.write(f"{self.gauge_id}-{self.dataset}-weighted value - {e}" + "\n")
         gc.collect()
 
         return res_df

@@ -100,7 +100,7 @@ def get_params(model_name: str,
                train: pd.DataFrame,
                test: pd.DataFrame,
                calibrate: bool = False,
-               with_plot: bool = False):
+               with_plot: bool = False) -> object:
     if calibrate:
         calibrate_gauge(df=train, hydro_models=[model_name],
                         res_calibrate=f'{params_path}/{gauge_id}',

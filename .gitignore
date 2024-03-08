@@ -68,6 +68,7 @@ conceptual_runs/cal_res
 conclusions/results
 
 darts_forecast/model
+darts_forecast/res
 
 metric_viewer/
 

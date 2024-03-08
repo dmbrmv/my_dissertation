@@ -1,6 +1,6 @@
 // devcontainer.json
 {
-	"name": "Input_data_LSTM_forecast",
+	"name": "hydro_ml",
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
@@ -30,7 +30,6 @@
 				"ms-toolsai.jupyter-renderers",
 				"ms-toolsai.vscode-jupyter-powertoys",
 				"ms-toolsai.vscode-jupyter-slideshow",
-				"yzhang.markdown-all-in-one",
 				"ionutvmi.path-autocomplete",
 				"christian-kohler.path-intellisense",
 				"ms-python.vscode-pylance",

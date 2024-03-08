@@ -1,6 +1,8 @@
 ## Test description
 
+Model description:
+https://www.dwd.de/EN/research/weatherforecasting/num_modelling/01_num_weather_prediction_modells/icon_description.html
 
-Code, dataset parsers, models, and resources links which were used in the preparation of my PhD research
+Script connect to server and download data for upcoming 7 days from today
 
-Will be updated.. (17.02.2023)
+Then script calculate weighted meterology values (precipitation, temperature min, temperature max) for each watershed gauge_id and store it somewhere
