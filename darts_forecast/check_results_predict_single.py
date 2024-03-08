@@ -1,97 +1,30 @@
-import pathlib
-from typing import List, Union
 import logging
+import pathlib
 import warnings
+from copy import deepcopy
+from functools import reduce
 import gc
 
 import numpy as np
 import pandas as pd
-import pytorch_lightning as pl
 import torch
 import xarray as xr
-from darts import TimeSeries
 from darts.dataprocessing.transformers import Scaler, StaticCovariatesTransformer
 from darts.models import TFTModel
-from pytorch_lightning.callbacks import Callback
-from sklearn.metrics import mean_squared_error, root_mean_squared_error
 from sklearn.preprocessing import StandardScaler
 from tqdm import tqdm
 
+from scripts.metric_definers import metric_df
+from scripts.tft_data_creators import (
+    covariate_creator,
+    scale_with_static,
+    target_creator,
+    type32_converter,
+)
 
 warnings.filterwarnings("ignore", ".*does not have many workers.*")
 logging.getLogger("pytorch_lightning").setLevel(logging.WARNING)
 torch.set_float32_matmul_precision("medium")
-
-
-class LossLogger(Callback):
-    def __init__(self):
-        self.train_loss = []
-        self.val_loss = []
-
-    # will automatically be called at the end of each epoch
-    def on_train_epoch_end(
-        self, trainer: "pl.Trainer", pl_module: "pl.LightningModule"
-    ) -> None:
-        self.train_loss.append(float(trainer.callback_metrics["train_loss"]))
-
-    def on_validation_epoch_end(
-        self, trainer: "pl.Trainer", pl_module: "pl.LightningModule"
-    ) -> None:
-        self.val_loss.append(float(trainer.callback_metrics["val_loss"]))
-
-
-loss_logger = LossLogger()
-
-
-def nse(predictions, targets):
-    return 1 - (
-        np.nansum((targets - predictions) ** 2)
-        / np.nansum((targets - np.nanmean(targets)) ** 2)
-    )
-
-
-def kge(predictions, targets):
-    sim_mean = np.mean(targets, axis=0)
-    obs_mean = np.mean(predictions)
-
-    r_num = np.sum((targets - sim_mean) * (predictions - obs_mean), axis=0)
-    r_den = np.sqrt(
-        np.sum((targets - sim_mean) ** 2, axis=0)
-        * np.sum(
-            (predictions - obs_mean) ** 2,
-        )
-    )
-    r = r_num / r_den
-    # calculate error in spread of flow alpha
-    alpha = np.std(targets, axis=0) / np.std(predictions)
-    # calculate error in volume beta (bias of mean discharge)
-    beta = np.sum(targets, axis=0) / np.sum(predictions)
-    # calculate the Kling-Gupta Efficiency KGE
-    kge_ = 1 - np.sqrt((r - 1) ** 2 + (alpha - 1) ** 2 + (beta - 1) ** 2)
-
-    return kge_, r, alpha, beta
-
-
-def rmse(predictions, targets):
-    return mean_squared_error(targets, predictions, squared=False)
-
-
-def relative_error(predictions, targets):
-    return np.mean(((targets - predictions) / targets) * 100)
-
-
-def metric_df(gauge_id, predictions, targets):
-    res_df = pd.DataFrame()
-
-    res_df.loc[gauge_id, "NSE"] = nse(predictions, targets)
-
-    res_df.loc[gauge_id, ["KGE", "r", "alpha", "beta"]] = kge(predictions, targets)
-
-    res_df.loc[gauge_id, "RMSE"] = root_mean_squared_error(predictions, targets)
-
-    res_df.loc[gauge_id, "delta"] = relative_error(predictions, targets)
-
-    return res_df
 
 
 # setting device on GPU if available, else CPU
@@ -191,36 +124,6 @@ else:
     static_attributes = None
 
 
-def covariate_creator(
-    data_frame: pd.DataFrame, static_parameters: list, meteo_input: list
-) -> Union[TimeSeries, List[TimeSeries]]:
-    cov_time_series = TimeSeries.from_group_dataframe(
-        df=data_frame,
-        time_col="date",
-        group_cols="gauge_id",
-        static_cols=static_parameters,
-        value_cols=meteo_input,
-    )
-
-    return cov_time_series
-
-
-def target_creator(
-    data_frame: pd.DataFrame,
-    target_input: str,
-    static_parameters: list,
-) -> Union[TimeSeries, List[TimeSeries]]:
-    target_time_series = TimeSeries.from_group_dataframe(
-        df=data_frame,
-        time_col="date",
-        group_cols="gauge_id",
-        static_cols=static_parameters,
-        value_cols=target_input,
-    )
-
-    return target_time_series
-
-
 tft_single_gauge_stat = list()
 
 for gauge_id in tqdm(gauges, desc="I'm Scatman !"):
@@ -289,29 +192,14 @@ for gauge_id in tqdm(gauges, desc="I'm Scatman !"):
         meteo_input=meteo_input,
     )
     # pred
-    pred_target = target_creator(
-        data_frame=pred_df,
-        target_input=hydro_target,
-        static_parameters=static_parameters,
-    )
-    pred_cov = covariate_creator(
-        data_frame=pred_df, static_parameters=static_parameters, meteo_input=meteo_input
-    )
-
-    def type32_converter(
-        series_list: TimeSeries | list[TimeSeries],
-    ) -> list[TimeSeries]:
-        return [s.astype(dtype="float32") for s in series_list]
-
-    def scale_with_static(
-        series: TimeSeries | list[TimeSeries],
-        scaler: Scaler,
-        static_scaler: StaticCovariatesTransformer,
-    ) -> list[TimeSeries]:
-        series = scaler.transform(series=series)
-        series = static_scaler.transform(series=series)
-
-        return type32_converter(series_list=series)
+    # pred_target = target_creator(
+    #     data_frame=pred_df,
+    #     target_input=hydro_target,
+    #     static_parameters=static_parameters,
+    # )
+    # pred_cov = covariate_creator(
+    #     data_frame=pred_df, static_parameters=static_parameters, meteo_input=meteo_input
+    # )
 
     # scale target
     train_target = train_target_scaler.fit_transform(train_target)
@@ -338,61 +226,110 @@ for gauge_id in tqdm(gauges, desc="I'm Scatman !"):
         static_scaler=train_static_scaler,
     )
     # pred
-    pred_target = scale_with_static(
-        series=pred_target,
-        scaler=train_target_scaler,
-        static_scaler=train_static_scaler,
-    )
-    pred_cov = scale_with_static(
-        series=pred_cov, scaler=train_cov_scaler, static_scaler=train_static_scaler
-    )
+    # pred_target = scale_with_static(
+    #     series=pred_target,
+    #     scaler=train_target_scaler,
+    #     static_scaler=train_static_scaler,
+    # )
+    # pred_cov = scale_with_static(
+    #     series=pred_cov, scaler=train_cov_scaler, static_scaler=train_static_scaler
+    # )
 
-    pred_period = pd.date_range(start=pred_start, end=pred_end).__len__()
 
-    pred_series = pred_target[0][: (-pred_period + input_chunk_length)]
-    for i in range(
-        0, pred_period - input_chunk_length - output_chunk_length, output_chunk_length
-    ):
-        pred_cov_past = pred_cov[0][-(pred_period + i) :]
-        pred_cov_future = pred_cov[0][
-            -(pred_period + input_chunk_length + i) : -(
-                pred_period - input_chunk_length - output_chunk_length - i
-            )
-        ]
+    pred_len = pd.date_range(start=pred_start, end=pred_end).__len__()
+
+    test_pred = list()
+
+    target_index_col = pred_df.columns.get_loc(f"{hydro_target}")
+
+    target_obs = deepcopy(pred_df).iloc[
+        -(pred_len - input_chunk_length) :, target_index_col
+    ]
+
+    for i in range(0, (pred_len - input_chunk_length - output_chunk_length) + 1):
+        slice_limit = -pred_len + input_chunk_length + output_chunk_length + i
+
+        if slice_limit == 0:
+            pred_step_df = pred_df.iloc[:, :]
+        else:
+            pred_step_df = pred_df.iloc[:slice_limit, :]
+        # pred
+        pred_target = scale_with_static(
+            series=target_creator(
+                # data_frame=pred_df.iloc[: (-pred_len + input_chunk_length + i), :],
+                data_frame=pred_step_df.iloc[:(-output_chunk_length), :],
+                target_input=hydro_target,
+                static_parameters=static_parameters,
+            ),
+            scaler=train_target_scaler,
+            static_scaler=train_static_scaler,
+        )
+        pred_cov = scale_with_static(
+            series=covariate_creator(
+                # data_frame=pred_df.iloc[
+                #     : (-pred_len + input_chunk_length + i), :
+                # ],
+                data_frame=pred_step_df.iloc[:(-output_chunk_length), :],
+                static_parameters=static_parameters,
+                meteo_input=meteo_input,
+            ),
+            scaler=train_cov_scaler,
+            static_scaler=train_static_scaler,
+        )
+
+        pred_cov_future = scale_with_static(
+            series=covariate_creator(
+                data_frame=pred_step_df,
+                static_parameters=static_parameters,
+                meteo_input=meteo_input,
+            ),
+            scaler=train_cov_scaler,
+            static_scaler=train_static_scaler,
+        )
 
         some_pred = tft_model.predict(
             n=output_chunk_length,
-            series=pred_series,
-            past_covariates=pred_cov_past,
+            series=pred_target,
+            past_covariates=pred_cov,
             future_covariates=pred_cov_future,
             verbose=False,
             num_loader_workers=15,
+            num_samples=100
         )
-        pred_series = pred_series.append(some_pred)
 
-    res_df = pd.DataFrame()
-    res_df["obs"] = (
-        train_target_scaler.inverse_transform(
-            pred_target[0][-(pred_period - input_chunk_length) :]
+        temp_df = pd.DataFrame()
+        temp_df["date"] = some_pred[0].time_index
+        temp_df = temp_df.set_index("date")
+
+        temp_df[f"{hydro_target}"] = (
+            train_target_scaler.inverse_transform(some_pred[0]).values().squeeze()
         )
-        .values()
-        .squeeze()
-    )
-    res_df["pred"] = (
-        train_target_scaler.inverse_transform(
-            pred_series[-(pred_period - input_chunk_length) :]
-        )
-        .values()
-        .squeeze()
-    )
-    tft_single_gauge_stat.append(
-        metric_df(gauge_id=gauge_id, predictions=res_df["pred"], targets=res_df["obs"])
-    )
+        test_pred.append(temp_df)
+
+        if slice_limit == 0:
+            pred_df.iloc[
+                -(pred_len - input_chunk_length - i) :,
+                target_index_col,
+            ] = train_target_scaler.inverse_transform(some_pred[0]).values().squeeze()
+        else:
+            pred_df.iloc[
+                -(pred_len - input_chunk_length - i) : -(
+                    pred_len - input_chunk_length - output_chunk_length - i
+                ),
+                target_index_col,
+            ] = train_target_scaler.inverse_transform(some_pred[0]).values().squeeze()
+    pred_df_multi = reduce(lambda df1, df2: df2.combine_first(df1), test_pred)
+    pred_df_multi = pred_df_multi.rename(columns={f"{hydro_target}": "pred"})
+    pred_df_multi["obs"] = target_obs.values
+
     metric_res_df = metric_df(
-        gauge_id=gauge_id, predictions=res_df["pred"], targets=res_df["obs"]
+        gauge_id=gauge_id, predictions=pred_df_multi["pred"], targets=pred_df_multi["obs"]
     )
     metric_res_df.index.name = "gauge_id"
     metric_res_df.to_csv(f"./res/single_predict/{gauge_id}.csv")
+
+    tft_single_gauge_stat.append(metric_res_df)    
+    
     tft_model = None
     gc.collect()
     torch.cuda.empty_cache()

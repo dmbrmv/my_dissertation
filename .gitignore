@@ -75,3 +75,7 @@ metric_viewer/
 
 neural_forecast/model_runs
 geometry/
+
+# lfs
+meteo_grids_parser/data/russia_ws.gpkg 
+icon_parser/data/static_icon/icon_weights.nc
