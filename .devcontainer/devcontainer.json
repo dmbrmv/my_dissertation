@@ -15,9 +15,9 @@
 	],
 	"mounts": [
 		// server
-		// "source=/home/anton/dima_experiments/geo_data,target=/workspaces/my_dissertation/geo_data,type=bind,consistency=cached"
+		"source=/home/anton/hdd/data/great_db,target=/workspaces/geo_data,type=bind,consistency=cached"
 		// home
-		// "source=/home/dima/Coding/geo_data,target=/workspace/my_dissertation/geo_data,type=bind,consistency=cached"
+		// // "source=/home/dima/Coding/geo_data,target=/workspace/my_dissertation/geo_data,type=bind,consistency=cached"
 		// macOS
 		// "source=/Users/dmbrmv/Development/geo_data,target=/workspaces/my_dissertation/geo_data,type=bind,consistency=cached"
 	],

@@ -225,15 +225,18 @@ def simulation(data, params=[1., 0.1, 50., 0.5, 0.4, 0.05, 0.5, 2.,
     # based on Butterworht filter design
     # calculate Numerator (b) and denominator (a) polynomials of the IIR filter
     parMAXBAS = int(parMAXBAS)
-    b, a = ss.butter(parMAXBAS, 1/parMAXBAS)
-    # implement forward filter
-    Qsim_smoothed = np.array(ss.lfilter(b, a, Qsim))
-    # control smoothed runoff
-    Qsim_smoothed = np.where(Qsim_smoothed > 0, Qsim_smoothed, 0)
+    if parMAXBAS == 1:
+        return Qsim
+    else:
+        b, a = ss.butter(parMAXBAS, 1/parMAXBAS)
+        # implement forward filter
+        Qsim_smoothed = np.array(ss.lfilter(b, a, Qsim))
+        # control smoothed runoff
+        Qsim_smoothed = np.where(Qsim_smoothed > 0, Qsim_smoothed, 0)
 
-    Qsim = Qsim_smoothed
+        Qsim = Qsim_smoothed
 
-    return Qsim
+        return Qsim
 
 
 def bounds():

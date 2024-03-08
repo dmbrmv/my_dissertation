@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
+from typing import Optional
 
 
 def nse(predictions, targets):
@@ -96,19 +97,22 @@ def read_gauge(gauge_id: str,
 def get_params(model_name: str,
                params_path: Path,
                gauge_id: str,
-               iter_number: int,
                train: pd.DataFrame,
                test: pd.DataFrame,
                calibrate: bool = False,
-               with_plot: bool = False) -> object:
+               with_plot: bool = False,
+               iter_number: int = 6):
     if calibrate:
         calibrate_gauge(df=train, hydro_models=[model_name],
                         res_calibrate=f'{params_path}/{gauge_id}',
                         # xD
                         iterations=iter_number)
-
     lines = open(f'{params_path}/{gauge_id}', 'r').read().splitlines()
-    params = eval(lines[3].split(':')[1])[0]
+    try:
+        params = eval(lines[3].split(':')[1])[0]
+    except SyntaxError:
+        edited_line = lines[3].split(':')[1] + ']'
+        params = eval(edited_line)[0]
     if model_name == 'gr4j':
         test['Q_sim'] = gr4j_cema_neige.simulation(data=test, params=params)
     elif model_name == 'hbv':
