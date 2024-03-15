@@ -38,13 +38,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/conceptual_runs/res_hbv_full.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="/conclusions/tables/LSTM_no_static_res.csv">
           <value>
             <Attribute>
