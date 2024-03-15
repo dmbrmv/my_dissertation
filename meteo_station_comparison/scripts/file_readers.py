@@ -50,6 +50,6 @@ def df_reader(csv_path):
     test_df[['era5_prcp']] *= 1e3
     test_df[['imerg_prcp']] *= 1e-1
     test_df[['era5_land_2m_max', 'era5_land_2m_min',
-            'era5_2m_max', 'era5_2m_min']] -= 273.15
+             'era5_2m_max', 'era5_2m_min']] -= 273.15
 
     return test_df

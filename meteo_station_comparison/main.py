@@ -1,4 +1,5 @@
 import sys
+
 sys.path.append('/home/anton/dima_experiments/my_dissertation')
 import glob
 from tqdm import tqdm
@@ -8,7 +9,6 @@ import geopandas as gpd
 from scripts.file_readers import (station_lat_lon, read_meteo_station,
                                   xr_for_point)
 from data_builders.scripts.loaders import multi_var_nc
-
 
 gdf_file = gpd.read_file('../geo_data/great_db/meteo_stations.gpkg')
 gdf_file['gauge_id'] = gdf_file['gauge_id'].astype(str)
@@ -38,7 +38,7 @@ for file in tqdm(glob.glob('../geo_data/meteorology/meteo_ru/*.csv'),
     meteo_station = read_meteo_station(file)
 
     meteo_lon, meteo_lat = station_lat_lon(gdf_file.loc[f'{station_id}',
-                                                        'geometry'])
+    'geometry'])
 
     for ds, data_desc in meteo_dict.items():
         for var, pathes in data_desc.items():

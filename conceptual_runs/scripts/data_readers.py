@@ -1,38 +1,40 @@
-import sys
 # sys.path.append('/home/anton/dima_experiments/my_dissertation')
-sys.path.append('/workspaces/my_dissertation')
 
-from conceptual_runs.calibration.calibrator import calibrate_gauge
-from conceptual_runs.hydro_models import hbv, gr4j_cema_neige
-from sklearn.metrics import mean_squared_error, root_mean_squared_error
-import xarray as xr
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 from pathlib import Path
-from typing import Optional
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import xarray as xr
+from sklearn.metrics import mean_squared_error, root_mean_squared_error
+
+# from calibration.calibrator import calibrate_gauge
+from model_scripts import hbv
 
 
 def nse(predictions, targets):
-    return 1-(
-        np.nansum((targets-predictions)**2)/np.nansum(
-            (targets-np.nanmean(targets))**2))
+    return 1 - (
+        np.nansum((targets - predictions) ** 2)
+        / np.nansum((targets - np.nanmean(targets)) ** 2)
+    )
 
 
 def kge(predictions, targets):
     sim_mean = np.mean(targets, axis=0)
     obs_mean = np.mean(predictions)
 
-    r_num = np.sum((targets - sim_mean) * (predictions - obs_mean),
-                   axis=0)
-    r_den = np.sqrt(np.sum((targets - sim_mean) ** 2,
-                           axis=0) * np.sum((predictions - obs_mean) ** 2,))
+    r_num = np.sum((targets - sim_mean) * (predictions - obs_mean), axis=0)
+    r_den = np.sqrt(
+        np.sum((targets - sim_mean) ** 2, axis=0)
+        * np.sum(
+            (predictions - obs_mean) ** 2,
+        )
+    )
     r = r_num / r_den
     # calculate error in spread of flow alpha
     alpha = np.std(targets, axis=0) / np.std(predictions)
     # calculate error in volume beta (bias of mean discharge)
-    beta = (np.sum(targets, axis=0)
-            / np.sum(predictions))
+    beta = np.sum(targets, axis=0) / np.sum(predictions)
     # calculate the Kling-Gupta Efficiency KGE
     kge_ = 1 - np.sqrt((r - 1) ** 2 + (alpha - 1) ** 2 + (beta - 1) ** 2)
 
@@ -44,105 +46,100 @@ def rmse(predictions, targets):
 
 
 def relative_error(predictions, targets):
-    return np.mean(((targets - predictions)/targets) * 100)
+    return np.mean(((targets - predictions) / targets) * 100)
 
 
 def metric_df(gauge_id, predictions, targets):
-
     res_df = pd.DataFrame()
 
-    res_df.loc[gauge_id, 'NSE'] = nse(predictions,
-                                      targets)
+    res_df.loc[gauge_id, "NSE"] = nse(predictions, targets)
 
-    res_df.loc[gauge_id, ['KGE', 'r', 'alpha', 'beta']] = kge(predictions,
-                                                              targets)
+    res_df.loc[gauge_id, ["KGE", "r", "alpha", "beta"]] = kge(predictions, targets)
 
-    res_df.loc[gauge_id, 'RMSE'] = root_mean_squared_error(predictions,
-                                                           targets)
+    res_df.loc[gauge_id, "RMSE"] = root_mean_squared_error(predictions, targets)
 
-    res_df.loc[gauge_id, 'delta'] = relative_error(predictions,
-                                                   targets)
+    res_df.loc[gauge_id, "delta"] = relative_error(predictions, targets)
 
     return res_df
 
 
-def read_gauge(gauge_id: str,
-               simple: bool = False):
-
+def read_gauge(gauge_id: str, simple: bool = False):
     test_df = xr.open_dataset(
-        f'../geo_data/great_db/nc_all_q/{gauge_id}.nc').to_dataframe(
-    )[['q_mm_day', 'prcp_e5l', 't_min_e5l', 't_max_e5l', 'Ep']]
+        f"../geo_data/great_db/nc_all_q/{gauge_id}.nc"
+    ).to_dataframe()[["q_mm_day", "prcp_e5l", "t_min_e5l", "t_max_e5l", "Ep"]]
 
     if simple:
-        test_df.index.name = 'Date'
+        test_df.index.name = "Date"
 
-        train = test_df[:'2018']
-        test = test_df['2018':]
+        train = test_df[:"2018"]
+        test = test_df["2018":]
     else:
-        test_df['Temp'] = test_df[['t_max_e5l', 't_min_e5l']].mean(axis=1)
-        test_df = test_df.rename(columns={'prcp_e5l': 'Prec',
-                                          'Ep': 'Evap',
-                                          'q_mm_day': 'Q_mm'})
-        test_df.index.name = 'Date'
-        test_df = test_df.drop(['t_min_e5l', 't_max_e5l'], axis=1)
-        test_df.loc[test_df['Evap'] < 0, 'Evap'] = 0
+        test_df["Temp"] = test_df[["t_max_e5l", "t_min_e5l"]].mean(axis=1)
+        test_df = test_df.rename(
+            columns={"prcp_e5l": "Prec", "Ep": "Evap", "q_mm_day": "Q_mm"}
+        )
+        test_df.index.name = "Date"
+        test_df = test_df.drop(["t_min_e5l", "t_max_e5l"], axis=1)
+        test_df.loc[test_df["Evap"] < 0, "Evap"] = 0
         # test_df['Evap'] *= 1e1
 
-        train = test_df[:'2018']
-        test = test_df['2018':]
+        train = test_df[:"2018"]
+        test = test_df["2018":]
 
     return train, test
 
 
-def get_params(model_name: str,
-               params_path: Path,
-               gauge_id: str,
-               train: pd.DataFrame,
-               test: pd.DataFrame,
-               calibrate: bool = False,
-               with_plot: bool = False,
-               iter_number: int = 6):
+def get_params(
+    model_name: str,
+    params_path: Path,
+    gauge_id: str,
+    train: pd.DataFrame,
+    test: pd.DataFrame,
+    calibrate: bool = False,
+    with_plot: bool = False,
+    iter_number: int = 6,
+):
     if calibrate:
-        calibrate_gauge(df=train, hydro_models=[model_name],
-                        res_calibrate=f'{params_path}/{gauge_id}',
-                        # xD
-                        iterations=iter_number)
-    lines = open(f'{params_path}/{gauge_id}', 'r').read().splitlines()
+        calibrate_gauge(
+            df=train,
+            hydro_models=[model_name],
+            res_calibrate=f"{params_path}/{gauge_id}",
+            # xD
+            iterations=iter_number,
+        )
+    lines = open(f"{params_path}/{gauge_id}", "r").read().splitlines()
     try:
-        params = eval(lines[3].split(':')[1])[0]
+        params = eval(lines[3].split(":")[1])[0]
     except SyntaxError:
-        edited_line = lines[3].split(':')[1] + ']'
+        edited_line = lines[3].split(":")[1] + "]"
         params = eval(edited_line)[0]
-    if model_name == 'gr4j':
-        test['Q_sim'] = gr4j_cema_neige.simulation(data=test, params=params)
-    elif model_name == 'hbv':
-        test['Q_sim'] = hbv.simulation(data=test, params=params)
+    if model_name == "gr4j":
+        test["Q_sim"] = gr4j_cema_neige.simulation(data=test, params=params)
+    elif model_name == "hbv":
+        test["Q_sim"] = hbv.simulation(data=test, params=params)
 
-    res_nse = nse(predictions=test['Q_sim'], targets=test['Q_mm'])
+    res_nse = nse(predictions=test["Q_sim"], targets=test["Q_mm"])
     if with_plot:
-        test[['Q_sim', 'Q_mm']].plot()
-        plt.title(f'NSE -- {res_nse}')
+        test[["Q_sim", "Q_mm"]].plot()
+        plt.title(f"NSE -- {res_nse}")
         plt.show()
 
     return res_nse, test
 
 
-def day_agg(df: pd.DataFrame,
-            day_aggregations: list = [2**n for n in range(9)]):
+def day_agg(df: pd.DataFrame, day_aggregations: list = [2**n for n in range(9)]):
     for days in day_aggregations:
-        df[[f'prcp_{days}']] = df[['prcp_e5l']].rolling(
-            window=days).sum()
-        df[[f't_min_{days}']] = df[['t_min_e5l']].rolling(
-            window=days).mean()
-        df[[f't_max_{days}']] = df[['t_min_e5l']].rolling(
-            window=days).mean()
+        df[[f"prcp_{days}"]] = df[["prcp_e5l"]].rolling(window=days).sum()
+        df[[f"t_min_{days}"]] = df[["t_min_e5l"]].rolling(window=days).mean()
+        df[[f"t_max_{days}"]] = df[["t_min_e5l"]].rolling(window=days).mean()
     df = df.dropna()
 
     return df
 
 
-def feature_target(data: pd.DataFrame,
-                   day_aggregations: list = [2**n for n in range(9)]):
+def feature_target(
+    data: pd.DataFrame, day_aggregations: list = [2**n for n in range(9)]
+):
     """_summary_
     Args:
         data (pd.DataFrame): _description_
@@ -155,16 +152,38 @@ def feature_target(data: pd.DataFrame,
     data = day_agg(df=data)
 
     # get meteo columns
-    feature_cols = [item for sublist in
-                    [[f'{var}_{day}' for day in day_aggregations]
-                     for var in ['prcp', 't_min', 't_max']]
-                    for item in sublist]
+    feature_cols = [
+        item
+        for sublist in [
+            [f"{var}_{day}" for day in day_aggregations]
+            for var in ["prcp", "t_min", "t_max"]
+        ]
+        for item in sublist
+    ]
     features = data[feature_cols]
     # normalize features
-    features = (features - features.mean())/features.std()
+    features = (features - features.mean()) / features.std()
 
-    target = data[['q_mm_day']]
+    target = data[["q_mm_day"]]
     target = target.to_numpy().ravel()
     features = features.to_numpy()
 
     return (features, target)
+
+
+def hbv_ready_file(data_file: pd.DataFrame):
+    obs_q = data_file.loc[:, "q_mm_day"].values
+    temp_max = data_file.loc[:, "t_min_e5l"].values
+    temp_min = data_file.loc[:, "t_max_e5l"].values
+    temp_mean = (temp_max + temp_min) / 2
+    evap = data_file.loc[:, "E"].values
+    prcp = data_file.loc[:, "prcp_e5l"].values
+
+    model_df = pd.DataFrame()
+    model_df.index = data_file.index
+    model_df["Temp"] = temp_mean
+    model_df["Evap"] = evap
+    model_df["Prec"] = prcp
+    model_df["Q_mm"] = obs_q
+
+    return model_df
