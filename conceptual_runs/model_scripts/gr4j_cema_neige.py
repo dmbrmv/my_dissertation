@@ -1,5 +1,5 @@
 import numpy as np
-from conceptual_runs.model_scripts import cema_neige
+from model_scripts import cema_neige
 
 
 def simulation(data, params):
@@ -31,7 +31,8 @@ def simulation(data, params):
     X1, X2, X3, X4, X5, X6, X7 = params
     # 2. read the data
     Prec = cema_neige.simulation(data, [X5, X6, X7])
-    Evap = data["Evap"]
+    Evap = data["Evap"].values
+    # Evap = np.where(Evap > 0, Evap, 0)
 
     # parameter for unit hydrograph lenght
     NH = 20

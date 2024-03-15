@@ -31,8 +31,8 @@ def simulation(data, params, verbose=False):
         print("TT parameter not set. Setting to default value of %s" % TT)
 
     # reading the data
-    Temp = data['Temp']
-    Prec = data['Prec']
+    Temp = data["Temp"].values
+    Prec = data["Prec"].values
     FraqSolidPrecip = np.where(Temp < TT, 1, 0)
 
     # initialization
@@ -43,13 +43,14 @@ def simulation(data, params, verbose=False):
     # function for Mean Annual Solid Precipitation
 
     def MeanAnnualSolidPrecip(data):
-        annual_vals = [data.Prec[
-            data.Prec.index.year == i][data.Temp < TT].sum()
-                       for i in np.unique(data.index.year)]
+        annual_vals = [
+            data.Prec[data.Prec.index.year == i][data.Temp < TT].sum()
+            for i in np.unique(data.index.year)
+        ]
         return np.mean(annual_vals)
 
     MASP = MeanAnnualSolidPrecip(data)
-    Gthreshold = 0.9*MASP
+    Gthreshold = 0.9 * MASP
     MinSpeed = 0.1
 
     # model states
@@ -83,7 +84,7 @@ def simulation(data, params, verbose=False):
             PotMelt = 0
         # ratio of snow pack cover (Gratio)
         if G < Gthreshold:
-            Gratio = G/Gthreshold
+            Gratio = G / Gthreshold
         else:
             Gratio = 1
         # actual melt
@@ -92,7 +93,7 @@ def simulation(data, params, verbose=False):
         G = G - Melt
         # Gratio update
         if G < Gthreshold:
-            Gratio = G/Gthreshold
+            Gratio = G / Gthreshold
         else:
             Gratio = 1
 

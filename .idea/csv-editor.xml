@@ -3,21 +3,42 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="/conceptual_runs/final_gr4j.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/conceptual_runs/final_hbv.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="/conceptual_runs/hbv_calibrated/9415.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/conceptual_runs/res_gr4j.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/conceptual_runs/res_gr4j_2.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/conceptual_runs/res_hbv.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/conceptual_runs/res_hbv_2.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/conceptual_runs/res_hbv_full.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -67,20 +88,6 @@
           </value>
         </entry>
         <entry key="/darts_forecast/some_tft_res_single.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/forecast/result/tft_level_multi_256.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/forecast/result/tft_no_static_pred_20epoch_RMSE_256.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
