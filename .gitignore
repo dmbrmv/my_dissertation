@@ -31,9 +31,6 @@ input_creator/Q_H
 
 ## parent data folder
 geo_data/
-# ignore logs 
-forecast/lightning_logs
-forecast/optuna_test
 # ignore runs
 test_meteo_input/configs
 test_meteo_input/runs*
@@ -47,36 +44,21 @@ paper_visualisation/
 
 data_builders/test_data
 
-forecast/scripts/data_builders.py
-
-forecast/single_gauge
-forecast/single_gauge_8epoch
-forecast/single_gauge_level_30epoch
-forecast/TFT_914
-forecast/TFT_test_run_2gauges
-
-forecast/result/blind_gauge
-forecast/result/lost_gauge
-forecast/result/tft_single_8epoch
-forecast/result/tft_20epoch_256_RMSE
-forecast/result/tft_level_multi_256
-forecast/result/tft_no_static_20epoch_256_RMSE
-
-forecast/tft_prediction_troubles
-forecast/kinda_inference
-
+# conceptual runs parameters
 conceptual_runs/cal_res
 conceptual_runs/hbv_calibrated
 conceptual_runs/gr4j_calibrated
 
 conclusions/results
 
+# darts
 darts_forecast/model
 darts_forecast/res
-
-metric_viewer/
-
+# neural hydrology
 neural_forecast/model_runs
+
+# some auxiliary data
+metric_viewer/
 geometry/
 
 # lfs

@@ -3,6 +3,55 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/bokeh/sampledata/_data/elements.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/spotpy/examples/cmf_data/driver_data_site24.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/statsmodels/stats/tests/results/bootleg.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/statsmodels/tsa/regime_switching/tests/results/mar_filardo.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/statsmodels/tsa/stl/tests/results/mstl_elec_vic.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/statsmodels/tsa/stl/tests/results/mstl_test_results.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/conceptual_runs/hbv_calibrated/5277.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/conceptual_runs/hbv_calibrated/9415.csv">
           <value>
             <Attribute>
@@ -38,7 +87,42 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/conclusions/tables/DELETE_NSE.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/conclusions/tables/DELETE_NSE_HBV.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/conclusions/tables/GR4J_ayzel_res.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/conclusions/tables/HBV_ayzel_res.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/conclusions/tables/LSTM_no_static_res.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/conclusions/tables/LSTM_static_res.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -53,6 +137,13 @@
           </value>
         </entry>
         <entry key="/conclusions/tables/model_quality.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/conclusions/tables/partial_gages.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -81,6 +172,13 @@
           </value>
         </entry>
         <entry key="/darts_forecast/some_tft_res_single.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/esimo_loader/data/data.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

@@ -2,14 +2,22 @@
 Run HBV calibration for single gauge
 """
 
+import logging
 import pathlib
 
+import numpy as np
 import spotpy
 import xarray as xr
 import numpy as np
 from calibration.model_setups import hbv_setup
 from spotpy.objectivefunctions import kge
 from scripts.logger import logging
+
+from .model_setups import hbv_setup
+
+# Configure logging
+
+logging.basicConfig(filename="./hbv_log.log", level=logging.INFO)
 
 gauges = [
     i.stem
@@ -21,6 +29,11 @@ gauges = [
     i
     for i in gauges
     if i not in [i.stem for i in pathlib.Path("../hbv_calibrated/").glob("*.npy")]
+]
+gauges = [
+    i
+    for i in gauges
+    if i not in [i.stem for i in pathlib.Path("./hbv_calibrated").glob("*.npy")]
 ]
 
 
@@ -46,6 +59,8 @@ def hbv_single_core(g_id: str) -> None:
 
         hbv_calibrated = pathlib.Path("./hbv_calibrated")
         hbv_calibrated.mkdir(exist_ok=True, parents=True)
+        hbv_calibrated = pathlib.Path("./hbv_calibrated")
+        hbv_calibrated.mkdir(exist_ok=True, parents=True)
 
         sampler = spotpy.algorithms.mle(
             hbv_setup(data_file=train_df, obj_func=kge),
@@ -53,7 +68,14 @@ def hbv_single_core(g_id: str) -> None:
             dbformat="csv",
             random_state=42,
         )
+        sampler = spotpy.algorithms.mle(
+            hbv_setup(data_file=train_df, obj_func=kge),
+            dbname=f"{hbv_calibrated}/{g_id}",
+            dbformat="csv",
+            random_state=42,
+        )
 
+        sampler.sample(repetitions=6000)
         sampler.sample(repetitions=6000)
 
         gauge_results = spotpy.analyser.load_csv_results(f"{hbv_calibrated}/{g_id}")
