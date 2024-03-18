@@ -16,12 +16,14 @@ from tqdm import tqdm
 
 from scripts.metric_definers import metric_df
 from scripts.tft_data_creators import (
+    LossLogger,
     covariate_creator,
-    scale_with_static,
     target_creator,
     type32_converter,
+    scale_with_static,
 )
 
+loss_logger = LossLogger()
 warnings.filterwarnings("ignore", ".*does not have many workers.*")
 logging.getLogger("pytorch_lightning").setLevel(logging.WARNING)
 torch.set_float32_matmul_precision("medium")
@@ -126,11 +128,16 @@ else:
 
 tft_single_gauge_stat = list()
 
+tft_model = TFTModel.load_from_checkpoint(
+    model_name="q_mm_day_hs256_bs128_do042",
+    work_dir="./model",
+)
+
 for gauge_id in tqdm(gauges, desc="I'm Scatman !"):
-    tft_model = TFTModel.load_from_checkpoint(
-        model_name="q_mm_day_hs256_bs256_do042",
-        work_dir=f"./model/single_gauge/{gauge_id}",
-    )
+    # tft_model = TFTModel.load_from_checkpoint(
+    #     model_name="q_mm_day_hs256_bs256_do042",
+    #     work_dir=f"./model/single_gauge/{gauge_id}",
+    # )
 
     if isinstance(static_attributes, pd.DataFrame):
         static_attributes = static_attributes[[*static_parameters]]
@@ -235,7 +242,6 @@ for gauge_id in tqdm(gauges, desc="I'm Scatman !"):
     #     series=pred_cov, scaler=train_cov_scaler, static_scaler=train_static_scaler
     # )
 
-
     pred_len = pd.date_range(start=pred_start, end=pred_end).__len__()
 
     test_pred = list()
@@ -294,7 +300,7 @@ for gauge_id in tqdm(gauges, desc="I'm Scatman !"):
             future_covariates=pred_cov_future,
             verbose=False,
             num_loader_workers=15,
-            num_samples=100
+            num_samples=100,
         )
 
         temp_df = pd.DataFrame()
@@ -323,16 +329,18 @@ for gauge_id in tqdm(gauges, desc="I'm Scatman !"):
     pred_df_multi["obs"] = target_obs.values
 
     metric_res_df = metric_df(
-        gauge_id=gauge_id, predictions=pred_df_multi["pred"], targets=pred_df_multi["obs"]
+        gauge_id=gauge_id,
+        predictions=pred_df_multi["pred"],
+        targets=pred_df_multi["obs"],
     )
     metric_res_df.index.name = "gauge_id"
-    metric_res_df.to_csv(f"./res/single_predict/{gauge_id}.csv")
+    metric_res_df.to_csv(f"./res/multi_predict/{gauge_id}.csv")
 
-    tft_single_gauge_stat.append(metric_res_df)    
-    
-    tft_model = None
+    tft_single_gauge_stat.append(metric_res_df)
+
+    # tft_model = None
     gc.collect()
     torch.cuda.empty_cache()
 
 tft_single_gauge_stat = pd.concat(tft_single_gauge_stat)
-tft_single_gauge_stat.to_csv("./single_gauge_predict.csv")
+tft_single_gauge_stat.to_csv("./multi_gauge_predict.csv")

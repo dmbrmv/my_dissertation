@@ -26,7 +26,7 @@ scikit-learn
 scipy
 catboost
 shap
-neuralhydrology
+neuralhydrology==1.9.0
 darts
 # cute jupyter
 jupyter

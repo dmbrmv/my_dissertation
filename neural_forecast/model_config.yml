@@ -47,6 +47,7 @@ cache_validation_data: True
 metrics:
 - NSE
 - RMSE
+- KGE
 
 # --- Model configuration --------------------------------------------------------------------------
 
@@ -104,7 +105,7 @@ dynamics_embedding:
 optimizer: Adam
 
 # specify loss [MSE, NSE, RMSE]
-loss: RMSE
+loss: MSE
 
 # add regularization terms.
 # Options: tie_frequencies (couples the different frequencies' predictions in an MSE error term)
@@ -122,7 +123,7 @@ learning_rate:
 batch_size: 256
 
 # Number of training epochs
-epochs: 30
+epochs: 42
 
 # adds noise with given std to the labels during training. Leave empty or set to 0 if not used.
 target_noise_std: 0.005

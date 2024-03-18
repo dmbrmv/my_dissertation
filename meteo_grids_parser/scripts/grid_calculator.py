@@ -5,6 +5,7 @@ import json
 import geopandas as gpd
 import pandas as pd
 import xarray as xr
+import numpy as np
 from dask import config as dask_cfg
 from shapely.geometry import Polygon
 
@@ -27,10 +28,9 @@ class Gridder:
         aggregation_type: str = "sum",
         force_weights: bool = False,
         weight_mark: str = "",
-    ,
-                 prcp_coef: float = 1e2,
-                 extend_data: bool = False,
-                 merge_data: bool = False) -> None:
+        prcp_coef: float = 1e2,
+        extend_data: bool = False,
+        merge_data: bool = False) -> None:
         """_summary_
 
         Args:
@@ -143,9 +143,6 @@ class Gridder:
         inter_mask = np.array([False if section.empty is True
                                else True
                                for section in intersected])
-                polygons.append(
-                    Polygon(getSquareVertices(mm=(lon, lat), h=self.grid_res, phi=0))
-                )
         # create GeoDataFrame for polygons from GRID
         poly_gdf = pd.DataFrame(columns=["geometry"])
         poly_gdf["geometry"] = polygons

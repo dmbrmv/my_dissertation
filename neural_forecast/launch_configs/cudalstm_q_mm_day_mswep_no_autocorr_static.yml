@@ -7,13 +7,13 @@ data_dir: ../geo_data
 dataset: generic
 device: cuda:0
 dynamic_inputs:
-- prcp_e5l
+- prcp_mswep
 - t_max_e5l
 - t_min_e5l
 dynamics_embedding:
-epochs: 30
+epochs: 42
 evolving_attributes:
-experiment_name: cudalstm_q_mm_day
+experiment_name: cudalstm_q_mm_day_mswep_no_autocorr_static
 forecast_hidden_size: 256
 forecast_overlap:
 head: regression
@@ -27,10 +27,11 @@ learning_rate:
 log_interval: 2
 log_n_figures:
 log_tensorboard: false
-loss: RMSE
+loss: NSE
 metrics:
 - NSE
 - RMSE
+- KGE
 model: cudalstm
 num_workers: 8
 optimizer: Adam
@@ -64,8 +65,6 @@ static_attributes:
 - gwt_cm_sav
 - lkv_mc_usu
 - rev_mc_usu
-- sgr_dk_sav
-- slp_dg_sav
 - ws_area
 - ele_mt_sav
 statics_embedding:
@@ -78,10 +77,10 @@ test_start_date: 01/01/2019
 train_basin_file: every_basin.txt
 train_data_file: None
 train_end_date: 31/12/2016
-train_start_date: 01/01/2009
+train_start_date: 01/01/2008
 use_basin_id_encoding: false
 validate_every: 1
-validate_n_random_basins: 1112
+validate_n_random_basins: 1111
 validation_basin_file: every_basin.txt
 validation_end_date: 31/12/2018
 validation_start_date: 01/01/2017
