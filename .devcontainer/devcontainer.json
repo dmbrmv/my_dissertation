@@ -39,7 +39,8 @@
 				"charliermarsh.ruff",
 				"yy0931.save-as-root",
 				"sberworks.gigacode-vscode",
-				"ms-azuretools.vscode-docker"
+				"ms-azuretools.vscode-docker",
+				"mechatroner.rainbow-csv"
 			]
 		}
 	}
