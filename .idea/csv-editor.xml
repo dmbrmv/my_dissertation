@@ -10,7 +10,63 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/fiona/gdal_data/ozi_datum.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/rasterio/gdal_data/ozi_datum.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/sklearn/datasets/data/boston_house_prices.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/spotpy/examples/cmf_data/driver_data_site24.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/statsmodels/datasets/fair/fair_pt.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/statsmodels/datasets/macrodata/macrodata.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/statsmodels/datasets/star98/star98.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/statsmodels/duration/tests/results/survival_data_1000_10.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/statsmodels/gam/tests/results/autos.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -24,7 +80,28 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/statsmodels/treatment/tests/results/cataneo2.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/statsmodels/tsa/regime_switching/tests/results/mar_filardo.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/statsmodels/tsa/statespace/tests/results/frbny_nowcast/Nowcasting/data/US/2016-06-29.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/statsmodels/tsa/statespace/tests/results/frbny_nowcast/Nowcasting/data/US/2016-07-29.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -39,6 +116,20 @@
           </value>
         </entry>
         <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/statsmodels/tsa/stl/tests/results/mstl_test_results.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/miniconda3/envs/geo/lib/python3.10/site-packages/statsmodels/tsa/tests/results/bds_data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/conceptual_runs/gr4j_calibrated/1608.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

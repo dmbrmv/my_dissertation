@@ -1,15 +1,11 @@
-# sys.path.append('/home/anton/dima_experiments/my_dissertation')
+import sys
 
-from pathlib import Path
+sys.path.append("/Users/dmbrmv/Development/ESG/my_dissertation")
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import xarray as xr
 from sklearn.metrics import mean_squared_error, root_mean_squared_error
-
-# from calibration.calibrator import calibrate_gauge
-from model_scripts import hbv
 
 
 def nse(predictions, targets):
@@ -64,9 +60,10 @@ def metric_df(gauge_id, predictions, targets):
 
 
 def read_gauge(gauge_id: str, simple: bool = False):
-    test_df = xr.open_dataset(
-        f"../geo_data/great_db/nc_all_q/{gauge_id}.nc"
-    ).to_dataframe()[["q_mm_day", "prcp_e5l", "t_min_e5l", "t_max_e5l", "Ep"]]
+    with xr.open_dataset(f"../geo_data/great_db/nc_all_q/{gauge_id}.nc") as f:
+        test_df = f.to_dataframe()[
+            ["q_mm_day", "prcp_e5l", "t_min_e5l", "t_max_e5l", "Ep"]
+        ]
 
     if simple:
         test_df.index.name = "Date"
@@ -89,45 +86,7 @@ def read_gauge(gauge_id: str, simple: bool = False):
     return train, test
 
 
-def get_params(
-    model_name: str,
-    params_path: Path,
-    gauge_id: str,
-    train: pd.DataFrame,
-    test: pd.DataFrame,
-    calibrate: bool = False,
-    with_plot: bool = False,
-    iter_number: int = 6,
-):
-    if calibrate:
-        calibrate_gauge(
-            df=train,
-            hydro_models=[model_name],
-            res_calibrate=f"{params_path}/{gauge_id}",
-            # xD
-            iterations=iter_number,
-        )
-    lines = open(f"{params_path}/{gauge_id}", "r").read().splitlines()
-    try:
-        params = eval(lines[3].split(":")[1])[0]
-    except SyntaxError:
-        edited_line = lines[3].split(":")[1] + "]"
-        params = eval(edited_line)[0]
-    if model_name == "gr4j":
-        test["Q_sim"] = gr4j_cema_neige.simulation(data=test, params=params)
-    elif model_name == "hbv":
-        test["Q_sim"] = hbv.simulation(data=test, params=params)
-
-    res_nse = nse(predictions=test["Q_sim"], targets=test["Q_mm"])
-    if with_plot:
-        test[["Q_sim", "Q_mm"]].plot()
-        plt.title(f"NSE -- {res_nse}")
-        plt.show()
-
-    return res_nse, test
-
-
-def day_agg(df: pd.DataFrame, day_aggregations: list = [2**n for n in range(9)]):
+def day_agg(df: pd.DataFrame, day_aggregations: list = (2**n for n in range(9))):
     for days in day_aggregations:
         df[[f"prcp_{days}"]] = df[["prcp_e5l"]].rolling(window=days).sum()
         df[[f"t_min_{days}"]] = df[["t_min_e5l"]].rolling(window=days).mean()
@@ -138,7 +97,7 @@ def day_agg(df: pd.DataFrame, day_aggregations: list = [2**n for n in range(9)])
 
 
 def feature_target(
-    data: pd.DataFrame, day_aggregations: list = [2**n for n in range(9)]
+    data: pd.DataFrame, day_aggregations: list = (2**n for n in range(9))
 ):
     """_summary_
     Args:
