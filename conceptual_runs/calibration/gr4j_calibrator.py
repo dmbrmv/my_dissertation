@@ -2,19 +2,22 @@
 Run gr4j calibration for single gauge
 """
 
-import logging
 import pathlib
+import sys
+
+sys.path.append("/Users/dmbrmv/Development/ESG/my_dissertation")
 
 import numpy as np
 import spotpy
 import xarray as xr
 from spotpy.objectivefunctions import kge
+from conceptual_runs.scripts.logger import logging
 
 from .model_setups import gr4j_setup
 
 # Configure logging
 
-logging.basicConfig(filename="gr4j_log.log", level=logging.INFO)
+logger = logging.getLogger(pathlib.Path(__file__).name)
 
 gauges = [
     i.stem
@@ -52,6 +55,7 @@ def gr4j_single_core(g_id: str) -> None:
 
         gr4j_calibrated = pathlib.Path("./gr4j_calibrated")
         gr4j_calibrated.mkdir(exist_ok=True, parents=True)
+
         sampler = spotpy.algorithms.mle(
             gr4j_setup(data_file=train_df, obj_func=kge),
             dbname=f"{gr4j_calibrated}/{g_id}",
@@ -71,10 +75,10 @@ def gr4j_single_core(g_id: str) -> None:
             f.unlink()
     except EOFError as e:
         # exit_flag.value = True
-        logging.error(f"EOFError occurred while reading data for gauge {g_id}: {e}")
+        logger.error(f"EOFError occurred while reading data for gauge {g_id}: {e}")
     except (ValueError, RuntimeWarning) as e:
         # exit_flag.value = True
-        logging.error(f"Exception occurred while calibrating the {g_id}: {e}")
+        logger.error(f"Exception occurred while calibrating the {g_id}: {e}")
     except Exception as e:
-        logging.error(f"An unexpected error occurred: {e}")
+        logger.error(f"An unexpected error occurred: {e}")
     return None

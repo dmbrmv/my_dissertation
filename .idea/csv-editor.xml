@@ -45,20 +45,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/conceptual_runs/hbv_calibrated/5277.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/conceptual_runs/hbv_calibrated/9415.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="/conceptual_runs/res_gr4j.csv">
           <value>
             <Attribute>

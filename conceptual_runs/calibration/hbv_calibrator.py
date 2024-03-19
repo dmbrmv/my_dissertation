@@ -2,22 +2,22 @@
 Run HBV calibration for single gauge
 """
 
-import logging
 import pathlib
+import sys
+
+sys.path.append("/Users/dmbrmv/Development/ESG/my_dissertation")
 
 import numpy as np
 import spotpy
 import xarray as xr
-import numpy as np
-from calibration.model_setups import hbv_setup
 from spotpy.objectivefunctions import kge
-from scripts.logger import logging
+from conceptual_runs.scripts.logger import logging
 
 from .model_setups import hbv_setup
 
 # Configure logging
 
-logging.basicConfig(filename="./hbv_log.log", level=logging.INFO)
+logger = logging.getLogger(pathlib.Path(__file__).name)
 
 gauges = [
     i.stem
@@ -25,11 +25,7 @@ gauges = [
         "/workspaces/my_dissertation/geo_data/ws_related_meteo/nc_all_q"
     ).glob("*.nc")
 ]
-gauges = [
-    i
-    for i in gauges
-    if i not in [i.stem for i in pathlib.Path("../hbv_calibrated/").glob("*.npy")]
-]
+
 gauges = [
     i
     for i in gauges
@@ -49,7 +45,7 @@ def hbv_single_core(g_id: str) -> None:
     None
     """
     try:
-        logging.info(f"Processing guage ID: {g_id}")
+        logging.info(f"Processing gauge ID: {g_id}")
         with xr.open_dataset(
             f"/workspaces/my_dissertation/geo_data/ws_related_meteo/nc_all_q/{g_id}.nc"
         ) as f:
@@ -59,8 +55,6 @@ def hbv_single_core(g_id: str) -> None:
 
         hbv_calibrated = pathlib.Path("./hbv_calibrated")
         hbv_calibrated.mkdir(exist_ok=True, parents=True)
-        hbv_calibrated = pathlib.Path("./hbv_calibrated")
-        hbv_calibrated.mkdir(exist_ok=True, parents=True)
 
         sampler = spotpy.algorithms.mle(
             hbv_setup(data_file=train_df, obj_func=kge),
@@ -68,14 +62,7 @@ def hbv_single_core(g_id: str) -> None:
             dbformat="csv",
             random_state=42,
         )
-        sampler = spotpy.algorithms.mle(
-            hbv_setup(data_file=train_df, obj_func=kge),
-            dbname=f"{hbv_calibrated}/{g_id}",
-            dbformat="csv",
-            random_state=42,
-        )
 
-        sampler.sample(repetitions=6000)
         sampler.sample(repetitions=6000)
 
         gauge_results = spotpy.analyser.load_csv_results(f"{hbv_calibrated}/{g_id}")
@@ -87,9 +74,9 @@ def hbv_single_core(g_id: str) -> None:
             f.unlink()
 
     except EOFError as e:
-        logging.error(f"EOFError occurred while reading data for gauge {g_id}: {e}")
+        logger.error(f"EOFError occurred while reading data for gauge {g_id}: {e}")
     except (ValueError, RuntimeWarning) as e:
-        logging.error(f"Exception occured while calibrating for {g_id}: {e}")
+        logger.error(f"Exception occurred while calibrating for {g_id}: {e}")
     except Exception as e:
-        logging.error(f"Some bullshit for {g_id}: {e}")
+        logger.error(f"Some bullshit for {g_id}: {e}")
     return None
