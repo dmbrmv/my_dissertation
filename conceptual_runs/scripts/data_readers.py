@@ -171,7 +171,7 @@ def feature_target(
     return (features, target)
 
 
-def hbv_ready_file(data_file: pd.DataFrame):
+def model_ready_file(data_file: pd.DataFrame):
     obs_q = data_file.loc[:, "q_mm_day"].values
     temp_max = data_file.loc[:, "t_min_e5l"].values
     temp_min = data_file.loc[:, "t_max_e5l"].values
