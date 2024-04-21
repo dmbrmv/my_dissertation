@@ -1,12 +1,12 @@
-import geopandas as gpd
 import cartopy.crs as ccrs
-from cartopy.mpl import geoaxes
-import matplotlib.pyplot as plt
-from matplotlib import cm
+import geopandas as gpd
 import matplotlib as mpl
+import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
-import pandas as pd
 import numpy as np
+import pandas as pd
+from cartopy.mpl import geoaxes
+from matplotlib import cm
 
 plt.rcParams["font.family"] = "Times New Roman"
 
@@ -66,7 +66,7 @@ def russia_plots(
             markersize=24,
             legend=True,
             legend_kwds={
-                "ncol": 4,
+                "ncol": 6,
                 "loc": "lower center",
                 "fmt": "{:.0f}",
                 "fontsize": 14,
@@ -282,8 +282,7 @@ def russia_plots_n(
                     "shrink": 0.3,
                     "pad": -0.05,
                     "anchor": (0.6, 0.5),
-                    "drawedges": False,
-                    # "edgecolor": "green"
+                    "drawedges": True,
                 },
             )
         ax.text(
@@ -295,18 +294,10 @@ def russia_plots_n(
             transform=ax.transAxes,
             fontsize=14,
         )
-        # work with ticks
         my_fig = scatter_plot.figure
         if not just_points:
             cb_ax = my_fig.axes[nrows * ncols + i]
-            cb_ax.tick_params(
-                labelsize=10,
-                direction="inout",
-                grid_alpha=1,
-                grid_color="black",
-                length=6,
-                width=3,
-            )
+            cb_ax.tick_params(labelsize=10)
             # [-100, -75, -50, -25, 0,
             # 25, 50, 75, 100]
             # [0.00, 0.25, .50, .75, 1.00]
