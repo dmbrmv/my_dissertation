@@ -1,6 +1,4 @@
-"""
-Run HBV calibration for single gauge
-"""
+"""Run HBV calibration for single gauge."""
 
 import pathlib
 import sys
@@ -10,7 +8,8 @@ sys.path.append("/Users/dmbrmv/Development/ESG/my_dissertation")
 import numpy as np
 import spotpy
 import xarray as xr
-from spotpy.objectivefunctions import kge
+from spotpy.objectivefunctions import kge, lognashsutcliffe, mae, nashsutcliffe, rmse
+
 from conceptual_runs.scripts.logger import logging
 
 from .model_setups import hbv_setup
@@ -26,23 +25,24 @@ gauges = [
     ).glob("*.nc")
 ]
 
+calibration_path = pathlib.Path("./hbv_calibration_mle_logNSE")
+calibration_path.mkdir(exist_ok=True, parents=True)
 gauges = [
-    i
-    for i in gauges
-    if i not in [i.stem for i in pathlib.Path("./hbv_calibrated").glob("*.npy")]
+    i for i in gauges if i not in [i.stem for i in calibration_path.glob("*.npy")]
 ]
 
 
 def hbv_single_core(g_id: str) -> None:
-    """
+    """HBV model implementation for one process.
 
-    Parameters
-    ----------
-    gauge_id (str) : name of the gauge to use
+    Args:
+    ----
+        g_id (str) : name of the gauge to use
 
-    Returns
+    Returns:
     -------
-    None
+        None
+
     """
     try:
         logging.info(f"Processing gauge ID: {g_id}")
@@ -53,24 +53,21 @@ def hbv_single_core(g_id: str) -> None:
             example_df = example_df.drop("gauge_id", axis=1)
             train_df = example_df[:"2018-12-31"]
 
-        hbv_calibrated = pathlib.Path("./hbv_calibrated")
-        hbv_calibrated.mkdir(exist_ok=True, parents=True)
-
         sampler = spotpy.algorithms.mle(
-            hbv_setup(data_file=train_df, obj_func=kge),
-            dbname=f"{hbv_calibrated}/{g_id}",
+            hbv_setup(data_file=train_df, obj_func=lognashsutcliffe),
+            dbname=f"{calibration_path}/{g_id}",
             dbformat="csv",
             random_state=42,
+            optimization_direction="maximize",
         )
-
         sampler.sample(repetitions=6000)
 
-        gauge_results = spotpy.analyser.load_csv_results(f"{hbv_calibrated}/{g_id}")
+        gauge_results = spotpy.analyser.load_csv_results(f"{calibration_path}/{g_id}")
         best_hbv_params = np.array(spotpy.analyser.get_best_parameterset(gauge_results))
 
-        with open(f"{hbv_calibrated}/{g_id}.npy", "wb") as f:
+        with open(f"{calibration_path}/{g_id}.npy", "wb") as f:
             np.save(file=f, arr=best_hbv_params)
-        with pathlib.Path(f"{hbv_calibrated}/{g_id}.csv") as f:
+        with pathlib.Path(f"{calibration_path}/{g_id}.csv") as f:
             f.unlink()
 
     except EOFError as e:

@@ -15,6 +15,9 @@ seaborn = "^0.13.2"
 cartopy = "^0.22.0"
 plotly = "^5.20.0"
 matplotlib = "3.6"
+spotpy = "^1.6.2"
+xarray = "^2024.3.0"
+netcdf4 = "^1.6.5"
 
 
 [build-system]
