@@ -20,9 +20,9 @@ logger = logging.getLogger(pathlib.Path(__file__).name)
 
 gauges = [
     i.stem
-    for i in pathlib.Path(
-        "/workspaces/my_dissertation/geo_data/ws_related_meteo/nc_all_q"
-    ).glob("*.nc")
+    for i in pathlib.Path("/Users/dmbrmv/Development/geo_data/great_db/nc_all_q").glob(
+        "*.nc"
+    )
 ]
 
 calibration_path = pathlib.Path("./hbv_calibration_mle_logNSE")
@@ -47,7 +47,7 @@ def hbv_single_core(g_id: str) -> None:
     try:
         logging.info(f"Processing gauge ID: {g_id}")
         with xr.open_dataset(
-            f"/workspaces/my_dissertation/geo_data/ws_related_meteo/nc_all_q/{g_id}.nc"
+            f"/Users/dmbrmv/Development/geo_data/great_db/nc_all_q/{g_id}.nc"
         ) as f:
             example_df = f.to_pandas()
             example_df = example_df.drop("gauge_id", axis=1)
