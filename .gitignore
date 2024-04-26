@@ -47,8 +47,8 @@ data_builders/test_data
 
 # conceptual runs parameters
 conceptual_runs/cal_res
-conceptual_runs/hbv_calibrated
-conceptual_runs/gr4j_calibrated
+conceptual_runs/hbv_*
+conceptual_runs/gr4j_*
 
 conclusions/results
 
