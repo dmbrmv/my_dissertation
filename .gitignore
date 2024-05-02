@@ -57,6 +57,7 @@ darts_forecast/model
 darts_forecast/res
 # neural hydrology
 neural_forecast/model_runs
+neural_forecast/single_configs
 
 # some auxiliary data
 metric_viewer/

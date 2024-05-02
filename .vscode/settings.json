@@ -3,5 +3,12 @@
         "editor.defaultFormatter": "charliermarsh.ruff",
     },
     "python.analysis.autoImportCompletions": true,
-    "python.analysis.autoFormatStrings": true
+    "python.analysis.autoFormatStrings": true,
+    "gigacode.inlineColor": "blue",
+    "gigacode.cloudIdentify": true,
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "files.autoSave": "afterDelay",
+    "python.analysis.completeFunctionParens": true,
+    "editor.fontFamily": "MesloLGS NF",
+    "editor.fontSize": 13
 }

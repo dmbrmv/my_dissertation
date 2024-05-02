@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append("/Users/dmbrmv/Development/ESG/my_dissertation")
+sys.path.append("/workspaces/my_dissertation")
 
 import numpy as np
 import pandas as pd
@@ -26,11 +26,20 @@ def kge(predictions, targets):
             (predictions - obs_mean) ** 2,
         )
     )
-    r = r_num / r_den
+    if r_den == 0:
+        r = np.NaN
+    else:
+        r = r_num / r_den
     # calculate error in spread of flow alpha
-    alpha = np.std(targets, axis=0) / np.std(predictions)
+    if np.std(predictions) == 0:
+        alpha = np.NaN
+    else:
+        alpha = np.std(targets, axis=0) / np.std(predictions)
     # calculate error in volume beta (bias of mean discharge)
-    beta = np.sum(targets, axis=0) / np.sum(predictions)
+    if np.sum(predictions) == 0:
+        beta = np.NaN
+    else:
+        beta = np.sum(targets, axis=0) / np.sum(predictions)
     # calculate the Kling-Gupta Efficiency KGE
     kge_ = 1 - np.sqrt((r - 1) ** 2 + (alpha - 1) ** 2 + (beta - 1) ** 2)
 
@@ -51,8 +60,10 @@ def metric_df(gauge_id, predictions, targets):
     res_df.loc[gauge_id, "NSE"] = nse(predictions, targets)
 
     res_df.loc[gauge_id, ["KGE", "r", "alpha", "beta"]] = kge(predictions, targets)
-
-    res_df.loc[gauge_id, "RMSE"] = root_mean_squared_error(predictions, targets)
+    if any(np.isnan(predictions)):
+        res_df.loc[gauge_id, "RMSE"] = np.NaN
+    else:
+        res_df.loc[gauge_id, "RMSE"] = root_mean_squared_error(predictions, targets)
 
     res_df.loc[gauge_id, "delta"] = relative_error(predictions, targets)
 

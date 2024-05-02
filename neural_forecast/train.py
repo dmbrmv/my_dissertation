@@ -1,16 +1,16 @@
-from pathlib import Path
-import glob
 import gc
-import torch
+import glob
 import random
-import geopandas as gpd
-from neuralhydrology.nh_run import start_run
-from scripts.file_manipulator import train_rewriter
-from neuralhydrology.utils.config import Config
+from pathlib import Path
 
+import geopandas as gpd
+import torch
+from neuralhydrology.nh_run import start_run
+from neuralhydrology.utils.config import Config
+from scripts.file_manipulator import train_rewriter
 
 # era_input = ["prcp_e5l", "t_max_e5l", "t_min_e5l"]
-era_input = ["prcp_mswep", "t_max_e5", "t_min_e5"]
+era_input = ["prcp_mswep", "t_max_e5l", "t_min_e5l"]
 # q_mm_day or lvl_sm
 hydro_target = "q_mm_day"
 q_h_relation = False
@@ -64,10 +64,9 @@ else:
 ws_file = gpd.read_file(filename="../geo_data/geometry/russia_ws.gpkg")
 ws_file = ws_file.set_index("gauge_id")
 
-ts_dir = Path("../geo_data/time_series")
-
 # time series directory
 ts_dir = Path("../geo_data/time_series")
+ts_dir.mkdir(exist_ok=True, parents=True)
 # write files for train procedure
 print(f"train data for {hydro_target} with {nc_variable} initial data")
 train_rewriter(
@@ -93,12 +92,12 @@ model_name = "cudalstm"
 cfg.update_config(
     yml_path_or_dict={
         # define storage and experiment
-        "experiment_name": f"{model_name}_{hydro_target}_mswep_era5_no_autocorr_static",
+        "experiment_name": f"{model_name}_{hydro_target}_mswep_no_static",
         "model": f"{model_name}",
         "run_dir": "./model_runs/",
         "data_dir": "../geo_data/",
         # define inner parameters
-        "static_attributes": static_parameters,
+        # "static_attributes": static_parameters,
         "dynamic_inputs": [*era_input],
         # 'hindcast_inputs': era_input,
         # 'forecast_inputs': era_input,
@@ -126,13 +125,13 @@ cfg.update_config(
 )
 cfg.dump_config(
     folder=Path("./launch_configs"),
-    filename=f"{model_name}_{hydro_target}_mswep_era5_no_autocorr_static.yml",
+    filename=f"{model_name}_{hydro_target}_mswep_no_static.yml",
 )
 
 gc.collect()
 if torch.cuda.is_available():
     start_run(
         config_file=Path(
-            f"./launch_configs/{model_name}_{hydro_target}_mswep_era5_no_autocorr_static.yml"
+            f"./launch_configs/{model_name}_{hydro_target}_mswep_no_static.yml"
         )
     )
