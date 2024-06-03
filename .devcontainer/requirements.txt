@@ -1,5 +1,5 @@
 # data manipulation
-pandas==2.0
+pandas
 h5py
 numba
 xarray
@@ -26,7 +26,7 @@ scikit-learn
 scipy
 catboost
 shap
-neuralhydrology==1.9.0
+neuralhydrology
 darts
 # cute jupyter
 jupyter

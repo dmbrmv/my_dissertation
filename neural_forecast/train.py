@@ -9,6 +9,18 @@ from neuralhydrology.nh_run import start_run
 from neuralhydrology.utils.config import Config
 from scripts.file_manipulator import train_rewriter
 
+# setting device on GPU if available, else CPU
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print("Using device:", device)
+print()
+
+# Additional Info when using cuda
+if device.type == "cuda":
+    print(torch.cuda.get_device_name(0))
+    print("Memory Usage:")
+    print("Allocated:", round(torch.cuda.memory_allocated(0) / 1024**3, 1), "GB")
+    print("Cached:   ", round(torch.cuda.memory_reserved(0) / 1024**3, 1), "GB")
+
 # era_input = ["prcp_e5l", "t_max_e5l", "t_min_e5l"]
 era_input = ["prcp_mswep", "t_max_e5l", "t_min_e5l"]
 # q_mm_day or lvl_sm
@@ -67,10 +79,9 @@ ws_file = ws_file.set_index("gauge_id")
 # time series directory
 ts_dir = Path("../geo_data/time_series")
 ts_dir.mkdir(exist_ok=True, parents=True)
-# write files for train procedure
-print(f"train data for {hydro_target} with {nc_variable} initial data")
+
 train_rewriter(
-    era_pathes=glob.glob(f"../geo_data/ws_related_meteo/{nc_variable}/*.nc"),
+    era_paths=glob.glob(f"../geo_data/ws_related_meteo/{nc_variable}/*.nc"),
     ts_dir=ts_dir,
     hydro_target=hydro_target,
     area_index=ws_file.index,
@@ -89,15 +100,22 @@ cfg = Config(Path("./model_config.yml"))
 # [cudalstm, customlstm, ealstm, embcudalstm, mtslstm, gru, transformer]
 # (has to match the if statement in modelzoo/__init__.py)
 model_name = "cudalstm"
+hidden_size = 512
+seq_length = 365
+# write files for train procedure
+print(
+    f"train data for {hydro_target} with {nc_variable} initial data and {hidden_size} hidden size with {seq_length} days before prediction"
+)
 cfg.update_config(
     yml_path_or_dict={
         # define storage and experiment
-        "experiment_name": f"{model_name}_{hydro_target}_mswep_no_static",
+        "experiment_name": f"{model_name}_{hydro_target}_{hidden_size}_{seq_length}_mswep_static",
         "model": f"{model_name}",
         "run_dir": "./model_runs/",
         "data_dir": "../geo_data/",
         # define inner parameters
-        # "static_attributes": static_parameters,
+        "hidden_size": hidden_size,
+        "static_attributes": static_parameters,
         "dynamic_inputs": [*era_input],
         # 'hindcast_inputs': era_input,
         # 'forecast_inputs': era_input,
@@ -106,14 +124,23 @@ cfg.update_config(
         #                       'activation': 'tanh', 'dropout': 0.2},
         # 'statics_embedding': {'type': 'fc', 'hiddens': [128, 64, 256],
         #                      'activation': 'tanh', 'dropout': 0.2},
+        # The hindcast model is run from the past up to present (the issue time of the forecast)
+        # and then passes the cell state and hidden state of the LSTM into a (nonlinear) handoff network,
+        # which is then used to initialize the cell state and hidden state of a new LSTM that rolls out over the forecast period
+        # "state_handoff_network": 256,
+        # The hidden size of the hindcast LSTM
+        # "hindcast_hidden_size": 256,
+        # The hidden size of the forecast LSTM
+        # "forecast_hidden_size": 256,
         # define files with gauge data
         "train_basin_file": "./every_basin.txt",
         "validate_n_random_basins": gauge_size,
         "validation_basin_file": "./every_basin.txt",
         "test_basin_file": "./every_basin.txt",
+        # specify loss [MSE, NSE, RMSE]
         "loss": "NSE",
         # define time periods
-        # 'seq_length': 14,
+        "seq_length": seq_length,
         # 'forecast_seq_length': 10,
         "train_start_date": "01/01/2008",
         "train_end_date": "31/12/2016",
@@ -125,13 +152,13 @@ cfg.update_config(
 )
 cfg.dump_config(
     folder=Path("./launch_configs"),
-    filename=f"{model_name}_{hydro_target}_mswep_no_static.yml",
+    filename=f"{model_name}_{hydro_target}_{hidden_size}_{seq_length}_mswep_static.yml",
 )
 
 gc.collect()
 if torch.cuda.is_available():
     start_run(
         config_file=Path(
-            f"./launch_configs/{model_name}_{hydro_target}_mswep_no_static.yml"
+            f"./launch_configs/{model_name}_{hydro_target}_{hidden_size}_{seq_length}_mswep_static.yml"
         )
     )

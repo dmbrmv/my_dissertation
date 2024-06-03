@@ -1,13 +1,16 @@
 from pathlib import Path
+
 import pandas as pd
 import yaml
 
 
 class ConfigExtractor:
-    """
-    brief shell to hide unnecessary paths from forecaster
-        Args:
-            config_path: path to configuration file
+    """Brief shell to hide unnecessary paths from forecaster.
+    
+    Args.
+    ----
+        config_path: path to configuration file
+
     """
 
     def __init__(self, cfg: dict):
@@ -19,26 +22,26 @@ class ConfigExtractor:
         self._id_label_path = self.cfg["id_label_path"]
         self._forecast_predictors = self.cfg["forecast_predictors"]
         self._ais_dates = pd.date_range(
-            start=self.cfg["ais_first_date"],
-            end=self.cfg["ais_last_date"])
+            start=self.cfg["ais_first_date"], end=self.cfg["ais_last_date"]
+        )
         self._forecast_dates = pd.date_range(
-            start=self.cfg["forecast_start_date"],
-            end=self.cfg["forecast_end_date"])
+            start=self.cfg["forecast_start_date"], end=self.cfg["forecast_end_date"]
+        )
         # geometry builder settings
 
-        self._save_storage = self.cfg['save_storage']
-        self._watershed_storage = self.cfg['watershed_storage']
-        self._raster_storage = self.cfg['raster_storage']
-        self._initial_fdir = self.cfg['initial_fdir']
-        self._accum_masks = self.cfg['accum_masks']
+        self._save_storage = self.cfg["save_storage"]
+        self._watershed_storage = self.cfg["watershed_storage"]
+        self._raster_storage = self.cfg["raster_storage"]
+        self._initial_fdir = self.cfg["initial_fdir"]
+        self._accum_masks = self.cfg["accum_masks"]
 
-        self._point_geometry = self.cfg['point_geometry']
-        self._watershed_name = self.cfg['watershed_name']
-        self._mask_storage = self.cfg['mask_storage']
-        self._river_network_storage = self.cfg['river_net_storage']
-        self._initial_meteo = self.cfg['initial_meteo']
-        self._grid_storage = self.cfg['grid_storage']
-        self._final_meteo = self.cfg['final_meteo']
+        self._point_geometry = self.cfg["point_geometry"]
+        self._watershed_name = self.cfg["watershed_name"]
+        self._mask_storage = self.cfg["mask_storage"]
+        self._river_network_storage = self.cfg["river_net_storage"]
+        self._initial_meteo = self.cfg["initial_meteo"]
+        self._grid_storage = self.cfg["grid_storage"]
+        self._final_meteo = self.cfg["final_meteo"]
 
     @property
     def save_storage(self):

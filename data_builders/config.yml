@@ -24,7 +24,7 @@ watershed_name : 'russia_ws'
 grid_storage: '/home/dima/Data/geo_data/cmip_result_585'
 save_storage: '/home/dima/Data/geo_data/great_db/geometry/example_ws'
 
-acc_faktor: 1000
+acc_factor: 1000
 point_geometry: '/home/dima/Data/geo_data/great_db/geometry/russia_gauges.gpkg'
 
 mask_storage: '/home/dima/Data/geo_data/great_db/geometry_builder/region_masks'

@@ -60,7 +60,7 @@ class Icon_merger:
                                                 gauge_id=gauge_id,
                                                 path_to_save=Path(
                                                     f'{self.place_to_save}'),
-                                                nc_pathes=path,
+                                                nc_paths=path,
                                                 dataset=dataset,
                                                 var=variable,
                                                 aggregation_type=aggregation,

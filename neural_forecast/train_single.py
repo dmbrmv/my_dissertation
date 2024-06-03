@@ -89,7 +89,7 @@ for gauge_id in ws_file.index:
     if gauge_id in trained_gauges:
         continue
     train_rewriter(
-        era_pathes=glob.glob(f"../geo_data/ws_related_meteo/{nc_variable}/*.nc"),
+        era_paths=glob.glob(f"../geo_data/ws_related_meteo/{nc_variable}/*.nc"),
         ts_dir=ts_dir,
         hydro_target=hydro_target,
         area_index=[gauge_id],

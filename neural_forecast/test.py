@@ -1,19 +1,12 @@
-import gc
 import glob
-import json
-import random
 from functools import lru_cache
 from pathlib import Path
 
 import geopandas as gpd
-import numpy as np
-import pandas as pd
 import torch
-import xarray as xr
-from neuralhydrology.evaluation import get_tester
-from neuralhydrology.nh_run import eval_run, start_run
+from neuralhydrology.nh_run import eval_run
 from neuralhydrology.utils.config import Config
-from scripts.file_manipulator import test_rewriter, train_rewriter
+from scripts.file_manipulator import train_rewriter
 
 # setting device on GPU if available, else CPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -36,17 +29,37 @@ def read_ws(gpkg_path):
     return ws_file
 
 
-configs = list(Path("./model_runs/").glob("cudalstm_q_mm_day*/config.yml"))
+configs = list(Path("./model_runs/").glob("cudalstm_q_mm_day*mswep*/config.yml"))
 configs_names = [str(i).split("/")[1].split("_no")[0] for i in configs]
-best_epochs = [24, 24, 20, 26, 30]
+logs = list(Path("./model_runs/").glob("cudalstm_q_mm_day*mswep*/output.log"))
+
+
+def best_epoch_finder(log_file: Path) -> int:
+    with open(f"{log_file}", "r") as f:
+        lines = f.readlines()
+    full_lines = [line for line in lines if ("NSE" in line) & ("Epoch" in line)]
+
+    epoch_nse = {
+        int(line.split(" Epoch ")[1].split(" ")[0]): float(
+            line.split(" NSE: ")[1].split(",")[0]
+        )
+        for line in full_lines
+    }
+
+    max_epoch = max(epoch_nse, key=epoch_nse.get)
+
+    return max_epoch
+
+
+best_epochs = list(best_epoch_finder(log) for log in logs)
 
 meteo_inputs = [
-    ["prcp_gpcp", "t_max_e5l", "t_min_e5l"],
+    # ["prcp_gpcp", "t_max_e5l", "t_min_e5l"],
     ["prcp_mswep", "t_max_e5l", "t_min_e5l"],
-    ["prcp_e5", "t_max_e5", "t_min_e5"],
-    ["prcp_e5l", "t_max_e5l", "t_min_e5l"],
-    ["prcp_mswep", "t_max_e5", "t_min_e5"],
-]
+    # ["prcp_e5", "t_max_e5", "t_min_e5"],
+    # ["prcp_e5l", "t_max_e5l", "t_min_e5l"],
+    # ["prcp_mswep", "t_max_e5", "t_min_e5"],
+] * len(best_epochs)
 
 # q_mm_day or lvl_sm
 hydro_target = "q_mm_day"
@@ -82,17 +95,17 @@ for cfg_path, cfg_name, epoch, met_in in zip(
     # write files for train procedure
     print(f"test data for {cfg_name}")
     if "mswep" in cfg_name:
-        tresh = 1
+        thresh = 1
     else:
-        tresh = 0
+        thresh = 0
 
     train_rewriter(
-        era_pathes=glob.glob(f"../geo_data/ws_related_meteo/{nc_variable}/*.nc"),
+        era_paths=glob.glob(f"../geo_data/ws_related_meteo/{nc_variable}/*.nc"),
         ts_dir=ts_dir,
         hydro_target=hydro_target,
         area_index=ws_file.index,
         predictors=[*met_in],
-        possible_nans=tresh,
+        possible_nans=thresh,
     )
     cfg = Config(cfg_path)
     eval_run(run_dir=cfg.run_dir, period="test", epoch=epoch)

@@ -14,17 +14,34 @@ def file_checker(dataset: xr.Dataset, possible_nans: int = 0):
 
 
 def train_rewriter(
-    era_pathes: list,
+    era_paths: list,
     area_index,
     ts_dir: Path,
     hydro_target: str,
     predictors: list,
     possible_nans: int = 0,
-):
+) -> None:
+    """Process ERA files, checks for missing data, and writes valid datasets to netCDF files.
+
+    Parameters
+    ----------
+    - era_paths: List of paths to ERA dataset files.
+    - area_index: Index or list of gauge IDs to include in the processing.
+    - ts_dir: Path object representing the directory to save processed netCDF files.
+    - hydro_target: The name of the hydrological target variable in the dataset.
+    - predictors: List of predictor variable names to include from the ERA dataset.
+    - possible_nans: The allowable number of NaN values in the dataset. Defaults to 0.
+
+    This function reads each ERA file specified in `era_paths`, filters out files not listed in
+    `area_index`, checks for missing data exceeding `possible_nans`, and writes the cleaned and
+    filtered data to new netCDF files in `ts_dir`. Each output file is named after its corresponding
+    gauge ID. Additionally, it generates a text file listing all processed gauge IDs.
+
+    """
     shutil.rmtree(ts_dir)
     ts_dir.mkdir(exist_ok=True, parents=True)
 
-    for file in era_pathes:
+    for file in era_paths:
         gauge_id = file.split("/")[-1][:-3]
 
         if gauge_id not in area_index:
@@ -48,7 +65,7 @@ def train_rewriter(
 
 
 def train_cmip_val(
-    era_pathes: list,
+    era_paths: list,
     area_index,
     ts_dir: Path,
     hydro_target: str,
@@ -58,11 +75,41 @@ def train_cmip_val(
     val_start: str,
     val_end: str,
     possible_nans: int = 0,
-):
+) -> None:
+    """Process ERA files, checks for missing data, and writes valid datasets to netCDF files.
+    
+    This function reads each ERA file specified in `era_paths`, filters out files not listed in
+    `area_index`, checks for missing data exceeding `possible_nans`, and writes the cleaned and
+    filtered data to new netCDF files in `ts_dir`. Each output file is named after its corresponding
+    gauge ID. Additionally, it generates a text file listing all processed gauge IDs.
+
+    Parameters
+    ----------
+    - era_paths: List of paths to ERA dataset files.
+    - area_index: Index or list of gauge IDs to include in the processing.
+    - ts_dir: Path object representing the directory to save processed netCDF files.
+    - hydro_target: The name of the hydrological target variable in the dataset.
+    - era_cols: List of predictor variable names to include from the ERA dataset.
+    - cmip_cols: List of predictor variable names to include from the CMIP dataset.
+    - cmip_storage: The path to the CMIP dataset storage.
+    - val_start: The start date of the validation period in the format 'YYYY-MM-DD'.
+    - val_end: The end date of the validation period in the format 'YYYY-MM-DD'.
+    - possible_nans: The allowable number of NaN values in the dataset. Defaults to 0.
+
+    Returns
+    -------
+    None: This function does not return any value. It writes the processed data to netCDF files and
+    generates a text file listing all processed gauge IDs.
+
+    Raises
+    ------
+    ValueError: If the ERA file or CMIP file contains missing data exceeding `possible_nans`.
+    
+    """
     shutil.rmtree(ts_dir)
     ts_dir.mkdir(exist_ok=True, parents=True)
 
-    for file in era_pathes:
+    for file in era_paths:
         gauge_id = file.split("/")[-1][:-3]
 
         if gauge_id not in area_index:

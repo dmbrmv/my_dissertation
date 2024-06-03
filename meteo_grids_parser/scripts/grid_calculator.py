@@ -1,15 +1,15 @@
 import gc
-from pathlib import Path
 import json
+from pathlib import Path
 
 import geopandas as gpd
+import numpy as np
 import pandas as pd
 import xarray as xr
-import numpy as np
 from dask import config as dask_cfg
 from shapely.geometry import Polygon
 
-from .geom_proc import create_gdf, getSquareVertices
+from .geom_proc import create_gdf, getSquareVertices, poly_from_multipoly
 from .nc_proc import nc_by_extent
 
 
@@ -22,7 +22,7 @@ class Gridder:
         ws_geom: Polygon,
         gauge_id: str,
         path_to_save: Path,
-        nc_pathes: list,
+        nc_paths: list,
         var: str,
         dataset: str,
         aggregation_type: str = "sum",
@@ -30,29 +30,32 @@ class Gridder:
         weight_mark: str = "",
         prcp_coef: float = 1e2,
         extend_data: bool = False,
-        merge_data: bool = False) -> None:
-        """_summary_
+        merge_data: bool = False,
+    ) -> None:
+        """_summary_.
 
-        Args:
+        Args.
+        ----
             half_grid_resolution (float): _description_
             ws_geom (Polygon): _description_
             gauge_id (str): _description_
             path_to_save (Path): _description_
-            nc_pathes (list): _description_
+            nc_paths (list): _description_
             var (str): _description_
             dataset (str): _description_
             aggregation_type (str, optional): _description_. Defaults to "sum".
             force_weights (bool, optional): _description_. Defaults to False.
 
-        Raises:
+        Raises.
+        ------
             Exception: _description_
-        """
 
+        """
         self.grid_res = half_grid_resolution
         self.ws_geom = ws_geom
         self.gauge_id = gauge_id
         self.path_to_save = path_to_save
-        self.nc_pathes = nc_pathes
+        self.nc_paths = nc_paths
         self.dataset = dataset
         self.var = var
         self.force_weights = force_weights
@@ -68,7 +71,7 @@ class Gridder:
                 You insert {aggregation_type}"
             )
         with dask_cfg.set(**{"array.slicing.split_large_chunks": True}):
-            self.nc_data = xr.open_mfdataset(nc_pathes)
+            self.nc_data = xr.open_mfdataset(nc_paths)
         # weights
         if self.force_weights:
             self.weight_folder = Path(
@@ -115,10 +118,9 @@ class Gridder:
             for lon in nc_lon:
                 # h = 0.125 as a half of ERA5 resolution
                 # phi rotation angle
-                polygons.append(Polygon(
-                    getSquareVertices(mm=(lon, lat),
-                                      h=self.grid_res,
-                                      phi=0)))
+                polygons.append(
+                    Polygon(getSquareVertices(mm=(lon, lat), h=self.grid_res, phi=0))
+                )
         # create geodataframe from each polygon from emulation
         polygons = [create_gdf(poly) for poly in polygons]
 
@@ -126,23 +128,23 @@ class Gridder:
         intersected = list()
         for polygon in polygons:
             try:
-                intersected.append(gpd.overlay(df1=ws_gdf,
-                                               df2=polygon,
-                                               how='intersection'))
+                intersected.append(
+                    gpd.overlay(df1=ws_gdf, df2=polygon, how="intersection")
+                )
             except KeyError:
                 intersected.append(gpd.GeoDataFrame())
         # find biggest intersection if it returns MultiPolygon instance
         # select biggest Polygon in MultiPolygon
-        intersected = [create_gdf(
-            poly_from_multipoly(
-                section.loc[0, 'geometry']))  # type: ignore
+        intersected = [
+            create_gdf(poly_from_multipoly(section.loc[0, "geometry"]))  # type: ignore
             if len(section) != 0
             else gpd.GeoDataFrame()
-            for section in intersected]
+            for section in intersected
+        ]
         # create mask for intersection with net_cdf
-        inter_mask = np.array([False if section.empty is True
-                               else True
-                               for section in intersected])
+        inter_mask = np.array(
+            [False if section.empty is True else True for section in intersected]
+        )
         # create GeoDataFrame for polygons from GRID
         poly_gdf = pd.DataFrame(columns=["geometry"])
         poly_gdf["geometry"] = polygons
@@ -153,7 +155,11 @@ class Gridder:
         sjoin_idx = ws_gdf.sjoin(poly_gdf).index_right.sort_values().values
         # get fraction of overlay
         try:
-            overlay_area = ws_gdf.overlay(poly_gdf, keep_geom_type=False).to_crs(epsg=tiff_epsg).area.values
+            overlay_area = (
+                ws_gdf.overlay(poly_gdf, keep_geom_type=False)
+                .to_crs(epsg=tiff_epsg)
+                .area.values
+            )
             # calculate area of each polygon
             initial_area = poly_gdf.to_crs(epsg=tiff_epsg).area.values[sjoin_idx]
             # get weights of intersection
@@ -220,6 +226,16 @@ class Gridder:
 
         res_df = pd.DataFrame()
         try:
+            # if self.aggregation_type == "sum":
+            #     res_df["date"] = ws_nc.time.values
+            #     res_df[var] = (
+            #         ws_nc.weighted(weights=self.weights)
+            #         .sum(dim=["lat", "lon"])[var]
+            #         .values
+            #     )
+            #     res_df = res_df.set_index("date")
+            #     res_df.to_csv(f"{final_save}/{self.gauge_id}.csv")
+
             if self.aggregation_type == "sum":
                 res_df["date"] = ws_nc.time.values
                 res_df[var] = (
@@ -228,46 +244,40 @@ class Gridder:
                     .values
                 )
                 res_df = res_df.set_index("date")
-                res_df.to_csv(f"{final_save}/{self.gauge_id}.csv")
+                res_df *= self.prcp_coef
+                self.res_df = res_df
 
-        if self.aggregation_type == 'sum':
-            res_df['date'] = ws_nc.time.values
-            res_df[var] = ws_nc.weighted(weights=self.weights).sum(
-                dim=['lat', 'lon'])[var].values
-            res_df = res_df.set_index('date')
-            res_df *= self.prcp_coef
-            self.res_df = res_df
-            if self.extend_data:
-                try:
-                    # extend existed forecast, update from day to future
-                    old_data = pd.read_csv(f'{final_save}/{self.gauge_id}.csv')
-                    old_data['date'] = pd.to_datetime(old_data['date'])
-                    old_data = old_data.set_index('date')
-                    new_data = res_df.combine_first(old_data)
-                    new_data.to_csv(f'{final_save}/{self.gauge_id}.csv')
-                except FileNotFoundError:
-                    res_df.to_csv(f'{final_save}/{self.gauge_id}.csv')
-            elif self.merge_data:
-                try:
-                    # create long list with different forecast horizons
-                    old_data = pd.read_csv(f'{final_save}/{self.gauge_id}.csv')
-                    old_data['date'] = pd.to_datetime(old_data['date'])
-                    res_df = res_df.reset_index()
-                    res_df['forecast_horizon'] = [i
-                                                  for i in range(len(res_df))]
-                    new_data = pd.concat(
-                        [old_data, res_df]).sort_values(
-                            by='date').reset_index(drop=True)
-                    new_data.to_csv(f'{final_save}/{self.gauge_id}.csv',
-                                    index=False)
-                except FileNotFoundError:
-                    res_df = res_df.reset_index()
-                    res_df['forecast_horizon'] = [
-                        i for i in range(len(res_df))]
-                    res_df.to_csv(f'{final_save}/{self.gauge_id}.csv',
-                                  index=False)
-            else:
-                res_df.to_csv(f'{final_save}/{self.gauge_id}.csv')
+                if self.extend_data:
+                    try:
+                        # extend existed forecast, update from day to future
+                        old_data = pd.read_csv(f"{final_save}/{self.gauge_id}.csv")
+                        old_data["date"] = pd.to_datetime(old_data["date"])
+                        old_data = old_data.set_index("date")
+                        new_data = res_df.combine_first(old_data)
+                        new_data.to_csv(f"{final_save}/{self.gauge_id}.csv")
+                    except FileNotFoundError:
+                        res_df.to_csv(f"{final_save}/{self.gauge_id}.csv")
+                elif self.merge_data:
+                    try:
+                        # create long list with different forecast horizons
+                        old_data = pd.read_csv(f"{final_save}/{self.gauge_id}.csv")
+                        old_data["date"] = pd.to_datetime(old_data["date"])
+                        res_df = res_df.reset_index()
+                        res_df["forecast_horizon"] = [i for i in range(len(res_df))]
+                        new_data = (
+                            pd.concat([old_data, res_df])
+                            .sort_values(by="date")
+                            .reset_index(drop=True)
+                        )
+                        new_data.to_csv(
+                            f"{final_save}/{self.gauge_id}.csv", index=False
+                        )
+                    except FileNotFoundError:
+                        res_df = res_df.reset_index()
+                        res_df["forecast_horizon"] = [i for i in range(len(res_df))]
+                        res_df.to_csv(f"{final_save}/{self.gauge_id}.csv", index=False)
+                else:
+                    res_df.to_csv(f"{final_save}/{self.gauge_id}.csv")
 
             else:
                 res_df["date"] = ws_nc.time.values
@@ -277,34 +287,32 @@ class Gridder:
                     .values
                 )
                 res_df = res_df.set_index("date")
-                if self.extend_data:
+            if self.extend_data:
                 try:
-                    old_data = pd.read_csv(f'{final_save}/{self.gauge_id}.csv')
-                    old_data['date'] = pd.to_datetime(old_data['date'])
-                    old_data = old_data.set_index('date')
+                    old_data = pd.read_csv(f"{final_save}/{self.gauge_id}.csv")
+                    old_data["date"] = pd.to_datetime(old_data["date"])
+                    old_data = old_data.set_index("date")
                     new_data = res_df.combine_first(old_data)
-                    new_data.to_csv(f'{final_save}/{self.gauge_id}.csv')
+                    new_data.to_csv(f"{final_save}/{self.gauge_id}.csv")
                 except FileNotFoundError:
-                    res_df.to_csv(f'{final_save}/{self.gauge_id}.csv')
+                    res_df.to_csv(f"{final_save}/{self.gauge_id}.csv")
             elif self.merge_data:
                 try:
                     # create long list with different forecast horizons
-                    old_data = pd.read_csv(f'{final_save}/{self.gauge_id}.csv')
-                    old_data['date'] = pd.to_datetime(old_data['date'])
+                    old_data = pd.read_csv(f"{final_save}/{self.gauge_id}.csv")
+                    old_data["date"] = pd.to_datetime(old_data["date"])
                     res_df = res_df.reset_index()
-                    res_df['forecast_horizon'] = [
-                        i for i in range(len(res_df))]
-                    new_data = pd.concat(
-                        [old_data, res_df]).sort_values(
-                            by='date').reset_index(drop=True)
-                    new_data.to_csv(f'{final_save}/{self.gauge_id}.csv',
-                                    index=False)
+                    res_df["forecast_horizon"] = [i for i in range(len(res_df))]
+                    new_data = (
+                        pd.concat([old_data, res_df])
+                        .sort_values(by="date")
+                        .reset_index(drop=True)
+                    )
+                    new_data.to_csv(f"{final_save}/{self.gauge_id}.csv", index=False)
                 except FileNotFoundError:
                     res_df = res_df.reset_index()
-                    res_df['forecast_horizon'] = [i
-                                                  for i in range(len(res_df))]
-                    res_df.to_csv(f'{final_save}/{self.gauge_id}.csv',
-                                  index=False)
+                    res_df["forecast_horizon"] = [i for i in range(len(res_df))]
+                    res_df.to_csv(f"{final_save}/{self.gauge_id}.csv", index=False)
             else:
                 res_df.to_csv(f"{final_save}/{self.gauge_id}.csv")
         except ValueError as e:

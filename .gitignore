@@ -41,6 +41,7 @@ DELETE_ME/
 # ignore visualisator helper
 visualizations/images
 visualizations/recovery
+visualizations/Q_H
 paper_visualisation/
 
 data_builders/test_data
@@ -58,6 +59,7 @@ darts_forecast/res
 # neural hydrology
 neural_forecast/model_runs
 neural_forecast/single_configs
+neural_forecast/inner_states
 
 # some auxiliary data
 metric_viewer/
