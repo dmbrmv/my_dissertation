@@ -5,12 +5,12 @@
 		"dockerfile": "Dockerfile"
 	},
 	"runArgs": [
-		// macOS
-		// "--ipc=host"
-		// pc with GPU
-		"--gpus",
-		"all",
+		// Cpu only
 		"--ipc=host"
+		// pc with GPU
+		// "--gpus",
+		// "all",
+		// "--ipc=host"
 		
 	],
 	"mounts": [
@@ -24,22 +24,6 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"njpwerner.autodocstring",
-				"ms-toolsai.jupyter",
-				"ms-toolsai.vscode-jupyter-cell-tags",
-				"ms-toolsai.jupyter-renderers",
-				"ms-toolsai.vscode-jupyter-powertoys",
-				"ms-toolsai.vscode-jupyter-slideshow",
-				"ionutvmi.path-autocomplete",
-				"christian-kohler.path-intellisense",
-				"ms-python.vscode-pylance",
-				"ms-python.python",
-				"ms-python.debugpy",
-				"mutantdino.resourcemonitor",
-				"charliermarsh.ruff",
-				"yy0931.save-as-root",
-				"ms-azuretools.vscode-docker",
-				"mechatroner.rainbow-csv"
 			]
 		}
 	}
