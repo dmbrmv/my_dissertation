@@ -1,16 +1,27 @@
 // devcontainer.json
 {
-	"name": "hydro_ml",
+	"name": "abramov_flood",
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
 	"runArgs": [
-		// macOS
+		// Cpu only
+		"--ipc=host"
+		// pc with GPU
+		// "--gpus",
+		// "all",
 		// "--ipc=host"
 		// pc with GPU
+		// gpu device
 		"--gpus",
-		"all",
-		"--ipc=host"
+		"device=0",
+		"--ipc=host",
+		// memory
+		"--memory",
+		"48G",
+		// cpus
+		"--cpus",
+		"8.0"
 		
 	],
 	"mounts": [
@@ -20,27 +31,5 @@
 		// "source=/home/dima/Coding/geo_data,target=/workspace/my_dissertation/geo_data,type=bind,consistency=cached"
 		// macOS
 		// "source=/Users/dmbrmv/Development/geo_data,target=/workspaces/my_dissertation/geo_data,type=bind,consistency=cached"
-	],
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"njpwerner.autodocstring",
-				"ms-toolsai.jupyter",
-				"ms-toolsai.vscode-jupyter-cell-tags",
-				"ms-toolsai.jupyter-renderers",
-				"ms-toolsai.vscode-jupyter-powertoys",
-				"ms-toolsai.vscode-jupyter-slideshow",
-				"ionutvmi.path-autocomplete",
-				"christian-kohler.path-intellisense",
-				"ms-python.vscode-pylance",
-				"ms-python.python",
-				"ms-python.debugpy",
-				"mutantdino.resourcemonitor",
-				"charliermarsh.ruff",
-				"yy0931.save-as-root",
-				"ms-azuretools.vscode-docker",
-				"mechatroner.rainbow-csv"
-			]
-		}
-	}
+	]
 }
