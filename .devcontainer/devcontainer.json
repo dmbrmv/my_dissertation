@@ -5,7 +5,11 @@
 		"dockerfile": "Dockerfile"
 	},
 	"runArgs": [
-		// macOS
+		// Cpu only
+		"--ipc=host"
+		// pc with GPU
+		// "--gpus",
+		// "all",
 		// "--ipc=host"
 		// pc with GPU
 		// gpu device

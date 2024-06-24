@@ -1,6 +1,5 @@
 import gc
 import glob
-import random
 from pathlib import Path
 
 import geopandas as gpd
@@ -10,9 +9,12 @@ from neuralhydrology.utils.config import Config
 from scripts.file_manipulator import train_rewriter
 
 # setting device on GPU if available, else CPU
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print("Using device:", device)
+# device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+device = torch.device("cpu")
+print("Using device:", device, f"Condition on mps {torch.backends.mps.is_available()}")
 print()
+
+gpd.options.io_engine = "pyogrio"
 
 # Additional Info when using cuda
 if device.type == "cuda":
@@ -115,6 +117,7 @@ for gauge_id in ws_file.index:
                 "model": f"{model_name}",
                 "run_dir": f"./model_runs/single_gauge/{gauge_id}",
                 "data_dir": "../geo_data/",
+                "device": "cpu",
                 # define inner parameters
                 # "static_attributes": static_parameters,
                 "dynamic_inputs": [*era_input],
@@ -132,7 +135,8 @@ for gauge_id in ws_file.index:
                 "test_basin_file": "./every_basin.txt",
                 "loss": "NSE",
                 # define time periods
-                # 'seq_length': 14,
+                "seq_length": 365,
+                "hidden_size": 256,
                 # 'forecast_seq_length': 10,
                 "train_start_date": "01/01/2008",
                 "train_end_date": "31/12/2016",
@@ -148,9 +152,9 @@ for gauge_id in ws_file.index:
         )
 
         gc.collect()
-        if torch.cuda.is_available():
-            start_run(
-                config_file=Path(
-                    f"./single_configs/{model_name}_{hydro_target}_{gauge_id}_mswep_static.yml"
-                )
+
+        start_run(
+            config_file=Path(
+                f"./single_configs/{model_name}_{hydro_target}_{gauge_id}_mswep_static.yml"
             )
+        )
