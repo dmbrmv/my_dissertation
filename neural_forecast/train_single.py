@@ -9,9 +9,8 @@ from neuralhydrology.utils.config import Config
 from scripts.file_manipulator import train_rewriter
 
 # setting device on GPU if available, else CPU
-# device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
-device = torch.device("cpu")
-print("Using device:", device, f"Condition on mps {torch.backends.mps.is_available()}")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print("Using device:", device)
 print()
 
 gpd.options.io_engine = "pyogrio"
@@ -85,7 +84,7 @@ ts_dir.mkdir(exist_ok=True, parents=True)
 print(f"train data for {hydro_target} with {nc_variable} initial data")
 
 trained_gauges = list(
-    str(i).split("_")[-3] for i in Path("./single_configs/").glob("*.yml")
+    str(i).split("_")[-3] for i in Path("../geo_data/lstm_single_cfg/").glob("*.yml")
 )
 for gauge_id in ws_file.index:
     if gauge_id in trained_gauges:
@@ -115,9 +114,11 @@ for gauge_id in ws_file.index:
                 # define storage and experiment
                 "experiment_name": f"{model_name}_{hydro_target}_{gauge_id}_mswep_mo_static",
                 "model": f"{model_name}",
-                "run_dir": f"./model_runs/single_gauge/{gauge_id}",
+                "run_dir": f"../geo_data/lstm_single_run/{gauge_id}",
                 "data_dir": "../geo_data/",
-                "device": "cpu",
+                "device": f"{device}:{torch.cuda.current_device()}"
+                if torch.cuda.is_available()
+                else "cpu",
                 # define inner parameters
                 # "static_attributes": static_parameters,
                 "dynamic_inputs": [*era_input],
@@ -147,7 +148,7 @@ for gauge_id in ws_file.index:
             }
         )
         cfg.dump_config(
-            folder=Path("./single_configs"),
+            folder=Path("../geo_data/lstm_single_cfg"),
             filename=f"{model_name}_{hydro_target}_{gauge_id}_mswep_static.yml",
         )
 
@@ -155,6 +156,6 @@ for gauge_id in ws_file.index:
 
         start_run(
             config_file=Path(
-                f"./single_configs/{model_name}_{hydro_target}_{gauge_id}_mswep_static.yml"
+                f"../geo_data/lstm_single_cfg/{model_name}_{hydro_target}_{gauge_id}_mswep_static.yml"
             )
         )
