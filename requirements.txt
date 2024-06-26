@@ -18,16 +18,11 @@ descartes
 pyepsg
 cartopy
 rtree
-regionmask
 # machine learning
-tensorboard
-torch_tb_profiler
 scikit-learn
 scipy
-catboost
 shap
 neuralhydrology
-darts
 # cute jupyter
 jupyter
 ipywidgets
