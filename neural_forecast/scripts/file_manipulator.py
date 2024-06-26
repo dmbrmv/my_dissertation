@@ -42,13 +42,14 @@ def train_rewriter(
     ts_dir.mkdir(exist_ok=True, parents=True)
 
     for file in era_paths:
-        gauge_id = file.split("/")[-1][:-3]
+        gauge_id = Path(file).stem
 
         if gauge_id not in area_index:
             pass
         else:
             era_file = xr.open_dataset(file)[[hydro_target, *predictors]]
             cond = file_checker(era_file, possible_nans=possible_nans)
+            print(era_file)
             if cond:
                 continue
             else:
@@ -58,7 +59,7 @@ def train_rewriter(
                     era_file.to_netcdf(f"{ts_dir}/{filename}")
                 except ValueError:
                     continue
-    basins = [file.split("/")[-1][:-3] for file in glob.glob(f"{ts_dir}/*.nc")]
+    basins = [Path(file).stem for file in glob.glob(f"{ts_dir}/*.nc")]
     with open("./every_basin.txt", "w") as the_file:
         for gauge_name in basins:
             the_file.write(f"{int(gauge_name)}\n")
