@@ -54,9 +54,6 @@ conceptual_runs/gr4j_*
 
 conclusions/results
 
-# darts
-darts_forecast/model
-darts_forecast/res
 # neural hydrology
 neural_forecast/model_runs
 neural_forecast/single_configs
@@ -69,5 +66,5 @@ geometry/
 # lfs
 meteo_grids_parser/data/russia_ws.gpkg 
 icon_parser/data/static_icon/icon_weights.nc
-
-forecast/
+# dissertation text folder
+text/
