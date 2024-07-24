@@ -63,11 +63,11 @@ def russia_plots(
             column=distinction_col,
             cmap=cmap,
             marker="o",
-            markersize=24,
+            markersize=15,
             legend=True,
             legend_kwds={
-                "ncol": 6,
-                "loc": "lower center",
+                "ncol": 2,
+                "loc": "lower right",
                 "fmt": "{:.0f}",
                 "fontsize": 14,
                 "markerscale": 0.5,
@@ -133,7 +133,7 @@ def russia_plots(
 
         extra_hist = hist_df.sum(axis=0).plot.bar(
             ax=ax_hist,
-            rot=0,
+            rot=15,
             width=1,
             grid=False,
             facecolor="red",
