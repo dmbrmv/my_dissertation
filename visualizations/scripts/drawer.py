@@ -2,13 +2,13 @@ import cartopy.crs as ccrs
 import geopandas as gpd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import matplotlib.ticker as mticker
 import numpy as np
 import pandas as pd
-from cartopy.mpl import geoaxes
 from matplotlib import cm
+import re
 
-plt.rcParams["font.family"] = "Times New Roman"
+plt.rcParams["font.family"] = "DeJavu Serif"
+plt.rcParams["font.serif"] = ["Times New Roman"]
 
 
 def russia_plots(
@@ -173,7 +173,7 @@ def russia_plots(
 
     plt.title(f"{title_text}", fontdict={"size": 12})
 
-    return ax
+    return fig
 
 
 def russia_plots_n(
@@ -310,9 +310,7 @@ def russia_plots_n(
         if with_histogram:
             if just_points:
                 hist_df = pd.DataFrame()
-                for qual, idx in gdf_to_plot.groupby(
-                    f"{columns_from_gdf[i]}"
-                ).groups.items():
+                for qual, idx in gdf_to_plot.groupby(f"{columns_from_gdf[i]}").groups.items():
                     hist_df.loc[0, f"{qual}"] = len(idx)
             else:
                 hist_df = pd.crosstab(
@@ -368,9 +366,7 @@ def russia_plots_n(
 
 def metric_viewer(gauges_file: gpd.GeoDataFrame, metric_col: str, metric_csv: str):
     model_metric = pd.read_csv(metric_csv)
-    model_metric = model_metric.rename(
-        columns={"basin": "gauge_id", "gauge": "gauge_id"}
-    )
+    model_metric = model_metric.rename(columns={"basin": "gauge_id", "gauge": "gauge_id"})
     model_metric["gauge_id"] = model_metric["gauge_id"].astype("str")
     model_metric = model_metric.set_index("gauge_id")
     if "gauge_id" not in gauges_file.columns:
