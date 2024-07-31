@@ -265,6 +265,7 @@ def russia_plots_n(
                     legend=False,
                     edgecolor="black",
                     linewidth=0.6,
+                    # missing_kwds=dict(color="black", aspect="equal"),
                     missing_kwds={"color": "#DF60DF00"},
                 )
             scatter_plot = gdf_to_plot.plot(
