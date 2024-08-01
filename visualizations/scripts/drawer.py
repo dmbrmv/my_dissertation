@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib import cm
-import re
 
 plt.rcParams["font.family"] = "DeJavu Serif"
 plt.rcParams["font.serif"] = ["Times New Roman"]
@@ -66,8 +65,8 @@ def russia_plots(
             markersize=15,
             legend=True,
             legend_kwds={
-                "ncol": 3,
-                "loc": "lower left",
+                "ncol": 4,
+                "loc": "lower right",
                 "fmt": "{:.0f}",
                 "fontsize": 14,
                 "markerscale": 0.5,

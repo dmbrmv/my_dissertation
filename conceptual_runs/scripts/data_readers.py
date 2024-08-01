@@ -1,7 +1,3 @@
-import sys
-
-sys.path.append("/workspaces/my_dissertation")
-
 import numpy as np
 import pandas as pd
 import xarray as xr
@@ -10,8 +6,7 @@ from sklearn.metrics import mean_squared_error, root_mean_squared_error
 
 def nse(predictions, targets):
     return 1 - (
-        np.nansum((targets - predictions) ** 2)
-        / np.nansum((targets - np.nanmean(targets)) ** 2)
+        np.nansum((targets - predictions) ** 2) / np.nansum((targets - np.nanmean(targets)) ** 2)
     )
 
 
@@ -60,10 +55,12 @@ def metric_df(gauge_id, predictions, targets):
     res_df.loc[gauge_id, "NSE"] = nse(predictions, targets)
 
     res_df.loc[gauge_id, ["KGE", "r", "alpha", "beta"]] = kge(predictions, targets)
+
     if any(np.isnan(predictions)):
         res_df.loc[gauge_id, "RMSE"] = np.NaN
     else:
-        res_df.loc[gauge_id, "RMSE"] = root_mean_squared_error(predictions, targets)
+        res_df.loc[gauge_id, "RMSE"] = root_mean_squared_error(
+            predictions, targets)
 
     res_df.loc[gauge_id, "delta"] = relative_error(predictions, targets)
 
@@ -72,9 +69,7 @@ def metric_df(gauge_id, predictions, targets):
 
 def read_gauge(gauge_id: str, simple: bool = False):
     with xr.open_dataset(f"../geo_data/great_db/nc_all_q/{gauge_id}.nc") as f:
-        test_df = f.to_dataframe()[
-            ["q_mm_day", "prcp_e5l", "t_min_e5l", "t_max_e5l", "Ep"]
-        ]
+        test_df = f.to_dataframe()[["q_mm_day", "prcp_e5l", "t_min_e5l", "t_max_e5l", "Ep"]]
 
     if simple:
         test_df.index.name = "Date"
@@ -83,9 +78,7 @@ def read_gauge(gauge_id: str, simple: bool = False):
         test = test_df["2018":]
     else:
         test_df["Temp"] = test_df[["t_max_e5l", "t_min_e5l"]].mean(axis=1)
-        test_df = test_df.rename(
-            columns={"prcp_e5l": "Prec", "Ep": "Evap", "q_mm_day": "Q_mm"}
-        )
+        test_df = test_df.rename(columns={"prcp_e5l": "Prec", "Ep": "Evap", "q_mm_day": "Q_mm"})
         test_df.index.name = "Date"
         test_df = test_df.drop(["t_min_e5l", "t_max_e5l"], axis=1)
         test_df.loc[test_df["Evap"] < 0, "Evap"] = 0
@@ -107,9 +100,7 @@ def day_agg(df: pd.DataFrame, day_aggregations: list = (2**n for n in range(9)))
     return df
 
 
-def feature_target(
-    data: pd.DataFrame, day_aggregations: list = (2**n for n in range(9))
-):
+def feature_target(data: pd.DataFrame, day_aggregations: list = (2**n for n in range(9))):
     """_summary_
     Args:
         data (pd.DataFrame): _description_
@@ -125,8 +116,7 @@ def feature_target(
     feature_cols = [
         item
         for sublist in [
-            [f"{var}_{day}" for day in day_aggregations]
-            for var in ["prcp", "t_min", "t_max"]
+            [f"{var}_{day}" for day in day_aggregations] for var in ["prcp", "t_min", "t_max"]
         ]
         for item in sublist
     ]
