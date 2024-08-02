@@ -253,7 +253,6 @@ def russia_plots_n(
                     "fontsize": 8,
                 },
             )
-
         else:
             if ugms:
                 ugms_gdf.to_crs(aea_crs_proj4).plot(
@@ -377,3 +376,5 @@ def metric_viewer(gauges_file: gpd.GeoDataFrame, metric_col: str, metric_csv: st
     # res_file.loc[res_file[metric_col] < 0, metric_col] = 0
 
     return res_file, nse_median
+
+

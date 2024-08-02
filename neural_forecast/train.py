@@ -22,7 +22,7 @@ if device.type == "cuda":
     print("Cached:   ", round(torch.cuda.memory_reserved(0) / 1024**3, 1), "GB")
 
 # era_input = ["prcp_e5l", "t_max_e5l", "t_min_e5l"]
-era_input = ["prcp_mswep", "t_max_e5l", "t_min_e5l"]
+era_input = ["prcp_mswep", "prcp_e5", "prcp_e5l", "prcp_gpcp", "t_max_e5l", "t_min_e5l"]
 # q_mm_day or lvl_sm
 hydro_target = "q_mm_day"
 q_h_relation = False
@@ -73,15 +73,15 @@ else:
     ]
     nc_variable = "nc_all_q"
 
-ws_file = gpd.read_file(filename="../geo_data/geometry/russia_ws.gpkg")
+ws_file = gpd.read_file(filename="/app/geo_data/geometry/russia_ws.gpkg")
 ws_file = ws_file.set_index("gauge_id")
 
 # time series directory
-ts_dir = Path("../geo_data/time_series")
+ts_dir = Path("/app/geo_data/time_series")
 ts_dir.mkdir(exist_ok=True, parents=True)
 
 train_rewriter(
-    era_paths=glob.glob(f"../geo_data/ws_related_meteo/{nc_variable}/*.nc"),
+    era_paths=glob.glob(f"/app/geo_data/ws_related_meteo/{nc_variable}/*.nc"),
     ts_dir=ts_dir,
     hydro_target=hydro_target,
     area_index=ws_file.index,
@@ -100,7 +100,7 @@ cfg = Config(Path("./model_config.yml"))
 # [cudalstm, customlstm, ealstm, embcudalstm, mtslstm, gru, transformer]
 # (has to match the if statement in modelzoo/__init__.py)
 model_name = "cudalstm"
-hidden_size = 512
+hidden_size = 256
 seq_length = 365
 # write files for train procedure
 print(
@@ -109,10 +109,10 @@ print(
 cfg.update_config(
     yml_path_or_dict={
         # define storage and experiment
-        "experiment_name": f"{model_name}_{hydro_target}_{hidden_size}_{seq_length}_mswep_static",
+        "experiment_name": f"{model_name}_{hydro_target}_{hidden_size}_{seq_length}_all_prcp_static",
         "model": f"{model_name}",
-        "run_dir": "./model_runs/",
-        "data_dir": "../geo_data/",
+        "run_dir": "/app/geo_data/lstm_configs/model_runs",
+        "data_dir": "/app/geo_data",
         # define inner parameters
         "hidden_size": hidden_size,
         "static_attributes": static_parameters,
@@ -151,14 +151,14 @@ cfg.update_config(
     }
 )
 cfg.dump_config(
-    folder=Path("./launch_configs"),
-    filename=f"{model_name}_{hydro_target}_{hidden_size}_{seq_length}_mswep_static.yml",
+    folder=Path("/app/geo_data/lstm_configs/launch_configs"),
+    filename=f"{model_name}_{hydro_target}_{hidden_size}_{seq_length}_all_prcp_static.yml",
 )
 
 gc.collect()
 if torch.cuda.is_available():
     start_run(
         config_file=Path(
-            f"./launch_configs/{model_name}_{hydro_target}_{hidden_size}_{seq_length}_mswep_static.yml"
+            f"/app/geo_data/lstm_configs/launch_configs/{model_name}_{hydro_target}_{hidden_size}_{seq_length}_all_prcp_static.yml"
         )
     )

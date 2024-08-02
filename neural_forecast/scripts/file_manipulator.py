@@ -49,7 +49,6 @@ def train_rewriter(
         else:
             era_file = xr.open_dataset(file)[[hydro_target, *predictors]]
             cond = file_checker(era_file, possible_nans=possible_nans)
-            print(era_file)
             if cond:
                 continue
             else:
