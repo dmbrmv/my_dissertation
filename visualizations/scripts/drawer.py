@@ -65,8 +65,8 @@ def russia_plots(
             markersize=15,
             legend=True,
             legend_kwds={
-                "ncol": 4,
-                "loc": "lower right",
+                "ncol": 3,
+                "loc": "lower left",
                 "fmt": "{:.0f}",
                 "fontsize": 14,
                 "markerscale": 0.5,
