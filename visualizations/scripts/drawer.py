@@ -376,5 +376,3 @@ def metric_viewer(gauges_file: gpd.GeoDataFrame, metric_col: str, metric_csv: st
     # res_file.loc[res_file[metric_col] < 0, metric_col] = 0
 
     return res_file, nse_median
-
-
