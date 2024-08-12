@@ -56,11 +56,10 @@ def metric_df(gauge_id, predictions, targets):
 
     res_df.loc[gauge_id, ["KGE", "r", "alpha", "beta"]] = kge(predictions, targets)
 
-    if any(np.isnan(predictions)):
+    if any(np.isnan(predictions)) | any(np.isnan(targets)):
         res_df.loc[gauge_id, "RMSE"] = np.NaN
     else:
-        res_df.loc[gauge_id, "RMSE"] = root_mean_squared_error(
-            predictions, targets)
+        res_df.loc[gauge_id, "RMSE"] = root_mean_squared_error(predictions, targets)
 
     res_df.loc[gauge_id, "delta"] = relative_error(predictions, targets)
 
@@ -68,9 +67,8 @@ def metric_df(gauge_id, predictions, targets):
 
 
 def read_gauge(gauge_id: str, simple: bool = False):
-    with xr.open_dataset(f"../geo_data/great_db/nc_all_q/{gauge_id}.nc") as f:
-        test_df = f.to_dataframe()[["q_mm_day", "prcp_e5l", "t_min_e5l", "t_max_e5l", "Ep"]]
-
+    with xr.open_dataset(f"/app/geo_data/time_series/{gauge_id}.nc") as f:
+        test_df = f.to_dataframe()[["q_mm_day", "prcp_e5l", "t_min_e5l", "t_max_e5l"]]
     if simple:
         test_df.index.name = "Date"
 
@@ -90,7 +88,7 @@ def read_gauge(gauge_id: str, simple: bool = False):
     return train, test
 
 
-def day_agg(df: pd.DataFrame, day_aggregations: list = (2**n for n in range(9))):
+def day_agg(df: pd.DataFrame, day_aggregations: list = (2**n for n in range(6))):
     for days in day_aggregations:
         df[[f"prcp_{days}"]] = df[["prcp_e5l"]].rolling(window=days).sum()
         df[[f"t_min_{days}"]] = df[["t_min_e5l"]].rolling(window=days).mean()
@@ -100,16 +98,16 @@ def day_agg(df: pd.DataFrame, day_aggregations: list = (2**n for n in range(9)))
     return df
 
 
-def feature_target(data: pd.DataFrame, day_aggregations: list = (2**n for n in range(9))):
-    """_summary_
+def feature_target(data: pd.DataFrame, day_aggregations: list = (2**n for n in range(6))):
+    """_summary_.
+
     Args:
         data (pd.DataFrame): _description_
         day_aggregations (list, optional): _description_.
-        Defaults to [2**n for n in range(9)].
+        Defaults to [2**n for n in range(6)].
     Returns:
         Tuple[pd.DataFrame, pd.DataFrame]: _description_
     """
-
     data = day_agg(df=data)
 
     # get meteo columns

@@ -47,14 +47,17 @@ def train_rewriter(
         if gauge_id not in area_index:
             pass
         else:
-            era_file = xr.open_dataset(file)[[hydro_target, *predictors]]
+            with xr.open_dataset(file) as f:
+                era_file = f[[hydro_target, *predictors]]
             cond = file_checker(era_file, possible_nans=possible_nans)
             if cond:
                 continue
             else:
                 try:
                     filename = file.split("/")[-1]
-                    era_file = era_file.to_dataframe().to_xarray()
+                    era_file = era_file.to_dataframe().droplevel(1).to_xarray()
+                    if "date" not in era_file.indexes:
+                        era_file = era_file.rename({"index": "date"})
                     era_file.to_netcdf(f"{ts_dir}/{filename}")
                 except ValueError:
                     continue
@@ -77,7 +80,7 @@ def train_cmip_val(
     possible_nans: int = 0,
 ) -> None:
     """Process ERA files, checks for missing data, and writes valid datasets to netCDF files.
-    
+
     This function reads each ERA file specified in `era_paths`, filters out files not listed in
     `area_index`, checks for missing data exceeding `possible_nans`, and writes the cleaned and
     filtered data to new netCDF files in `ts_dir`. Each output file is named after its corresponding
@@ -104,7 +107,7 @@ def train_cmip_val(
     Raises
     ------
     ValueError: If the ERA file or CMIP file contains missing data exceeding `possible_nans`.
-    
+
     """
     shutil.rmtree(ts_dir)
     ts_dir.mkdir(exist_ok=True, parents=True)
@@ -134,9 +137,7 @@ def train_cmip_val(
                 cmip_file = cmip_file.to_dataframe()
             # rename columns with era correspondend names
             cmip_file = cmip_file.rename(
-                columns={
-                    old_col: new_col for new_col, old_col in zip(era_cols, cmip_cols)
-                }
+                columns={old_col: new_col for new_col, old_col in zip(era_cols, cmip_cols)}
             )
             era_file.loc[f"{val_start}" : f"{val_end}", era_cols] = cmip_file.loc[
                 f"{val_start}" : f"{val_end}", era_cols
@@ -173,19 +174,14 @@ def test_rewriter(
         else:
             try:
                 obs_file = xr.open_dataset(file)
-                obs_file = obs_file.to_dataframe()[
-                    ["lvl_sm", "q_cms_s", "lvl_mbs", "q_mm_day"]
-                ]
+                obs_file = obs_file.to_dataframe()[["lvl_sm", "q_cms_s", "lvl_mbs", "q_mm_day"]]
 
                 cmip_file = xr.open_dataset(f"{cmip_storage}/{gauge_id}.nc")
                 # cmip_file = cmip_file.dropna(dim='date')
                 cmip_file = cmip_file.to_dataframe().droplevel(1)[predictors]
                 cmip_file = cmip_file.dropna()
                 cmip_file = cmip_file.rename(
-                    columns={
-                        old_col: new_col
-                        for new_col, old_col in zip(era_names, predictors)
-                    }
+                    columns={old_col: new_col for new_col, old_col in zip(era_names, predictors)}
                 )
 
                 res_file = cmip_file.join(obs_file).to_xarray()
