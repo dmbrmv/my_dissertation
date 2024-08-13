@@ -55,7 +55,7 @@ def train_rewriter(
             else:
                 try:
                     filename = file.split("/")[-1]
-                    era_file = era_file.to_dataframe().droplevel(1).to_xarray()
+                    era_file = era_file.to_dataframe().to_xarray()
                     if "date" not in era_file.indexes:
                         era_file = era_file.rename({"index": "date"})
                     era_file.to_netcdf(f"{ts_dir}/{filename}")
