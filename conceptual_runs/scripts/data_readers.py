@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import xarray as xr
-from sklearn.metrics import mean_squared_error, root_mean_squared_error
 
 
 def nse(predictions, targets):
@@ -41,12 +40,26 @@ def kge(predictions, targets):
     return kge_, r, alpha, beta
 
 
-def rmse(predictions, targets):
-    return mean_squared_error(targets, predictions, squared=False)
+def root_mean_squared_error(predictions, targets):
+    # Mask NaN values in both arrays
+    mask = ~np.isnan(targets) & ~np.isnan(predictions)
+
+    # Apply mask to remove NaNs from both arrays
+    y_true_clean = targets[mask]
+    y_pred_clean = predictions[mask]
+
+    # Compute RMSE on non-NaN values
+    rmse = np.sqrt(np.nanmean((y_true_clean - y_pred_clean) ** 2))
+    return rmse
 
 
 def relative_error(predictions, targets):
-    return np.mean(((targets - predictions) / targets) * 100)
+    # Mask NaN values in both arrays
+    mask = ~np.isnan(targets) & ~np.isnan(predictions)
+    # Apply mask to remove NaNs from both arrays
+    y_true_clean = targets[mask]
+    y_pred_clean = predictions[mask]
+    return np.nanmean(((y_true_clean - y_pred_clean) / y_true_clean) * 100)
 
 
 def metric_df(gauge_id, predictions, targets):
@@ -56,18 +69,17 @@ def metric_df(gauge_id, predictions, targets):
 
     res_df.loc[gauge_id, ["KGE", "r", "alpha", "beta"]] = kge(predictions, targets)
 
-    if any(np.isnan(predictions)) | any(np.isnan(targets)):
-        res_df.loc[gauge_id, "RMSE"] = np.NaN
-    else:
-        res_df.loc[gauge_id, "RMSE"] = root_mean_squared_error(predictions, targets)
+    res_df.loc[gauge_id, "RMSE"] = root_mean_squared_error(predictions, targets)
 
     res_df.loc[gauge_id, "delta"] = relative_error(predictions, targets)
+
+    res_df.index.name = "gauge_id"
 
     return res_df
 
 
 def read_gauge(gauge_id: str, simple: bool = False):
-    with xr.open_dataset(f"/app/geo_data/time_series/{gauge_id}.nc") as f:
+    with xr.open_dataset(f"/app/data/nc_all_q/{gauge_id}.nc") as f:
         test_df = f.to_dataframe()[["q_mm_day", "prcp_e5l", "t_min_e5l", "t_max_e5l"]]
     if simple:
         test_df.index.name = "Date"
@@ -98,7 +110,7 @@ def day_agg(df: pd.DataFrame, day_aggregations: list = (2**n for n in range(6)))
     return df
 
 
-def feature_target(data: pd.DataFrame, day_aggregations: list = (2**n for n in range(6))):
+def feature_target(data: pd.DataFrame, day_aggregations: list = [2**n for n in range(6)]):
     """_summary_.
 
     Args:

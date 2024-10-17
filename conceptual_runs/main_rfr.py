@@ -9,12 +9,10 @@ from sklearn.model_selection import RandomizedSearchCV
 from tqdm import tqdm
 
 
-calibration_place = Path("/app/geo_data/conceptual_models")
-rfr_calibration = Path(f"{calibration_place}/rfr_cv")
+calibration_place = Path("/app/data/conceptual_models")
+rfr_calibration = Path(f"{calibration_place}/rfr_cv_2024")
 rfr_calibration.mkdir(exist_ok=True, parents=True)
-rfr_parameters = Path("/app/geo_data/conceptual_models/rfr_params")
-rfr_parameters.mkdir(exist_ok=True, parents=True)
-gauges = list(i.stem for i in Path("/app/geo_data/time_series").glob("*.nc"))
+gauges = list(i.stem for i in Path("/app/data/nc_all_q").glob("*.nc"))
 
 # Number of trees in random forest
 n_estimators = [int(x) for x in np.linspace(start=200, stop=2000, num=10)]
@@ -73,7 +71,7 @@ def kge(y_true, y_pred):
 kge_score = make_scorer(kge, greater_is_better=True)
 
 for gauge_id in tqdm(gauges):
-    if gauge_id in list(i.stem for i in Path("/app/geo_data/conceptual_models/rfr_cv").glob("*joblib")):
+    if gauge_id in list(i.stem for i in Path(f"{rfr_calibration}").glob("*joblib")):
         continue
     train, _ = read_gauge(gauge_id=gauge_id, simple=True)
     # set data

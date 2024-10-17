@@ -32,7 +32,7 @@ ais_parsers/results_2024
 input_creator/Q_H
 
 ## parent data folder
-geo_data/
+data/
 # ignore runs
 test_meteo_input/configs
 test_meteo_input/runs*
