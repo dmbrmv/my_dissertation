@@ -31,9 +31,7 @@ class RiverNetworkGPKG:
         lons = np.arange(start=min_lon, stop=max_lon + 2.5, step=2.5)
         lats = np.arange(start=min_lat, stop=max_lat + 2.5, step=2.5)
         # write tiles from whole raster in predefined place
-        acc_tiles_storage = Path(
-            f"{config_info.river_net_storage}/rasters/{self.tile_tag}"
-        )
+        acc_tiles_storage = Path(f"{config_info.river_net_storage}/rasters/{self.tile_tag}")
         acc_tiles_storage.mkdir(exist_ok=True, parents=True)
         tile_counter = 0
         for lon_index in range(len(lons) - 2):
@@ -50,15 +48,13 @@ class RiverNetworkGPKG:
                 tile_acc = tile_acc.squeeze("band")
                 tile_acc = tile_acc.drop(["band"])
                 tile_counter += 1
-                tile_acc.rio.to_raster(
-                    f"{acc_tiles_storage}/{self.tile_tag}_{tile_counter}.tiff"
-                )
+                tile_acc.rio.to_raster(f"{acc_tiles_storage}/{self.tile_tag}_{tile_counter}.tiff")
 
     def get_river_geom(self, pseudo_rank, branches):
         temp_river = pd.DataFrame()
         temp_river["id"] = 0
         temp_river["rank"] = ""
-        temp_river["geometry"] = np.NaN
+        temp_river["geometry"] = np.nan
 
         for i, branch in enumerate(branches["features"]):
             line = LineString(branch["geometry"]["coordinates"])
@@ -85,14 +81,10 @@ class RiverNetworkGPKG:
             return f"{1e2:.0f} - {1e3:.0f}"
 
     def river_separator(self):
-        geometry_storage = Path(
-            f"{config_info.river_net_storage}/geometry/{self.tile_tag}"
-        )
+        geometry_storage = Path(f"{config_info.river_net_storage}/geometry/{self.tile_tag}")
         geometry_storage.mkdir(exist_ok=True, parents=True)
         # get preselected tiles
-        tiles_to_network = glob.glob(
-            f"{config_info.river_net_storage}/rasters/{self.tile_tag}/*.tiff"
-        )
+        tiles_to_network = glob.glob(f"{config_info.river_net_storage}/rasters/{self.tile_tag}/*.tiff")
 
         dir_tiff = f"{config_info.raster_storage}/fdir/{self.tile_tag}_dir.tif"
 
@@ -105,38 +97,21 @@ class RiverNetworkGPKG:
             acc = grid.read_raster(tile, data_name="acc", nodata=0)
 
             river_parts = {
-                "small_creeks": grid.extract_river_network(
-                    fdir, (1e2 < acc) & (acc <= 1e3)
-                ),  # type: ignore
-                "big_creeks": grid.extract_river_network(
-                    fdir, (1e3 < acc) & (acc <= 1e4)
-                ),  # type: ignore
-                "small_rivers": grid.extract_river_network(
-                    fdir, (1e4 < acc) & (acc <= 1e5)
-                ),  # type: ignore
-                "medium_rivers": grid.extract_river_network(
-                    fdir, (1e5 < acc) & (acc <= 1e6)
-                ),  # type: ignore
+                "small_creeks": grid.extract_river_network(fdir, (1e2 < acc) & (acc <= 1e3)),  # type: ignore
+                "big_creeks": grid.extract_river_network(fdir, (1e3 < acc) & (acc <= 1e4)),  # type: ignore
+                "small_rivers": grid.extract_river_network(fdir, (1e4 < acc) & (acc <= 1e5)),  # type: ignore
+                "medium_rivers": grid.extract_river_network(fdir, (1e5 < acc) & (acc <= 1e6)),  # type: ignore
                 "rivers": grid.extract_river_network(fdir, (1e6 < acc) & (acc <= 1e7)),  # type: ignore
-                "big_rivers": grid.extract_river_network(
-                    fdir, (1e7 < acc) & (acc <= 1e8)
-                ),  # type: ignore
+                "big_rivers": grid.extract_river_network(fdir, (1e7 < acc) & (acc <= 1e8)),  # type: ignore
                 "large_rivers": grid.extract_river_network(fdir, (1e8 < acc)),
             }  # type: ignore
 
             temp_res_riv = gpd.GeoDataFrame(
-                pd.concat(
-                    [
-                        self.get_river_geom(rank, network)
-                        for rank, network in river_parts.items()
-                    ]
-                ),
+                pd.concat([self.get_river_geom(rank, network) for rank, network in river_parts.items()]),
                 geometry="geometry",
             )  # type: ignore
             temp_res_riv = temp_res_riv.set_crs(epsg=4326)
-            temp_res_riv["acc_range"] = temp_res_riv.apply(
-                lambda row: self.rank_to_acc(row), axis=1
-            )
+            temp_res_riv["acc_range"] = temp_res_riv.apply(lambda row: self.rank_to_acc(row), axis=1)
             temp_res_riv = temp_res_riv[["id", "rank", "acc_range", "geometry"]]
 
             temp_res_riv.to_file(f"{geometry_storage}/{tile_name}.gpkg")  # type: ignore

@@ -1,9 +1,10 @@
+import math
 import random
+from copy import deepcopy
+
 import numba
 import numpy as np
 import pandas as pd
-from copy import deepcopy
-import math
 from sklearn.metrics import mean_squared_error
 
 """
@@ -25,8 +26,8 @@ First pass
 
 @numba.jit(nopython=True)
 def FirstPass(Q, alpha):
-    q_f_1 = [np.float64(np.NaN) for i in Q]
-    q_b_1 = [np.float64(np.NaN) for i in Q]
+    q_f_1 = [np.float64(np.nan) for i in Q]
+    q_b_1 = [np.float64(np.nan) for i in Q]
 
     q_f_1[0] = Q[0]
 
@@ -57,15 +58,12 @@ Backward pass
 
 @numba.jit(nopython=True)
 def BackwardPass(Q_forward_1, alpha):
-    """
-    Здесь Q - n-мерный лист в зависимости от числа разбиений
-    """
-
+    """Здесь Q - n-мерный лист в зависимости от числа разбиений"""
     Qq = Q_forward_1[0]
     Qb = Q_forward_1[1]
 
-    q_f_2 = [np.float64(np.NaN) for i in Qq]
-    q_b_2 = [np.float64(np.NaN) for i in Qb]
+    q_f_2 = [np.float64(np.nan) for i in Qq]
+    q_b_2 = [np.float64(np.nan) for i in Qb]
 
     "last value of forward step - first in backward step"
 
@@ -97,8 +95,8 @@ def ForwardPass(Q_backward, alpha):
     Qq = Q_backward[0]
     Qb = Q_backward[1]
 
-    q_f_3 = [np.float64(np.NaN) for i in Qq]
-    q_b_3 = [np.float64(np.NaN) for i in Qb]
+    q_f_3 = [np.float64(np.nan) for i in Qq]
+    q_b_3 = [np.float64(np.nan) for i in Qb]
 
     "Теперь первая величина предыдущего шага - первая и здесь"
 
@@ -127,8 +125,7 @@ BFI calculations for given alpha
 
 @numba.jit(nopython=True)
 def bfi(Q, alpha, passes, reflect):
-    """
-    we reflect the first reflect values and the last reflect values.
+    """We reflect the first reflect values and the last reflect values.
     this is to get rid of 'warm up' problems © Anthony Ladson
     """
     Qin = Q
@@ -136,7 +133,7 @@ def bfi(Q, alpha, passes, reflect):
     "reflect our lists"
 
     if len(Q) - 1 > reflect:
-        Q_reflect = np.array([np.float64(np.NaN) for _ in range(len(Q) + 2 * reflect)], dtype=np.float64)
+        Q_reflect = np.array([np.float64(np.nan) for _ in range(len(Q) + 2 * reflect)], dtype=np.float64)
 
         Q_reflect[:reflect] = Q[(reflect):0:-1]
         Q_reflect[(reflect) : (reflect + len(Q))] = Q
@@ -145,7 +142,7 @@ def bfi(Q, alpha, passes, reflect):
         ]
 
     else:
-        Q_reflect = np.array([np.float64(np.NaN) for _ in range(len(Q))], dtype=np.float64)
+        Q_reflect = np.array([np.float64(np.nan) for _ in range(len(Q))], dtype=np.float64)
         Q_reflect = Q
 
     Q1 = FirstPass(Q_reflect, alpha)
@@ -188,14 +185,12 @@ BFI calculations for 1000 alpha between 0.9 and 0.98
 
 @numba.jit(nopython=True)
 def bfi_1000(Q, passes, reflect):
-    """
-    Расчёт проводится для 1000 случайных значений alpha
+    """Расчёт проводится для 1000 случайных значений alpha
     в диапазоне он 0.9 до 0.98
 
     we reflect the first reflect values and the last reflect values.
     this is to get rid of 'warm up' problems © Anthony Ladson
     """
-
     random.seed(1996)
     alpha_coefficients = [np.float64(random.uniform(0.9, 0.98)) for i in range(1000)]
 
@@ -205,7 +200,7 @@ def bfi_1000(Q, passes, reflect):
     "reflect our lists"
 
     if len(Q) - 1 > reflect:
-        Q_reflect = np.array([np.float64(np.NaN) for _ in range(len(Q) + 2 * reflect)], dtype=np.float64)
+        Q_reflect = np.array([np.float64(np.nan) for _ in range(len(Q) + 2 * reflect)], dtype=np.float64)
 
         Q_reflect[:reflect] = Q[(reflect):0:-1]
         Q_reflect[(reflect) : (reflect + len(Q))] = Q
@@ -214,7 +209,7 @@ def bfi_1000(Q, passes, reflect):
         ]
 
     else:
-        Q_reflect = np.array([np.float64(np.NaN) for _ in range(len(Q))], dtype=np.float64)
+        Q_reflect = np.array([np.float64(np.nan) for _ in range(len(Q))], dtype=np.float64)
         Q_reflect = Q
 
     bfi_record = []
@@ -292,18 +287,19 @@ def slope_fdc_gauge(hydro_year: pd.Series):
 
 
 def hfd_calc(calendar_year: pd.Series, hydro_year: pd.Series):
-    """date on which the cumulative discharge since 1 October
+    """Date on which the cumulative discharge since 1 October
     reaches half of the annual discharge
 
     Args:
         calendar_year (pd.Series): _description_
         hydro_year (pd.Series): _description_
+
     """
     cal_val = np.nansum(calendar_year) / 2
     try:
         return hydro_year[hydro_year.cumsum() > cal_val].index[0]
     except IndexError:
-        return np.NaN
+        return np.nan
 
 
 def q5_q95(hydro_year: pd.Series):
@@ -314,30 +310,31 @@ def q5_q95(hydro_year: pd.Series):
 
 
 def high_q_freq(hydro_year: pd.Series):
-    """frequency of high-flow days (> 9 times the median daily flow)
+    """Frequency of high-flow days (> 9 times the median daily flow)
 
     Args:
         hydro_year (pd.Series): _description_
+
     """
     hydro_year = deepcopy(hydro_year)
     med_val = np.nanmedian(hydro_year) * 9
 
-    hydro_year[hydro_year < med_val] = np.NaN
+    hydro_year[hydro_year < med_val] = np.nan
 
     return hydro_year
 
 
 def low_q_freq(hydro_year: pd.Series):
-    """frequency of low-flow days (< 0.2 times the mean daily flow)
+    """Frequency of low-flow days (< 0.2 times the mean daily flow)
 
     Args:
         hydro_year (pd.Series): _description_
-    """
 
+    """
     hydro_year = deepcopy(hydro_year)
     med_val = np.nanmean(hydro_year) * 2e-1
 
-    hydro_year[hydro_year > med_val] = np.NaN
+    hydro_year[hydro_year > med_val] = np.nan
 
     return hydro_year
 

@@ -21,17 +21,17 @@ def kge(predictions, targets):
         )
     )
     if r_den == 0:
-        r = np.NaN
+        r = np.nan
     else:
         r = r_num / r_den
     # calculate error in spread of flow alpha
     if np.std(predictions) == 0:
-        alpha = np.NaN
+        alpha = np.nan
     else:
         alpha = np.std(targets, axis=0) / np.std(predictions)
     # calculate error in volume beta (bias of mean discharge)
     if np.sum(predictions) == 0:
-        beta = np.NaN
+        beta = np.nan
     else:
         beta = np.sum(targets, axis=0) / np.sum(predictions)
     # calculate the Kling-Gupta Efficiency KGE
@@ -41,22 +41,22 @@ def kge(predictions, targets):
 
 
 def root_mean_squared_error(predictions, targets):
-    # Mask NaN values in both arrays
+    # Mask nan values in both arrays
     mask = ~np.isnan(targets) & ~np.isnan(predictions)
 
-    # Apply mask to remove NaNs from both arrays
+    # Apply mask to remove nans from both arrays
     y_true_clean = targets[mask]
     y_pred_clean = predictions[mask]
 
-    # Compute RMSE on non-NaN values
+    # Compute RMSE on non-nan values
     rmse = np.sqrt(np.nanmean((y_true_clean - y_pred_clean) ** 2))
     return rmse
 
 
 def relative_error(predictions, targets):
-    # Mask NaN values in both arrays
+    # Mask nan values in both arrays
     mask = ~np.isnan(targets) & ~np.isnan(predictions)
-    # Apply mask to remove NaNs from both arrays
+    # Apply mask to remove nans from both arrays
     y_true_clean = targets[mask]
     y_pred_clean = predictions[mask]
     return np.nanmean(((y_true_clean - y_pred_clean) / y_true_clean) * 100)
@@ -117,8 +117,10 @@ def feature_target(data: pd.DataFrame, day_aggregations: list = [2**n for n in r
         data (pd.DataFrame): _description_
         day_aggregations (list, optional): _description_.
         Defaults to [2**n for n in range(6)].
+
     Returns:
         Tuple[pd.DataFrame, pd.DataFrame]: _description_
+
     """
     data = day_agg(df=data)
 

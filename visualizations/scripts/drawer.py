@@ -23,6 +23,7 @@ def russia_plots(
     metric_col: str = "",
     figsize: tuple = (4.88189, 3.34646),
     just_points: bool = False,
+    legend_cols: int = 3,
     with_histogram: bool = False,
     ugms: bool = False,
     ugms_gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(),
@@ -65,7 +66,7 @@ def russia_plots(
             markersize=15,
             legend=True,
             legend_kwds={
-                "ncol": 4,
+                "ncol": legend_cols,
                 "loc": "lower right",
                 "fmt": "{:.0f}",
                 "fontsize": 14,

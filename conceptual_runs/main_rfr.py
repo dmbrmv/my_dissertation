@@ -8,7 +8,6 @@ from sklearn.metrics import make_scorer
 from sklearn.model_selection import RandomizedSearchCV
 from tqdm import tqdm
 
-
 calibration_place = Path("/app/data/conceptual_models")
 rfr_calibration = Path(f"{calibration_place}/rfr_cv_2024")
 rfr_calibration.mkdir(exist_ok=True, parents=True)
@@ -49,17 +48,17 @@ def kge(y_true, y_pred):
         )
     )
     if r_den == 0:
-        r = np.NaN
+        r = np.nan
     else:
         r = r_num / r_den
     # calculate error in spread of flow alpha
     if np.std(y_pred) == 0:
-        alpha = np.NaN
+        alpha = np.nan
     else:
         alpha = np.std(y_true, axis=0) / np.std(y_pred)
     # calculate error in volume beta (bias of mean discharge)
     if np.sum(y_pred) == 0:
-        beta = np.NaN
+        beta = np.nan
     else:
         beta = np.sum(y_true, axis=0) / np.sum(y_pred)
     # calculate the Kling-Gupta Efficiency KGE

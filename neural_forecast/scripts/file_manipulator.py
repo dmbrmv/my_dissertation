@@ -30,7 +30,7 @@ def train_rewriter(
     - ts_dir: Path object representing the directory to save processed netCDF files.
     - hydro_target: The name of the hydrological target variable in the dataset.
     - predictors: List of predictor variable names to include from the ERA dataset.
-    - possible_nans: The allowable number of NaN values in the dataset. Defaults to 0.
+    - possible_nans: The allowable number of nan values in the dataset. Defaults to 0.
 
     This function reads each ERA file specified in `era_paths`, filters out files not listed in
     `area_index`, checks for missing data exceeding `possible_nans`, and writes the cleaned and
@@ -97,7 +97,7 @@ def train_cmip_val(
     - cmip_storage: The path to the CMIP dataset storage.
     - val_start: The start date of the validation period in the format 'YYYY-MM-DD'.
     - val_end: The end date of the validation period in the format 'YYYY-MM-DD'.
-    - possible_nans: The allowable number of NaN values in the dataset. Defaults to 0.
+    - possible_nans: The allowable number of nan values in the dataset. Defaults to 0.
 
     Returns
     -------

@@ -1,42 +1,39 @@
-from shapely.geometry import MultiPolygon, Polygon
-from typing import Union
-import numpy as np
-import geopandas as gpd
 import math
 from functools import reduce
-from numpy import (arctan2, cos, sin, sqrt,
-                   pi, append, diff)
+from typing import Union
+
+import geopandas as gpd
+import numpy as np
+from numpy import append, arctan2, cos, diff, pi, sin, sqrt
+from shapely.geometry import MultiPolygon, Polygon
 
 
 def area_from_gdf(poly):
-    """
-    Calculates area of shape stored in GeoDataFrame
+    """Calculates area of shape stored in GeoDataFrame
 
     Args:
         poly (GeoDataFrame): Desired shape
 
     Returns:
         area (float): area of object in sq. km
+
     """
     if poly.empty:
-        return np.NaN
+        return np.nan
     else:
-        poly = poly_from_multipoly(poly['geometry'][0])
+        poly = poly_from_multipoly(poly["geometry"][0])
         area = polygon_area(poly)
     return area
 
 
 def poly_from_multipoly(ws_geom):
-    """
-
-    Function return only biggest polygon
+    """Function return only biggest polygon
     from multipolygon WS
     It's the real WS, and not malfunctioned part of it
 
     """
     if type(ws_geom) == MultiPolygon:
-        big_area = [polygon_area(geo_shape=polygon)
-                    for polygon in ws_geom.geoms]
+        big_area = [polygon_area(geo_shape=polygon) for polygon in ws_geom.geoms]
         ws_geom = ws_geom.geoms[np.argmax(big_area)]
     else:
         ws_geom = ws_geom
@@ -44,8 +41,7 @@ def poly_from_multipoly(ws_geom):
 
 
 def polygon_area(geo_shape, radius=6378137):
-    """
-    Computes area of spherical polygon, assuming spherical Earth
+    """Computes area of spherical polygon, assuming spherical Earth
     Returns result in ratio of the sphere's area if the radius is specified.
     Otherwise, in the units of provided radius.
     lats and lons are in degrees.
@@ -60,41 +56,40 @@ def polygon_area(geo_shape, radius=6378137):
         lons = append(lons, lons[0])
 
     # colatitudes relative to (0,0)
-    a = sin(lats/2)**2 + cos(lats) * sin(lons/2)**2
-    colat = 2*arctan2(sqrt(a), sqrt(1-a))
+    a = sin(lats / 2) ** 2 + cos(lats) * sin(lons / 2) ** 2
+    colat = 2 * arctan2(sqrt(a), sqrt(1 - a))
 
     # azimuths relative to (0,0)
-    az = arctan2(cos(lats) * sin(lons), sin(lats)) % (2*pi)
+    az = arctan2(cos(lats) * sin(lons), sin(lats)) % (2 * pi)
 
     # Calculate diffs
     # daz = diff(az) % (2*pi)
     daz = diff(az)
     daz = (daz + pi) % (2 * pi) - pi
 
-    deltas = diff(colat)/2
-    colat = colat[0:-1]+deltas
+    deltas = diff(colat) / 2
+    colat = colat[0:-1] + deltas
 
     # Perform integral
-    integrands = (1-cos(colat)) * daz
+    integrands = (1 - cos(colat)) * daz
 
     # Integrate
-    area = abs(sum(integrands))/(4*pi)
+    area = abs(sum(integrands)) / (4 * pi)
 
-    area = min(area, 1-area)
+    area = min(area, 1 - area)
     if radius is not None:  # return in units of radius
         return area * 4 * pi * radius**2 / 10**6
     else:  # return in ratio of sphere total area
         return area / 10**6
 
 
-def find_extent(ws: Polygon,
-                grid_res: float,
-                dataset: str = ''):
+def find_extent(ws: Polygon, grid_res: float, dataset: str = ""):
     """_summary_
 
     Args:
         ws (Polygon): _description_
         grid_res (float): _description_
+
     """
 
     def x_round(x):
@@ -114,28 +109,27 @@ def find_extent(ws: Polygon,
     min_LAT = min(lats)
     min_LON = min(lons)
 
-    if dataset == 'gpcp':
-        return [x_round(min_LON), x_round(max_LON),
-                x_round(min_LAT), x_round(max_LAT)]
+    if dataset == "gpcp":
+        return [x_round(min_LON), x_round(max_LON), x_round(min_LAT), x_round(max_LAT)]
     elif bool(dataset):
         # find extent coordinates
-        min_lon, max_lon, min_lat, max_lat = (round_nearest(min_LON, grid_res),
-                                              round_nearest(max_LON, grid_res),
-                                              round_nearest(min_LAT, grid_res),
-                                              round_nearest(max_LAT, grid_res))
+        min_lon, max_lon, min_lat, max_lat = (
+            round_nearest(min_LON, grid_res),
+            round_nearest(max_LON, grid_res),
+            round_nearest(min_LAT, grid_res),
+            round_nearest(max_LAT, grid_res),
+        )
         # if max_lat == min_lat:
         #     max_lat += grid_res*2
         # if max_lon == min_lon:
         #     max_lon += grid_res*2
         return [min_lon, max_lon, min_lat, max_lat]
     else:
-        raise Exception(f'Something wrong ! {dataset} -- {grid_res}')
+        raise Exception(f"Something wrong ! {dataset} -- {grid_res}")
 
 
 def create_gdf(shape: Union[Polygon, MultiPolygon]) -> gpd.GeoDataFrame:
-    """
-
-    create geodataframe with given shape
+    """Create geodataframe with given shape
     as a geometry
 
     """
@@ -144,23 +138,24 @@ def create_gdf(shape: Union[Polygon, MultiPolygon]) -> gpd.GeoDataFrame:
     gdf_your_WS = gpd.GeoSeries(data=[gdf_your_WS])
 
     # Create extra gdf to use geopandas functions
-    gdf_your_WS = gpd.GeoDataFrame(data={'geometry': gdf_your_WS})
-    gdf_your_WS = gdf_your_WS.set_crs('EPSG:4326')
+    gdf_your_WS = gpd.GeoDataFrame(data={"geometry": gdf_your_WS})
+    gdf_your_WS = gdf_your_WS.set_crs("EPSG:4326")
 
     return gdf_your_WS
 
 
 def RotM(alpha):
-    """ Rotation Matrix for angle ``alpha`` """
+    """Rotation Matrix for angle ``alpha``"""
     sa, ca = np.sin(alpha), np.cos(alpha)
-    return np.array([[ca, -sa],
-                     [sa,  ca]])
+    return np.array([[ca, -sa], [sa, ca]])
 
 
 def getSquareVertices(mm, h, phi):
-    """ Calculate the for vertices for square with center ``mm``,
-        side length ``h`` and rotation ``phi`` """
-    hh0 = np.ones(2)*h  # initial corner
-    vv = [np.asarray(mm) + reduce(np.dot, [RotM(phi), RotM(np.pi/2*c), hh0])
-          for c in range(4)]  # rotate initial corner four times by 90°
+    """Calculate the for vertices for square with center ``mm``,
+    side length ``h`` and rotation ``phi``
+    """
+    hh0 = np.ones(2) * h  # initial corner
+    vv = [
+        np.asarray(mm) + reduce(np.dot, [RotM(phi), RotM(np.pi / 2 * c), hh0]) for c in range(4)
+    ]  # rotate initial corner four times by 90°
     return np.asarray(vv)
