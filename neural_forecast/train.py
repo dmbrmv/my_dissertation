@@ -21,8 +21,8 @@ if device.type == "cuda":
     print("Allocated:", round(torch.cuda.memory_allocated(0) / 1024**3, 1), "GB")
     print("Cached:   ", round(torch.cuda.memory_reserved(0) / 1024**3, 1), "GB")
 
-# era_input = ["prcp_e5l", "t_max_e5l", "t_min_e5l"]
-era_input = ["prcp_mswep", "prcp_e5", "prcp_e5l", "prcp_gpcp", "t_max_e5l", "t_min_e5l"]
+era_input = ["prcp_e5l", "t_max_e5l", "t_min_e5l"]
+# era_input = ["prcp_mswep", "prcp_e5", "prcp_e5l", "prcp_gpcp", "t_max_e5l", "t_min_e5l"]
 # q_mm_day or lvl_sm
 hydro_target = "q_mm_day"
 q_h_relation = False
@@ -44,6 +44,8 @@ if hydro_target == "lvl_sm":
         "gwt_cm_sav",
         "lkv_mc_usu",
         "rev_mc_usu",
+        "sgr_dk_sav",
+        "slp_dg_sav",
         "ws_area",
         "ele_mt_sav",
         "height_bs",
@@ -68,20 +70,22 @@ else:
         "gwt_cm_sav",
         "lkv_mc_usu",
         "rev_mc_usu",
+        "sgr_dk_sav",
+        "slp_dg_sav",
         "ws_area",
         "ele_mt_sav",
     ]
     nc_variable = "nc_all_q"
 
-ws_file = gpd.read_file(filename="/app/geo_data/geometry/russia_ws.gpkg")
+ws_file = gpd.read_file(filename="/app/data/geometry/russia_ws.gpkg")
 ws_file = ws_file.set_index("gauge_id")
 
 # time series directory
-ts_dir = Path("/app/geo_data/time_series")
+ts_dir = Path("/app/data/time_series")
 ts_dir.mkdir(exist_ok=True, parents=True)
 
 train_rewriter(
-    era_paths=glob.glob(f"/app/geo_data/ws_related_meteo/{nc_variable}/*.nc"),
+    era_paths=glob.glob(f"/app/data/{nc_variable}/*.nc"),
     ts_dir=ts_dir,
     hydro_target=hydro_target,
     area_index=ws_file.index,
@@ -95,7 +99,7 @@ random.shuffle(gauges)
 gauge_size = len(gauges)
 
 
-cfg = Config(Path("./model_config.yml"))
+cfg = Config(Path("/app/neural_forecast/model_config.yml"))
 # base model type
 # [cudalstm, customlstm, ealstm, embcudalstm, mtslstm, gru, transformer]
 # (has to match the if statement in modelzoo/__init__.py)
@@ -109,10 +113,10 @@ print(
 cfg.update_config(
     yml_path_or_dict={
         # define storage and experiment
-        "experiment_name": f"{model_name}_{hydro_target}_{hidden_size}_{seq_length}_all_prcp_static",
+        "experiment_name": f"{model_name}_{hydro_target}_{hidden_size}_{seq_length}_era5l_with_slp_dg_sav",
         "model": f"{model_name}",
-        "run_dir": "/app/geo_data/lstm_configs/model_runs",
-        "data_dir": "/app/geo_data",
+        "run_dir": "/app/data/lstm_configs/model_runs",
+        "data_dir": "/app/data",
         # define inner parameters
         "hidden_size": hidden_size,
         "static_attributes": static_parameters,
@@ -133,10 +137,10 @@ cfg.update_config(
         # The hidden size of the forecast LSTM
         # "forecast_hidden_size": 256,
         # define files with gauge data
-        "train_basin_file": "./every_basin.txt",
+        "train_basin_file": "/app/neural_forecast/every_basin.txt",
         "validate_n_random_basins": gauge_size,
-        "validation_basin_file": "./every_basin.txt",
-        "test_basin_file": "./every_basin.txt",
+        "validation_basin_file": "/app/neural_forecast/every_basin.txt",
+        "test_basin_file": "/app/neural_forecast/every_basin.txt",
         # specify loss [MSE, NSE, RMSE]
         "loss": "NSE",
         # define time periods
@@ -151,14 +155,14 @@ cfg.update_config(
     }
 )
 cfg.dump_config(
-    folder=Path("/app/geo_data/lstm_configs/launch_configs"),
-    filename=f"{model_name}_{hydro_target}_{hidden_size}_{seq_length}_all_prcp_static.yml",
+    folder=Path("/app/data/lstm_configs/launch_configs"),
+    filename=f"{model_name}_{hydro_target}_{hidden_size}_{seq_length}_era5l_with_slp_dg_sav.yml",
 )
 
 gc.collect()
 if torch.cuda.is_available():
     start_run(
         config_file=Path(
-            f"/app/geo_data/lstm_configs/launch_configs/{model_name}_{hydro_target}_{hidden_size}_{seq_length}_all_prcp_static.yml"
+            f"/app/data/lstm_configs/launch_configs/{model_name}_{hydro_target}_{hidden_size}_{seq_length}_era5l_with_slp_dg_sav.yml"
         )
     )

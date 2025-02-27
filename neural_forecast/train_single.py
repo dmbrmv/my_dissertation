@@ -22,8 +22,8 @@ if device.type == "cuda":
     print("Allocated:", round(torch.cuda.memory_allocated(0) / 1024**3, 1), "GB")
     print("Cached:   ", round(torch.cuda.memory_reserved(0) / 1024**3, 1), "GB")
 
-# era_input = ["prcp_e5l", "t_max_e5l", "t_min_e5l"]
-era_input = ["prcp_mswep", "t_max_e5l", "t_min_e5l"]
+era_input = ["prcp_e5l", "t_max_e5l", "t_min_e5l"]
+# era_input = ["prcp_mswep", "t_max_e5l", "t_min_e5l"]
 # q_mm_day or lvl_sm
 hydro_target = "q_mm_day"
 q_h_relation = False
@@ -48,6 +48,7 @@ if hydro_target == "lvl_sm":
         "ws_area",
         "ele_mt_sav",
         "height_bs",
+        "slp_dg_sav",
     ]
     nc_variable = "nc_all_h"
     if q_h_relation:
@@ -71,26 +72,25 @@ else:
         "rev_mc_usu",
         "ws_area",
         "ele_mt_sav",
+        "slp_dg_sav",
     ]
     nc_variable = "nc_all_q"
 
-ws_file = gpd.read_file(filename="../geo_data/geometry/russia_ws.gpkg")
+ws_file = gpd.read_file(filename="../data/geometry/russia_ws.gpkg")
 ws_file = ws_file.set_index("gauge_id")
 
 # time series directory
-ts_dir = Path("../geo_data/time_series")
+ts_dir = Path("../data/time_series")
 ts_dir.mkdir(exist_ok=True, parents=True)
 # write files for train procedure
 print(f"train data for {hydro_target} with {nc_variable} initial data")
 
-trained_gauges = list(
-    str(i).split("_")[-3] for i in Path("../geo_data/lstm_single_cfg/").glob("*.yml")
-)
+trained_gauges = list(str(i).split("_")[-3] for i in Path("../data/lstm_single_cfg/").glob("*.yml"))
 for gauge_id in ws_file.index:
     if gauge_id in trained_gauges:
         continue
     train_rewriter(
-        era_paths=glob.glob(f"../geo_data/ws_related_meteo/{nc_variable}/*.nc"),
+        era_paths=glob.glob(f"../data/ws_related_meteo/{nc_variable}/*.nc"),
         ts_dir=ts_dir,
         hydro_target=hydro_target,
         area_index=[gauge_id],
@@ -112,10 +112,10 @@ for gauge_id in ws_file.index:
         cfg.update_config(
             yml_path_or_dict={
                 # define storage and experiment
-                "experiment_name": f"{model_name}_{hydro_target}_{gauge_id}_mswep_mo_static",
+                "experiment_name": f"{model_name}_{hydro_target}_{gauge_id}_era5l_with_slp_dg_sav",
                 "model": f"{model_name}",
-                "run_dir": f"../geo_data/lstm_single_run/{gauge_id}",
-                "data_dir": "../geo_data/",
+                "run_dir": f"../data/lstm_single_run/{gauge_id}",
+                "data_dir": "../data/",
                 "device": f"{device}:{torch.cuda.current_device()}"
                 if torch.cuda.is_available()
                 else "cpu",
@@ -148,14 +148,14 @@ for gauge_id in ws_file.index:
             }
         )
         cfg.dump_config(
-            folder=Path("../geo_data/lstm_single_cfg"),
-            filename=f"{model_name}_{hydro_target}_{gauge_id}_mswep_static.yml",
+            folder=Path("../data/lstm_single_cfg"),
+            filename=f"{model_name}_{hydro_target}_{gauge_id}_era5l_with_slp_dg_sav.yml",
         )
 
         gc.collect()
 
         start_run(
             config_file=Path(
-                f"../geo_data/lstm_single_cfg/{model_name}_{hydro_target}_{gauge_id}_mswep_static.yml"
+                f"../data/lstm_single_cfg/{model_name}_{hydro_target}_{gauge_id}_era5l_with_slp_dg_sav.yml"
             )
         )

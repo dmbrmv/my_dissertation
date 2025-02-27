@@ -6,8 +6,8 @@ from scripts.config_definition import config_info
 from scripts.loaders import grid_descriptor, merge_cmip_pathes
 
 # inside container ../ outside /home/dima/Data
-cmip_245 = "/home/dima/Data/geo_data/cmip_res_interp_025/ssp2_4_5"
-cmip_585 = "/home/dima/Data/geo_data/cmip_res_interp_025/ssp5_8_5"
+cmip_245 = "/home/dima/Data/data/cmip_res_interp_025/ssp2_4_5"
+cmip_585 = "/home/dima/Data/data/cmip_res_interp_025/ssp5_8_5"
 
 cmip_models_245 = {model.split("/")[-1]: model for model in glob.glob(f"{cmip_245}/*")}
 cmip_models_245 = [

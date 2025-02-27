@@ -29,7 +29,7 @@ def read_ws(gpkg_path):
     return ws_file
 
 
-configs = list(Path("/app/geo_data/lstm_configs/model_runs").glob("cudalstm_q_mm_day*all_prcp*/config.yml"))
+configs = list(Path("/app/data/lstm_configs/model_runs").glob("cudalstm_q_mm_day*all_prcp*/config.yml"))
 configs_names = [str(i).split("/")[1].split("_no")[0] for i in configs]
 logs = list(Path("./model_runs/").glob("cudalstm_q_mm_day*all_prcp*/output.log"))
 
@@ -55,9 +55,9 @@ meteo_inputs = [
     # ["prcp_gpcp", "t_max_e5l", "t_min_e5l"],
     # ["prcp_mswep", "t_max_e5l", "t_min_e5l"],
     # ["prcp_e5", "t_max_e5", "t_min_e5"],
-    # ["prcp_e5l", "t_max_e5l", "t_min_e5l"],
+    ["prcp_e5l", "t_max_e5l", "t_min_e5l"],
     # ["prcp_mswep", "t_max_e5", "t_min_e5"],
-    ["prcp_mswep", "prcp_gpcp", "prcp_e5", "prcp_e5l", "t_max_e5l", "t_min_e5l"],
+    # ["prcp_mswep", "prcp_gpcp", "prcp_e5", "prcp_e5l", "t_max_e5l", "t_min_e5l"],
 ] * len(best_epochs)
 
 # q_mm_day or lvl_sm
@@ -83,10 +83,10 @@ static_parameters = [
 ]
 nc_variable = "nc_all_q"
 
-ws_file = read_ws("/app/geo_data/geometry/russia_ws.gpkg")
+ws_file = read_ws("/app/data/geometry/russia_ws.gpkg")
 
 # time series directory
-ts_dir = Path("/app/geo_data/time_series")
+ts_dir = Path("/app/data/time_series")
 
 for cfg_path, cfg_name, epoch, met_in in zip(configs, configs_names, best_epochs, meteo_inputs):
     # write files for train procedure
@@ -97,7 +97,7 @@ for cfg_path, cfg_name, epoch, met_in in zip(configs, configs_names, best_epochs
         thresh = 0
 
     train_rewriter(
-        era_paths=glob.glob(f"/app/geo_data/ws_related_meteo/{nc_variable}/*.nc"),
+        era_paths=glob.glob(f"/app/data/ws_related_meteo/{nc_variable}/*.nc"),
         ts_dir=ts_dir,
         hydro_target=hydro_target,
         area_index=ws_file.index,

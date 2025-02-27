@@ -28,9 +28,7 @@ def best_epoch_finder(log_file: Path) -> int:
     full_lines = [line for line in lines if ("NSE" in line) & ("Epoch" in line)]
 
     epoch_nse = {
-        int(line.split(" Epoch ")[1].split(" ")[0]): float(
-            line.split(" NSE: ")[1].split(",")[0]
-        )
+        int(line.split(" Epoch ")[1].split(" ")[0]): float(line.split(" NSE: ")[1].split(",")[0])
         for line in full_lines
     }
 
@@ -39,10 +37,10 @@ def best_epoch_finder(log_file: Path) -> int:
     return max_epoch
 
 
-ws_file = gpd.read_file(filename="../geo_data/geometry/russia_ws.gpkg")
+ws_file = gpd.read_file(filename="../data/geometry/russia_ws.gpkg")
 ws_file = ws_file.set_index("gauge_id")
 
-available_gauges = list(i.stem for i in Path("../geo_data/lstm_single_run").glob("*"))
+available_gauges = list(i.stem for i in Path("../data/lstm_single_run").glob("*"))
 
 # q_mm_day or lvl_sm
 hydro_target = "q_mm_day"
@@ -67,19 +65,13 @@ static_parameters = [
 ]
 nc_variable = "nc_all_q"
 # time series directory
-ts_dir = Path("../geo_data/time_series")
+ts_dir = Path("../data/time_series")
 for gauge_id in available_gauges:
     configs = list(
-        Path(f"../geo_data/lstm_single_run/{gauge_id}").glob(
-            "cudalstm_q_mm_day*mswep*/config.yml"
-        )
+        Path(f"../data/lstm_single_run/{gauge_id}").glob("cudalstm_q_mm_day*mswep*/config.yml")
     )
     configs_names = [i.parents[0].stem for i in configs]
-    logs = list(
-        Path(f"../geo_data/lstm_single_run/{gauge_id}").glob(
-            "cudalstm_q_mm_day*mswep*/output.log"
-        )
-    )
+    logs = list(Path(f"../data/lstm_single_run/{gauge_id}").glob("cudalstm_q_mm_day*mswep*/output.log"))
     try:
         best_epochs = list(best_epoch_finder(log) for log in logs)
     except ValueError:
@@ -107,7 +99,7 @@ for gauge_id in available_gauges:
     else:
         thresh = 0
     train_rewriter(
-        era_paths=glob.glob(f"../geo_data/ws_related_meteo/{nc_variable}/*.nc"),
+        era_paths=glob.glob(f"../data/ws_related_meteo/{nc_variable}/*.nc"),
         ts_dir=ts_dir,
         hydro_target=hydro_target,
         area_index=[gauge_id],

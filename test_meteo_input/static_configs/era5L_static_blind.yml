@@ -155,7 +155,7 @@ save_validation_results: True
 dataset: generic
 
 # Path to data set root
-data_dir: ../geo_data/
+data_dir: ../data/
 
 # Set to True, if train data file should be save to disk. If empty or False, train data is not saved.
 save_train_data: True

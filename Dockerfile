@@ -19,7 +19,7 @@ RUN conda install -c conda-forge -y cartopy
 WORKDIR /app
 COPY  ./ ./
 
-ENV DATA_DIR=/app/geo_data
+ENV DATA_DIR=/app/data
 RUN mkdir "${DATA_DIR}"
 
 RUN mkdir /app/init

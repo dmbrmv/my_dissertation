@@ -5,7 +5,8 @@ import xarray as xr
 
 def nse(predictions, targets):
     return 1 - (
-        np.nansum((targets - predictions) ** 2) / np.nansum((targets - np.nanmean(targets)) ** 2)
+        np.nansum((targets - predictions) ** 2)
+        / np.nansum((targets - np.nanmean(targets)) ** 2)
     )
 
 
@@ -59,7 +60,7 @@ def relative_error(predictions, targets):
     # Apply mask to remove nans from both arrays
     y_true_clean = targets[mask]
     y_pred_clean = predictions[mask]
-    return np.nanmean(((y_true_clean - y_pred_clean) / y_true_clean) * 100)
+    return np.nanmedian(((y_true_clean - y_pred_clean) / y_true_clean) * 100)
 
 
 def metric_df(gauge_id, predictions, targets):
@@ -88,7 +89,9 @@ def read_gauge(gauge_id: str, simple: bool = False):
         test = test_df["2018":]
     else:
         test_df["Temp"] = test_df[["t_max_e5l", "t_min_e5l"]].mean(axis=1)
-        test_df = test_df.rename(columns={"prcp_e5l": "Prec", "Ep": "Evap", "q_mm_day": "Q_mm"})
+        test_df = test_df.rename(
+            columns={"prcp_e5l": "Prec", "Ep": "Evap", "q_mm_day": "Q_mm"}
+        )
         test_df.index.name = "Date"
         test_df = test_df.drop(["t_min_e5l", "t_max_e5l"], axis=1)
         test_df.loc[test_df["Evap"] < 0, "Evap"] = 0
@@ -110,7 +113,9 @@ def day_agg(df: pd.DataFrame, day_aggregations: list = (2**n for n in range(6)))
     return df
 
 
-def feature_target(data: pd.DataFrame, day_aggregations: list = [2**n for n in range(6)]):
+def feature_target(
+    data: pd.DataFrame, day_aggregations: list = [2**n for n in range(6)]
+):
     """_summary_.
 
     Args:
@@ -128,7 +133,8 @@ def feature_target(data: pd.DataFrame, day_aggregations: list = [2**n for n in r
     feature_cols = [
         item
         for sublist in [
-            [f"{var}_{day}" for day in day_aggregations] for var in ["prcp", "t_min", "t_max"]
+            [f"{var}_{day}" for day in day_aggregations]
+            for var in ["prcp", "t_min", "t_max"]
         ]
         for item in sublist
     ]

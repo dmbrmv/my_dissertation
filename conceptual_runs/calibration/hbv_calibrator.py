@@ -18,18 +18,11 @@ from .model_setups import hbv_setup
 
 logger = logging.getLogger(pathlib.Path(__file__).name)
 
-gauges = [
-    i.stem
-    for i in pathlib.Path("/Users/dmbrmv/Development/geo_data/great_db/nc_all_q").glob(
-        "*.nc"
-    )
-]
+gauges = [i.stem for i in pathlib.Path("/Users/dmbrmv/Development/data/great_db/nc_all_q").glob("*.nc")]
 
 calibration_path = pathlib.Path("./hbv_calibration_mle_logNSE")
 calibration_path.mkdir(exist_ok=True, parents=True)
-gauges = [
-    i for i in gauges if i not in [i.stem for i in calibration_path.glob("*.npy")]
-]
+gauges = [i for i in gauges if i not in [i.stem for i in calibration_path.glob("*.npy")]]
 
 
 def hbv_single_core(g_id: str) -> None:
@@ -46,9 +39,7 @@ def hbv_single_core(g_id: str) -> None:
     """
     try:
         logging.info(f"Processing gauge ID: {g_id}")
-        with xr.open_dataset(
-            f"/Users/dmbrmv/Development/geo_data/great_db/nc_all_q/{g_id}.nc"
-        ) as f:
+        with xr.open_dataset(f"/Users/dmbrmv/Development/data/great_db/nc_all_q/{g_id}.nc") as f:
             example_df = f.to_pandas()
             example_df = example_df.drop("gauge_id", axis=1)
             train_df = example_df[:"2018-12-31"]

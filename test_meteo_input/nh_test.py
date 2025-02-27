@@ -20,11 +20,11 @@ if device.type == "cuda":
     print("Allocated:", round(torch.cuda.memory_allocated(0) / 1024**3, 1), "GB")
     print("Cached:   ", round(torch.cuda.memory_reserved(0) / 1024**3, 1), "GB")
 
-ts_dir = Path("../geo_data/time_series")
+ts_dir = Path("../data/time_series")
 
 # gpcp
 file_rewriter(
-    q_pathes=glob.glob("../geo_data/great_db/nc_all_q/*.nc"),
+    q_pathes=glob.glob("../data/great_db/nc_all_q/*.nc"),
     ts_dir=ts_dir,
     hydro_target="q_cms_s",
     meteo_predictors=["t_max_e5", "t_min_e5", "prcp_gpcp"],
@@ -33,7 +33,7 @@ if torch.cuda.is_available():
     start_run(config_file=Path("./configs/gpcp_prcp_qms.yml"))
 # imerg
 file_rewriter(
-    q_pathes=glob.glob("../geo_data/great_db/nc_all_q/*.nc"),
+    q_pathes=glob.glob("../data/great_db/nc_all_q/*.nc"),
     ts_dir=ts_dir,
     hydro_target="q_cms_s",
     meteo_predictors=["t_max_e5", "t_min_e5", "prcp_imerg"],
@@ -42,7 +42,7 @@ if torch.cuda.is_available():
     start_run(config_file=Path("./configs/imerg_prcp_qms.yml"))
 # mswep
 file_rewriter(
-    q_pathes=glob.glob("../geo_data/great_db/nc_all_q/*.nc"),
+    q_pathes=glob.glob("../data/great_db/nc_all_q/*.nc"),
     ts_dir=ts_dir,
     hydro_target="q_cms_s",
     meteo_predictors=["t_max_e5", "t_min_e5", "prcp_mswep"],

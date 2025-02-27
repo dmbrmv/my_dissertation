@@ -12,7 +12,7 @@ from scripts.loaders import aggregation_definer, grid_descriptor
 
 
 # import time
-russia_ws = gpd.read_file("../geo_data/geometry/russia_cis_ws.gpkg")
+russia_ws = gpd.read_file("../data/geometry/russia_cis_ws.gpkg")
 # print("I'm waiting for copy..")
 # time.sleep(7200)
 # print("Let's roll !")
@@ -34,7 +34,7 @@ ds_description = {
     **grid_descriptor(dataset_name="mswep", half_resolution=0.05, files=mswep),
 }
 
-place_to_save = Path("/home/dima/ESG/hsi/my_dissertation/geo_data/snow_and_subsurface/")
+place_to_save = Path("/home/dima/ESG/hsi/my_dissertation/data/snow_and_subsurface/")
 place_to_save.mkdir(exist_ok=True, parents=True)
 
 for dataset, settings in ds_description.items():

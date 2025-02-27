@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy.stats import pearsonr
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import r2_score, root_mean_squared_error
 
 
 def mae_percent(x, y):
@@ -11,7 +11,9 @@ def mae_percent(x, y):
     return mae_series.mean() * 1e2
 
 
-def station_describer(df, frequency: str, prcp_station: str, prcp_meteo: str, modifier: str = ""):
+def station_describer(
+    df, frequency: str, prcp_station: str, prcp_meteo: str, modifier: str = ""
+):
     df = df[[f"{prcp_station}", f"{prcp_meteo}"]].dropna()
     df_len = len(df)
     if df.empty:
@@ -47,8 +49,8 @@ def station_describer(df, frequency: str, prcp_station: str, prcp_meteo: str, mo
             r2_res = r2_score(y_true=df[f"{prcp_station}"], y_pred=df[f"{prcp_meteo}"])
             pearson_res = pearsonr(x=df[f"{prcp_station}"], y=df[f"{prcp_meteo}"])[0]
             mae_res = mae_percent(x=df[f"{prcp_station}"], y=df[f"{prcp_meteo}"])
-            rmse_res = mean_squared_error(
-                y_true=df[f"{prcp_station}"], y_pred=df[f"{prcp_meteo}"], squared=True
+            rmse_res = root_mean_squared_error(
+                y_true=df[f"{prcp_station}"], y_pred=df[f"{prcp_meteo}"]
             )
             mean_res = (df[f"{prcp_station}"] - df[f"{prcp_meteo}"]).mean()
 

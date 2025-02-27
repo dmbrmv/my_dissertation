@@ -3,7 +3,7 @@ batch_size: 256
 cache_validation_data: true
 checkpoint_path: None
 clip_gradient_norm: 1
-data_dir: ../geo_data
+data_dir: ../data
 dataset: generic
 device: cuda:0
 dynamic_inputs:
