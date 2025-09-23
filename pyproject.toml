@@ -1,76 +1,97 @@
 [tool.ruff]
-# Include Jupyter notebooks in linting
+# Honor classic PEP 8 width for code (79) and keep notebooks in scope.
+line-length = 79
+target-version = "py312"
 extend-include = ["*.ipynb"]
-# Set line length to match common Python standards
-line-length = 88
-target-version = "py310"
+exclude = [
+  ".git",
+  ".venv",
+  "build",
+  "dist",
+  "__pypackages__",
+  "**/__pycache__/**",
+  "**/data/**",
+  "docs/_build",
+]
 
 [tool.ruff.lint]
-# Expanded rule selection for better code quaity
+# Core PEP 8/pycodestyle + pragmatic extras.
 select = [
-    "E",    # pycodestyle errors
-    "W",    # pycodestyle warnings
-    "F",    # Pyflakes
-    "I",    # isort (import sorting)
-    "N",    # pep8-naming
-    "D",    # pydocstring
-    "UP",   # pyupgrade (modernize Python code)
-    "B",    # flake8-bugbear (likely bugs)
-    "S",    # flake8-bandit (security)
-    "C4",   # flake8-comprehensions
-    "Q",    # flake8-quotes
-    "T20",  # flake8-print (avoid print statements)
+  "E",    # pycodestyle errors
+  "W",    # pycodestyle warnings
+  "F",    # Pyflakes
+  "I",    # isort (import sorting)
+  "N",    # pep8-naming
+  "D",    # pydocstyle (docstrings)
+  "UP",   # pyupgrade
+  "B",    # flake8-bugbear
+  "S",    # flake8-bandit (security)
+  "C4",   # flake8-comprehensions
+  "Q",    # flake8-quotes
+  "T20",  # flake8-print
+  "A",    # flake8-builtins (shadowing builtins)
+  "C90",  # mccabe (cyclomatic complexity)
+  "PIE",  # flake8-pie (small correctness wins)
+]
+# Keep Black-style whitespace compatibility and avoid noisy docstring pedantry.
+ignore = [
+  "E203",  # whitespace before ':' — Black/Ruff-formatter compatible
+  "D100",  # missing docstring in public module
+  "D104",  # missing docstring in public package
+  "S101",  # use of assert (we allow in tests; see per-file too)
 ]
 
-# Ignore specific rules that might be too strict
-ignore = [
-    "D100",  # Missing docstring in public module
-    "D104",  # Missing docstring in public package
-    "S101",  # Use of assert (common in tests)
-]
+[tool.ruff.lint.per-file-ignores]
+# Tests: allow asserts and relax strict docstrings / prints.
+"tests/**/*" = ["S101", "D100", "D101", "D102", "D103", "T20"]
+# Scripts/CLI/notebooks: allow prints and skip docstring requirements for notebooks.
+"scripts/**/*" = ["T20"]
+"**/*.ipynb" = ["D", "T20"]
 
 [tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"
 inline-quotes = "double"
 
 [tool.ruff.lint.isort]
-# Configure import sorting
 known-first-party = ["floodforecast"]
 split-on-trailing-comma = true
+combine-as-imports = true
+force-sort-within-sections = true
 
 [tool.ruff.lint.pydocstyle]
-# Use Google docstring convention
+# Google style docstrings; keep concise one-line summaries.
 convention = "google"
 
+[tool.ruff.lint.mccabe]
+# PEP 8 nudges toward simplicity; cap complexity.
+max-complexity = 10
+
 [tool.ruff.format]
-# Use double quotes for consistency
+# Match quote policy with lint rules and keep docstring code tidy.
 quote-style = "double"
-# Format docstrings
 docstring-code-format = true
+# PEP 8 suggests ~72 columns for comments/docstrings; apply to fenced code in docstrings.
+docstring-code-line-length = 72
 
 [tool.pyright]
-pythonVersion = "3.10"
+pythonVersion = "3.12"
 typeCheckingMode = "basic"
 exclude = [
-    "**/data",
-    "/data",
-    "**/__pycache__",
-    ".venv",
-    "build",
-    "dist"
+  "**/data",
+  "/data",
+  "**/__pycache__",
+  ".venv",
+  "build",
+  "dist",
 ]
-# Report missing imports
 reportMissingImports = true
-# Report missing type stubs
 reportMissingTypeStubs = false
 
 [project]
 name = "hydro-eprf"
 version = "0.1.0"
 description = "Hydrological EPRF project with geospatial and machine learning capabilities"
-authors = [
-    { name = "Dmitrii Abramov", email = "dmbrmv96@gmail.com" }
-]
+authors = [{ name = "Dmitrii Abramov", email = "dmbrmv96@gmail.com" }]
 readme = "README.md"
 license = { text = "MIT" }
-requires-python = ">=3.10"
+requires-python = ">=3.12"
