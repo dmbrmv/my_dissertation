@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from ._style import configure_fonts
 from .boxplots import create_nse_boxplots
-from .hex_maps import hexes_plot, hexes_plots_n
+from .hex_maps import hexes_plots_n
 from .hex_utils import (
     EQ_AREA_CRS,
     aggregate_nse_to_hex,
@@ -35,7 +35,6 @@ __all__ = [
     "aggregate_nse_to_hex",
     "build_hex_grid",
     "create_nse_boxplots",
-    "hexes_plot",
     "hexes_plots_n",
     "metric_viewer",
     "russia_plots",

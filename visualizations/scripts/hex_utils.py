@@ -64,6 +64,7 @@ def aggregate_nse_to_hex(
     nse_col: str = "NSE",
     agg: Literal["median", "mean", "max", "min"] = "median",
     area_weighted: bool = False,
+    min_overlap_share: float = 0.1,
 ) -> gpd.GeoDataFrame:
     """Aggregate watershed metric values to hex cells using centroid or area weighting."""
     if watersheds.crs != hexes.crs:
@@ -85,9 +86,12 @@ def aggregate_nse_to_hex(
         cnt = grouped.size()
     else:
         inter = gpd.overlay(
-            watersheds[[nse_col, "geometry"]], hexes.reset_index(names="hex_id"), how="intersection"
+            watersheds[[nse_col, "geometry", "orig_area"]].copy(),
+            hexes.reset_index(names="hex_id"),
+            how="intersection",
         )
         inter["a"] = inter.area
+        inter = inter[inter["a"] >= min_overlap_share * inter["orig_area"]]
         grouped = inter.groupby("hex_id")
         val = grouped.apply(lambda df: np.average(df[nse_col], weights=df["a"]))
         cnt = grouped.size()
