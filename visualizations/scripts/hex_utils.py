@@ -9,9 +9,6 @@ import geopandas as gpd
 import numpy as np
 from shapely.geometry import Polygon
 
-from . import _style  # noqa: F401  # ensures font configuration is applied
-
-
 EQ_AREA_CRS = "EPSG:6933"
 
 
