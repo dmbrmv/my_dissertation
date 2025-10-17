@@ -1,6 +1,6 @@
 [tool.ruff]
-# Honor classic PEP 8 width for code (79) and keep notebooks in scope.
-line-length = 79
+# Honor classic PEP 8 width for code (90) and keep notebooks in scope.
+line-length = 90
 target-version = "py312"
 extend-include = ["*.ipynb"]
 exclude = [
@@ -88,9 +88,9 @@ reportMissingImports = true
 reportMissingTypeStubs = false
 
 [project]
-name = "hydro-eprf"
+name = "PhD dissertation"
 version = "0.1.0"
-description = "Hydrological EPRF project with geospatial and machine learning capabilities"
+description = "Discharge model comparison for Russian river basins"
 authors = [{ name = "Dmitrii Abramov", email = "dmbrmv96@gmail.com" }]
 readme = "README.md"
 license = { text = "MIT" }

@@ -1,0 +1,13 @@
+import multiprocessing as mp
+
+from calibration.hbv_calibrator import gauges, hbv_single_core
+
+if __name__ == "__main__":
+    # Specify the number of processes to be used
+    num_processes = 16  # You can adjust this value as needed
+    # Create a multiprocessing pool with the specified number of processes
+    pool = mp.Pool(processes=num_processes)
+    results = pool.map(hbv_single_core, gauges)
+    # Close the pool to free resources
+    pool.close()
+    pool.join()
