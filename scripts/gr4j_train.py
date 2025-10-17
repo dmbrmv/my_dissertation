@@ -81,11 +81,8 @@ def process_gr4j_gauge(
     }
 
     for dataset in datasets:
-        logger.info(f"Processing gauge {gauge_id} with dataset {dataset}")
-
         # Check if results exist
         if (result_path / f"{gauge_id}_{dataset}").exists() and not overwrite_results:
-            logger.info(f"Results for {gauge_id} with {dataset} exist. Skipping.")
             continue
 
         try:
@@ -132,10 +129,6 @@ def process_gr4j_gauge(
             gr4j_data["pet_mm_day"] = pet_oudin(t_mean_list, day_of_year_list, latitude)
 
             # Run IMPROVED optimization with warm-up
-            logger.info(
-                f"Starting optimization for {gauge_id}/{dataset} "
-                f"with {warmup_years}-year warm-up"
-            )
             study = run_optimization(
                 gr4j_data,
                 calibration_period=calibration_period,
@@ -198,15 +191,6 @@ def process_gr4j_gauge(
             regime_metrics = analyze_flow_regimes(observed_values, q_sim_np)
             metrics.update(regime_metrics)
 
-            # Log key performance indicators
-            logger.info(
-                f"Validation results for {gauge_id}/{dataset}: "
-                f"KGE={metrics.get('KGE', np.nan):.3f}, "
-                f"NSE={metrics.get('NSE', np.nan):.3f}, "
-                f"logNSE={metrics.get('logNSE', np.nan):.3f}, "
-                f"Low-flow NSE={metrics.get('very_low_nse', np.nan):.3f}"
-            )
-
             # Save optimization results
             save_optimization_results(
                 study=study,
@@ -216,10 +200,10 @@ def process_gr4j_gauge(
                 metrics=metrics,
                 output_dir=str(result_path),
             )
-            logger.info(f"Completed optimization for {gauge_id} with {dataset}")
+            logger.info(f"✓ {gauge_id}/{dataset}: KGE={metrics.get('KGE', np.nan):.3f}")
 
         except Exception as e:
-            logger.error(f"Error processing {gauge_id} with {dataset}: {str(e)}")
+            logger.error(f"✗ {gauge_id}/{dataset}: {str(e)}")
 
 
 def main() -> None:
@@ -243,7 +227,7 @@ def main() -> None:
     logger.info(f"Found {len(full_gauges)} valid gauges")
 
     # Set up optimization parameters
-    calibration_period = ("2008-01-01", "2018-12-31")
+    calibration_period = ("2010-01-01", "2018-12-31")
     validation_period = ("2019-01-01", "2020-12-31")
 
     # Save to results directory
@@ -251,7 +235,7 @@ def main() -> None:
     save_storage.mkdir(parents=True, exist_ok=True)  # Optimization settings
     n_trials = 4200  # Same as before for fair comparison
     timeout = 1200  # 20 minutes per gauge/dataset
-    warmup_years = 2  # NEW: 2-year warm-up (2006-2007)
+    warmup_years = 2  # NEW: 2-year warm-up (2008-2009 for calibration start 2010)
     overwrite_existing_results = False
 
     # Meteorological datasets to test

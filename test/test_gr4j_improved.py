@@ -29,12 +29,12 @@ logger = setup_logger("test_improved", log_file="logs/test_improved.log", level=
 def main() -> None:
     """Test improved calibration on a single gauge."""
     # Configuration
-    gauge_id = "10007"  # Change to any gauge you have
+    gauge_id = "75257"  # Change to any gauge you have
     dataset = "e5l"
-    calibration_period = ("2008-01-01", "2018-12-31")
+    calibration_period = ("2010-01-01", "2018-12-31")
     validation_period = ("2019-01-01", "2020-12-31")
     warmup_years = 2
-    n_trials = 100  # Quick test (use 1000+ for real calibration)
+    n_trials = 1000  # Quick test (use 1000+ for real calibration)
 
     logger.info("=" * 80)
     logger.info(f"TESTING IMPROVED CALIBRATION ON GAUGE {gauge_id}")

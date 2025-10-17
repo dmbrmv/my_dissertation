@@ -1,10 +1,17 @@
+"""HBV rainfall-runoff model implementation (Bergström, 1986).
+
+This module provides the HBV (Hydrologiska Byråns Vattenbalansavdelning)
+conceptual hydrological model with snow routine and soil moisture accounting.
+"""
+
 import numpy as np
+import pandas as pd
 import scipy.signal as ss
 
 
 def simulation(
-    data,
-    params=(
+    data: pd.DataFrame,
+    params: tuple[float, ...] | list[float] = (
         1.0,
         0.1,
         150.0,
@@ -22,315 +29,297 @@ def simulation(
         0.05,
         0.1,
     ),
-):
+) -> np.ndarray:
+    """Run HBV rainfall-runoff simulation with snow module.
+
+    Args:
+        data: DataFrame with columns 'Temp' (°C), 'Prec' (mm/day), 'Evap' (mm/day).
+        params: List of 16 HBV parameters:
+            [0] beta: shape parameter for runoff contribution [1, 6]
+            [1] cet: evaporation correction factor [0, 0.3]
+            [2] fc: maximum soil moisture storage (mm) [50, 500]
+            [3] k0: recession coefficient for surface runoff [0.01, 0.4]
+            [4] k1: recession coefficient for upper groundwater [0.01, 0.4]
+            [5] k2: recession coefficient for lower groundwater [0.001, 0.15]
+            [6] lp: evaporation threshold (SM/FC) [0.3, 1]
+            [7] maxbas: Butterworth filter order [1, 7]
+            [8] perc: percolation rate (mm/day) [0, 3]
+            [9] uzl: threshold for surface runoff (mm) [0, 500]
+            [10] pcorr: precipitation correction factor [0.5, 2]
+            [11] tt: temperature threshold for snow/rain (°C) [-1.5, 2.5]
+            [12] cfmax: snow melt rate (mm/day/°C) [1, 10]
+            [13] sfcf: snowfall correction factor [0.4, 1]
+            [14] cfr: refreezing coefficient [0, 0.1]
+            [15] cwh: water holding capacity in snow [0, 0.2]
+
+    Returns:
+        Array of simulated runoff (mm/day).
     """
-    Implementation of HBV model (Bergstrom, 1986)
+    temp = data["Temp"].values
+    prec = data["Prec"].values
+    evap = data["Evap"].values
 
-    Input:
-    1. data
-    pandas dataframe with columns 'Temp', 'Prec', 'Evap'
-    associated with correspondent daily time series derived
-    from WFDEI meteorological forcing dataset.
-    'Temp' - Celsius degrees
-    'Prec' - mm/day
-    'Evap' - mm/day
-    2. params
-    List of 16 HBV model parameters
-    [parBETA, parCET,  parFC,    parK0,
-    parK1,    parK2,   parLP,    parMAXBAS,
-    parPERC,  parUZL,  parPCORR, parTT,
-    parCFMAX, parSFCF, parCFR,   parCWH]
-
-    init_params = [ 1.0,   0.15,    250,   0.055,
-                    0.055, 0.04,    0.7,   3.0,
-                    1.5,   120,     1.0,   0.0,
-                    5.0,   0.7,     0.05,  0.1]
-    # 16 parameters
-    # BETA   - parameter that determines the relative contribution to runoff
-    # from rain or snowmelt
-    #          [1, 6]
-    # CET    - Evaporation correction factor
-    #          (should be 0 if we don't want to change (Oudin et al., 2005)
-    # formula values)
-    #          [0, 0.3]
-    # FC     - maximum soil moisture storage
-    #          [50, 500]
-    # K0     - recession coefficient for surface soil box
-    # (upper part of SUZ)
-    #          [0.01, 0.4]
-    # K1     - recession coefficient for upper groudwater box
-    # (main part of SUZ)
-    #          [0.01, 0.4]
-    # K2     - recession coefficient for lower groudwater box (whole SLZ)
-    #          [0.001, 0.15]
-    # LP     - Threshold for reduction of evaporation (SM/FC)
-    #          [0.3, 1]
-    # MAXBAS - routing parameter, order of Butterworth filter
-    #          [1, 7]
-    # PERC   - percolation from soil to upper groundwater box
-    #          [0, 3]
-    # UZL    - threshold parameter for grondwater boxes runoff (mm)
-    #          [0, 500]
-    # PCORR  - Precipitation (input sum) correction factor
-    #          [0.5, 2]
-    # TT     - Temperature which separate rain and
-    # snow fraction of precipitation
-    #          [-1.5, 2.5]
-    # CFMAX  - Snow melting rate (mm/day per Celsius degree)
-    #          [1, 10]
-    # SFCF   - SnowFall Correction Factor
-    #          [0.4, 1]
-    # CFR    - Refreezing coefficient
-    #          [0, 0.1] (usually 0.05)
-    # CWH    - Fraction (portion) of meltwater and rainfall which retain
-    # in snowpack (water holding capacity)
-    #          [0, 0.2] (usually 0.1)
-
-    Output:
-    simulated river runoff (daily timestep)
-    """
-    # 1. read input data
-    Temp = data["Temp"]
-    Prec = data["Prec"]
-    Evap = data["Evap"]
-
-    # 2. set the parameters
+    # Unpack parameters with descriptive names
     (
-        parBETA,
-        parCET,
-        parFC,
-        parK0,
-        parK1,
-        parK2,
-        parLP,
-        parMAXBAS,
-        parPERC,
-        parUZL,
-        parPCORR,
-        parTT,
-        parCFMAX,
-        parSFCF,
-        parCFR,
-        parCWH,
+        beta,
+        cet,
+        fc,
+        k0,
+        k1,
+        k2,
+        lp,
+        maxbas,
+        perc_rate,
+        uzl,
+        pcorr,
+        tt,
+        cfmax,
+        sfcf,
+        cfr,
+        cwh,
     ) = params
 
-    # 3. initialize boxes and initial conditions
-    # snowpack box
-    SNOWPACK = np.zeros(len(Prec))
-    SNOWPACK[0] = 0.0001
-    # meltwater box
-    MELTWATER = np.zeros(len(Prec))
-    MELTWATER[0] = 0.0001
-    # soil moisture box
-    SM = np.zeros(len(Prec))
-    SM[0] = 0.0001
-    # soil upper zone box
-    SUZ = np.zeros(len(Prec))
-    SUZ[0] = 0.0001
-    # soil lower zone box
-    SLZ = np.zeros(len(Prec))
-    SLZ[0] = 0.0001
-    # actual evaporation
-    ETact = np.zeros(len(Prec))
-    ETact[0] = 0.0001
-    # simulated runoff box
-    Qsim = np.zeros(len(Prec))
-    Qsim[0] = 0.0001
+    # Initialize state arrays
+    n_steps = len(prec)
+    snowpack = np.zeros(n_steps)
+    snowpack[0] = 0.0001
+    meltwater = np.zeros(n_steps)
+    meltwater[0] = 0.0001
+    soil_moisture = np.zeros(n_steps)
+    soil_moisture[0] = 0.0001
+    upper_zone = np.zeros(n_steps)
+    upper_zone[0] = 0.0001
+    lower_zone = np.zeros(n_steps)
+    lower_zone[0] = 0.0001
+    et_actual = np.zeros(n_steps)
+    et_actual[0] = 0.0001
+    q_sim = np.zeros(n_steps)
+    q_sim[0] = 0.0001
 
-    # 4. meteorological forcing preprocessing
-    # overall correction factor
-    Prec = parPCORR * Prec
-    # precipitation separation
-    # if T < parTT: SNOW, else RAIN
-    RAIN = np.where(Temp > parTT, Prec, 0)
-    SNOW = np.where(Temp <= parTT, Prec, 0)
-    # snow correction factor
-    SNOW = parSFCF * SNOW
-    # evaporation correction
-    # a. calculate long-term averages of daily temperature
-    # Temp_mean = np.array(
-    #     [Temp[Temp.index.dayofyear == x].mean() for x in range(1, 367)]
-    # )
-    # b. correction of Evaporation daily values
-    # Evap = Evap.index.map(
-    #     lambda x: (1 + parCET * (Temp[x] - Temp_mean[x.dayofyear - 1])) * Evap[x]
-    # )
-    # c. control Evaporation
-    Evap = np.where(Evap > 0, Evap, 0)
+    # Apply precipitation correction
+    prec = pcorr * prec
 
-    # 5. The main cycle of calculations
-    for t in range(1, len(Qsim)):
-        # 5.1 Snow routine
-        # how snowpack forms
-        SNOWPACK[t] = SNOWPACK[t - 1] + SNOW[t]
-        # how snowpack melts
-        # day-degree simple melting
-        melt = parCFMAX * (Temp.iloc[t] - parTT)
-        # control melting
-        if melt < 0:
-            melt = 0
-        melt = min(melt, SNOWPACK[t])
-        # how meltwater box forms
-        MELTWATER[t] = MELTWATER[t - 1] + melt
-        # snowpack after melting
-        SNOWPACK[t] = SNOWPACK[t] - melt
-        # refreezing accounting
-        refreezing = parCFR * parCFMAX * (parTT - Temp.iloc[t])
-        # control refreezing
-        if refreezing < 0:
-            refreezing = 0
-        refreezing = min(refreezing, MELTWATER[t])
-        # snowpack after refreezing
-        SNOWPACK[t] = SNOWPACK[t] + refreezing
-        # meltwater after refreezing
-        MELTWATER[t] = MELTWATER[t] - refreezing
-        # recharge to soil
-        tosoil = MELTWATER[t] - (parCWH * SNOWPACK[t])
-        # control recharge to soil
-        if tosoil < 0:
-            tosoil = 0
-        # meltwater after recharge to soil
-        MELTWATER[t] = MELTWATER[t] - tosoil
+    # Separate precipitation into rain and snow
+    rain = np.where(temp > tt, prec, 0.0)
+    snow = np.where(temp <= tt, prec, 0.0)
+    snow = sfcf * snow
 
-        # 5.2 Soil and evaporation routine
-        # soil wetness calculation
-        soil_wetness = (SM[t - 1] / parFC) ** parBETA
-        # control soil wetness (should be in [0, 1])
-        if soil_wetness < 0:
-            soil_wetness = 0
-        if soil_wetness > 1:
-            soil_wetness = 1
-        # soil recharge
-        recharge = (RAIN[t] + tosoil) * soil_wetness
-        # soil moisture update
-        SM[t] = SM[t - 1] + RAIN[t] + tosoil - recharge
-        # excess of water calculation
-        excess = SM[t] - parFC
-        # control excess
-        if excess < 0:
-            excess = 0
-        # soil moisture update
-        SM[t] = SM[t] - excess
+    # Control evaporation (non-negative)
+    evap = np.where(evap > 0, evap, 0.0)
 
-        # evaporation accounting
-        evapfactor = SM[t] / (parLP * parFC)
-        # control evapfactor in range [0, 1]
-        if evapfactor < 0:
-            evapfactor = 0
-        if evapfactor > 1:
-            evapfactor = 1
-        # calculate actual evaporation
-        ETact[t] = Evap[t] * evapfactor
-        # control actual evaporation
-        ETact[t] = min(SM[t], ETact[t])
+    # Main simulation loop
+    for t in range(1, n_steps):
+        # Snow routine
+        snowpack[t], meltwater[t], tosoil = _snow_routine(
+            snowpack[t - 1],
+            meltwater[t - 1],
+            snow[t],
+            temp[t],
+            tt,
+            cfmax,
+            cfr,
+            cwh,
+        )
 
-        # last soil moisture updating
-        SM[t] = SM[t] - ETact[t]
+        # Soil and evaporation routine
+        soil_moisture[t], recharge, et_actual[t] = _soil_routine(
+            soil_moisture[t - 1],
+            rain[t],
+            tosoil,
+            evap[t],
+            fc,
+            beta,
+            lp,
+        )
 
-        # 5.3 Groundwater routine
-        # upper groudwater box
-        SUZ[t] = SUZ[t - 1] + recharge + excess
-        # percolation control
-        perc = min(SUZ[t], parPERC)
-        # update upper groudwater box
-        SUZ[t] = SUZ[t] - perc
-        # runoff from the highest part of upper grondwater box (surface runoff)
-        Q0 = parK0 * max(SUZ[t] - parUZL, 0)
-        # update upper groudwater box
-        SUZ[t] = SUZ[t] - Q0
-        # runoff from the middle part of upper groundwater box
-        Q1 = parK1 * SUZ[t]
-        # update upper groudwater box
-        SUZ[t] = SUZ[t] - Q1
-        # calculate lower groundwater box
-        SLZ[t] = SLZ[t - 1] + perc
-        # runoff from lower groundwater box
-        Q2 = parK2 * SLZ[t]
-        # update lower groundwater box
-        SLZ[t] = SLZ[t] - Q2
+        # Groundwater routine
+        upper_zone[t], lower_zone[t], q_sim[t] = _groundwater_routine(
+            upper_zone[t - 1],
+            lower_zone[t - 1],
+            recharge,
+            perc_rate,
+            k0,
+            k1,
+            k2,
+            uzl,
+        )
 
-        # Total runoff calculation
-        Qsim[t] = Q0 + Q1 + Q2
+    # Apply routing (scale effect)
+    q_sim = _apply_routing(q_sim, maxbas)
 
-    # 6. Scale effect accounting
-    # delay and smoothing simulated hydrograph
-    # (Beck et al.,2016) used triangular transformation based on moving window
-    # here are my method with simple forward filter
-    # based on Butterworht filter design
-    # calculate Numerator (b) and denominator (a) polynomials of the IIR filter
-    parMAXBAS = int(parMAXBAS)
-    if parMAXBAS == 1:
-        return Qsim
-    else:
-        b, a = ss.butter(parMAXBAS, 1 / parMAXBAS)
-        # implement forward filter
-        Qsim_smoothed = np.array(ss.lfilter(b, a, Qsim))
-        # control smoothed runoff
-        Qsim_smoothed = np.where(Qsim_smoothed > 0, Qsim_smoothed, 0)
-
-        Qsim = Qsim_smoothed
-
-        return Qsim
+    return q_sim
 
 
-def bounds():
+def _snow_routine(
+    snowpack_prev: float,
+    meltwater_prev: float,
+    snow: float,
+    temp: float,
+    tt: float,
+    cfmax: float,
+    cfr: float,
+    cwh: float,
+) -> tuple[float, float, float]:
+    """Execute snow accumulation, melting, and refreezing.
+
+    Returns:
+        Tuple of (snowpack, meltwater, recharge_to_soil).
     """
-    # BETA   - parameter that determines the relative contribution to runoff
-    # from rain or snowmelt
-    #          [1, 6]
-    # CET    - Evaporation correction factor
-    #          (should be 0 if we don't want to change (Oudin et al., 2005)
-    # formula values)
-    #          [0, 0.3]
-    # FC     - maximum soil moisture storage
-    #          [50, 500]
-    # K0     - recession coefficient for surface soil box
-    # (upper part of SUZ)
-    #          [0.01, 0.4]
-    # K1     - recession coefficient for upper groudwater box
-    # (main part of SUZ)
-    #          [0.01, 0.4]
-    # K2     - recession coefficient for lower groudwater box (whole SLZ)
-    #          [0.001, 0.15]
-    # LP     - Threshold for reduction of evaporation (SM/FC)
-    #          [0.3, 1]
-    # MAXBAS - routing parameter, order of Butterworth filter
-    #          [1, 7]
-    # PERC   - percolation from soil to upper groundwater box
-    #          [0, 3]
-    # UZL    - threshold parameter for grondwater boxes runoff (mm)
-    #          [0, 500]
-    # PCORR  - Precipitation (input sum) correction factor
-    #          [0.5, 2]
-    # TT     - Temperature which separate rain and
-    # snow fraction of precipitation
-    #          [-1.5, 2.5]
-    # CFMAX  - Snow melting rate (mm/day per Celsius degree)
-    #          [1, 10]
-    # SFCF   - SnowFall Correction Factor
-    #          [0.4, 1]
-    # CFR    - Refreezing coefficient
-    #          [0, 0.1] (usually 0.05)
-    # CWH    - Fraction (portion) of meltwater and rainfall which retain
-    # in snowpack (water holding capacity)
-    #          [0, 0.2] (usually 0.1)
+    snowpack = snowpack_prev + snow
+
+    # Calculate melting
+    melt = cfmax * (temp - tt)
+    melt = max(0.0, melt)
+    melt = min(melt, snowpack)
+
+    meltwater = meltwater_prev + melt
+    snowpack = snowpack - melt
+
+    # Calculate refreezing
+    refreeze = cfr * cfmax * (tt - temp)
+    refreeze = max(0.0, refreeze)
+    refreeze = min(refreeze, meltwater)
+
+    snowpack = snowpack + refreeze
+    meltwater = meltwater - refreeze
+
+    # Calculate recharge to soil
+    tosoil = meltwater - (cwh * snowpack)
+    tosoil = max(0.0, tosoil)
+    meltwater = meltwater - tosoil
+
+    return snowpack, meltwater, tosoil
+
+
+def _soil_routine(
+    sm_prev: float,
+    rain: float,
+    tosoil: float,
+    evap: float,
+    fc: float,
+    beta: float,
+    lp: float,
+) -> tuple[float, float, float]:
+    """Execute soil moisture accounting and evapotranspiration.
+
+    Returns:
+        Tuple of (soil_moisture, recharge, actual_evap).
     """
-    bnds = (
-        (1.0, 6.0),
-        (0, 0.3),
-        (50.0, 500.0),
-        (0.01, 0.4),
-        (0.01, 0.4),
-        (0.001, 0.15),
-        (0.3, 1.0),
-        (1.0, 7.0),
-        (0.0, 3.0),
-        (0.0, 500.0),
-        (0.5, 2.0),
-        (-1.5, 2.5),
-        (1.0, 10.0),
-        (0.4, 1.0),
-        (0.0, 1.0),
-        (0.0, 0.2),
+    # Calculate soil wetness
+    soil_wetness = (sm_prev / fc) ** beta
+    soil_wetness = np.clip(soil_wetness, 0.0, 1.0)
+
+    # Calculate recharge
+    recharge = (rain + tosoil) * soil_wetness
+    sm = sm_prev + rain + tosoil - recharge
+
+    # Handle excess water
+    excess = sm - fc
+    excess = max(0.0, excess)
+    sm = sm - excess
+    recharge = recharge + excess
+
+    # Calculate actual evapotranspiration
+    evap_factor = sm / (lp * fc)
+    evap_factor = np.clip(evap_factor, 0.0, 1.0)
+    et_actual = evap * evap_factor
+    et_actual = min(sm, et_actual)
+
+    sm = sm - et_actual
+
+    return sm, recharge, et_actual
+
+
+def _groundwater_routine(
+    suz_prev: float,
+    slz_prev: float,
+    recharge: float,
+    perc_rate: float,
+    k0: float,
+    k1: float,
+    k2: float,
+    uzl: float,
+) -> tuple[float, float, float]:
+    """Execute upper and lower groundwater box dynamics.
+
+    Returns:
+        Tuple of (upper_zone, lower_zone, total_runoff).
+    """
+    # Update upper zone
+    suz = suz_prev + recharge
+
+    # Percolation
+    perc = min(suz, perc_rate)
+    suz = suz - perc
+
+    # Surface runoff (Q0)
+    q0 = k0 * max(suz - uzl, 0.0)
+    suz = suz - q0
+
+    # Upper zone runoff (Q1)
+    q1 = k1 * suz
+    suz = suz - q1
+
+    # Update lower zone
+    slz = slz_prev + perc
+
+    # Lower zone runoff (Q2)
+    q2 = k2 * slz
+    slz = slz - q2
+
+    # Total runoff
+    q_total = q0 + q1 + q2
+
+    return suz, slz, q_total
+
+
+def _apply_routing(q_sim: np.ndarray, maxbas: float) -> np.ndarray:
+    """Apply Butterworth filter for routing (scale effect).
+
+    Args:
+        q_sim: Simulated runoff array.
+        maxbas: Butterworth filter order (1-7).
+
+    Returns:
+        Smoothed runoff array.
+    """
+    maxbas_int = int(maxbas)
+    if maxbas_int == 1:
+        return q_sim
+
+    b, a = ss.butter(maxbas_int, 1.0 / maxbas_int)
+    q_smoothed = ss.lfilter(b, a, q_sim)
+    q_smoothed = np.where(q_smoothed > 0, q_smoothed, 0.0)
+
+    return q_smoothed
+
+
+def bounds() -> tuple[tuple[float, float], ...]:
+    """Return parameter bounds for HBV model.
+
+    Returns:
+        Tuple of (min, max) bounds for 16 parameters:
+        beta, cet, fc, k0, k1, k2, lp, maxbas, perc, uzl,
+        pcorr, tt, cfmax, sfcf, cfr, cwh.
+    """
+    return (
+        (1.0, 6.0),  # beta
+        (0.0, 0.3),  # cet
+        (50.0, 500.0),  # fc
+        (0.01, 0.4),  # k0
+        (0.01, 0.4),  # k1
+        (0.001, 0.15),  # k2
+        (0.3, 1.0),  # lp
+        (1.0, 7.0),  # maxbas
+        (0.0, 3.0),  # perc
+        (0.0, 500.0),  # uzl
+        (0.5, 2.0),  # pcorr
+        (-1.5, 2.5),  # tt
+        (1.0, 10.0),  # cfmax
+        (0.4, 1.0),  # sfcf
+        (0.0, 1.0),  # cfr
+        (0.0, 0.2),  # cwh
     )
-    return bnds
+
+
+__all__ = ["simulation", "bounds"]

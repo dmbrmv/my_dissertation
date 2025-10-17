@@ -36,16 +36,26 @@ The main goal of this research is to develop approaches for modeling daily avera
 ## Project Structure
 
 ```
-├── conclusions/                 # Results analysis and metrics calculation
-├── conceptual_runs/            # Conceptual model implementations (HBV, GR4J)
+├── archive/                    # Deprecated code and completed research (LSTM, old experiments)
+├── conclusions/                # Results analysis and metrics calculation
 ├── data_builders/              # Data preprocessing and watershed delineation
+├── docs/                       # Comprehensive model documentation
+│   ├── MODELS_OVERVIEW.md           # All models comparison and selection guide
+│   ├── CONCEPTUAL_MODELS.md         # HBV and GR4J detailed documentation
+│   └── MACHINE_LEARNING_MODELS.md   # RFR implementations (basin-specific & spatial)
 ├── geometry_creator/           # Watershed geometry generation
 ├── hydroatlas_parser/          # Static catchment attributes extraction
 ├── meteo_grids_parser/         # Meteorological data processing
-├── meteo_station_comparison/   # Station vs reanalysis comparison
-├── metric_viewer/              # Hydrological metrics visualization
-├── neural_forecast/            # Neural network implementations
-├── test_meteo_input/           # Precipitation input testing
+├── scripts/                    # Model training scripts
+│   ├── hbv_train.py                 # HBV model calibration
+│   ├── gr4j_train.py                # GR4J + CemaNeige calibration
+│   ├── rfr_train.py                 # Random Forest (basin-specific)
+│   └── rfr_spatial_train.py         # Random Forest (regional LOBO)
+├── src/models/                 # Model implementations
+│   ├── hbv/                         # HBV conceptual model
+│   ├── gr4j/                        # GR4J + CemaNeige model
+│   ├── rfr/                         # Random Forest (basin-specific)
+│   └── rfr_spatial/                 # Random Forest (regional LOBO)
 └── visualizations/             # Result visualization scripts
 ```
 
@@ -65,7 +75,7 @@ The main goal of this research is to develop approaches for modeling daily avera
 - Weighted area calculations for irregular catchments
 - Multiple reanalysis dataset support:
   - **ERA5**: 0.25° resolution
-  - **ERA5-Land**: 0.1° resolution  
+  - **ERA5-Land**: 0.1° resolution
   - **MSWEP**: 0.1° resolution
   - **GPCP**: 0.25° resolution
   - **IMERG**: 0.1° resolution
@@ -78,25 +88,22 @@ The main goal of this research is to develop approaches for modeling daily avera
 
 ### 2. Hydrological Models
 
-#### Neural Networks (`neural_forecast/`, `test_meteo_input/`)
+This project implements and compares multiple modeling approaches. See [`docs/MODELS_OVERVIEW.md`](docs/MODELS_OVERVIEW.md) for comprehensive documentation.
 
-- **LSTM/GRU Models**: Regional and single-basin approaches
-- **Input Features**: Precipitation, temperature, static catchment attributes
-- **Training Strategy**: Temporal split (2009-2016 train, 2017-2018 validation, 2019-2020 test)
-- **Frameworks**: NeuralHydrology library integration
+#### Neural Networks (LSTM)
 
-#### Conceptual Models (`conceptual_runs/`)
+⚠️ **Status**: Completed research using external [NeuralHydrology](https://github.com/neuralhydrology/neuralhydrology) library. Configurations stored in `archive/`.
 
-- **HBV Model**: Snow accumulation/melt, soil moisture, runoff generation
-- **GR4J Model**: Production store, routing store, unit hydrographs
-- **Calibration**: Maximum Likelihood Estimation (MLE)
-- **Validation**: Multi-objective optimization (NSE, KGE, RMSE)
+- **Published work**: Best overall performance (median NSE: 0.72)
+- **Key findings**: Static attributes improve NSE from 0.42 to 0.64 (996 watersheds)
+- **Spatial transfer**: Can predict ungauged basins
+- **Hidden states**: Can recover unobserved hydrological variables
 
-#### Machine Learning (`conclusions/`)
+**Key publications**:
+- Ayzel et al. (2021): "Development of a Regional Gridded Runoff Dataset Using Long Short-Term Memory Networks" - *Hydrology*, 8, 6
+- Ayzel & Abramov (2022): "OpenForecast: An Assessment of the Operational Run in 2020–2021" - *Geosciences*, 12, 67
 
-- **Random Forest Regressor**: Non-linear relationship modeling
-- **Feature Engineering**: Temporal lags, moving averages, seasonal components
-- **Cross-validation**: Spatial and temporal validation strategies
+
 
 ### 3. Model Evaluation
 
@@ -142,29 +149,6 @@ The main goal of this research is to develop approaches for modeling daily avera
 
 ## Key Findings
 
-### Main Research Conclusions
-
-1. **Precipitation Dataset Impact**: The quality of river flow modeling significantly depends on the choice of meteorological data source, with ensemble approaches using multiple precipitation reanalyses providing the best results at regional scale.
-
-2. **Physiographic Integration**: Inclusion of physiographic information in deep learning architectures substantially improves modeling quality - median Nash-Sutcliffe coefficient for 996 watersheds increased from 0.42 to 0.64.
-
-3. **Knowledge Transfer**: LSTM modeling enables transfer of knowledge extracted from observed watersheds to ungauged basins through the ability to identify stable relationships between meteorological and hydrological parameters.
-
-4. **Hidden State Interpretation**: LSTM models can extract and reproduce information about unobserved hydrometeorological characteristics such as evaporation, moisture storage, snow depth, and groundwater flow using only input meteorological data.
-
-### Model Performance Results
-
-1. **Neural Networks**: Best overall performance (median NSE: 0.72)
-2. **HBV Model**: Strong performance in snow-dominated catchments (median NSE: 0.65)
-3. **GR4J Model**: Reliable for temperate regions (median NSE: 0.61)
-4. **Random Forest**: Good for non-linear relationships (median NSE: 0.58)
-
-### Regional Patterns
-
-- **Arctic basins**: Neural networks with ERA5-Land precipitation
-- **Temperate regions**: HBV with MSWEP precipitation
-- **Mountainous areas**: LSTM with multiple precipitation inputs
-- **Arid zones**: Random Forest with GPCP precipitation
 
 ## Practical Applications
 
@@ -229,6 +213,11 @@ python -c "import torch; print(torch.cuda.is_available())"
 
 ### Basic Usage
 
+For comprehensive documentation, see:
+- **Model overview and selection**: [`docs/MODELS_OVERVIEW.md`](docs/MODELS_OVERVIEW.md)
+- **Conceptual models (HBV, GR4J)**: [`docs/CONCEPTUAL_MODELS.md`](docs/CONCEPTUAL_MODELS.md)
+- **Machine learning models (RFR)**: [`docs/MACHINE_LEARNING_MODELS.md`](docs/MACHINE_LEARNING_MODELS.md)
+
 #### 1. Watershed Delineation
 
 ```python
@@ -258,14 +247,34 @@ meteo_grid = Gridder(
 meteo_grid.grid_value_ws()
 ```
 
-#### 3. Neural Network Training
+#### 3. Model Training
 
-```python
-from neuralhydrology.nh_run import start_run
-from pathlib import Path
+**HBV Model**:
+```bash
+conda activate Geo
+python scripts/hbv_train.py
+# Results in: data/optimization/hbv_results/
+```
 
-# Train LSTM model
-start_run(config_file=Path("./configs/lstm_config.yml"))
+**GR4J Model**:
+```bash
+conda activate Geo
+python scripts/gr4j_train.py
+# Results in: data/optimization/gr4j_results/
+```
+
+**Random Forest (basin-specific)**:
+```bash
+conda activate Geo
+python scripts/rfr_train.py
+# Results in: data/optimization/rfr_results/
+```
+
+**Random Forest Spatial (regional LOBO)**:
+```bash
+conda activate Geo
+python scripts/rfr_spatial_train.py
+# Results in: data/optimization/rfr_spatial_results/
 ```
 
 #### 4. Model Evaluation
@@ -277,6 +286,36 @@ from conclusions.scripts.hydro_metrics import nse, kge, rmse
 nse_score = nse(predictions, observations)
 kge_score = kge(predictions, observations)
 rmse_score = rmse(predictions, observations)
+```
+
+#### 5. Load and Use Trained Models
+
+**Conceptual models (HBV/GR4J)**:
+```python
+import json
+import pandas as pd
+from src.models.hbv.hbv import simulation
+
+# Load parameters
+with open("data/optimization/hbv_results/70158/best_parameters.json") as f:
+    params = json.load(f)["parameters"]
+
+# Load data and run simulation
+data = pd.read_csv("basin_data.csv")  # prec, temp, evap
+discharge = simulation(data, params)
+```
+
+**Random Forest models**:
+```python
+import joblib
+import pandas as pd
+
+# Load model
+model = joblib.load("data/optimization/rfr_results/70158/best_model.joblib")
+
+# Predict discharge
+X_new = pd.read_csv("features.csv")
+discharge = model.predict(X_new)
 ```
 
 ## File Organization
@@ -333,16 +372,52 @@ The research has resulted in several registered databases:
 
 This codebase supports research in:
 
-- **Comparative Hydrology**: Multi-dataset precipitation evaluation
-- **Machine Learning**: Neural network applications in hydrology
-- **Climate Change**: CMIP model integration and future projections
+- **Comparative Hydrology**: Multi-model evaluation across diverse catchments
+- **Machine Learning in Hydrology**: Feature engineering, spatial transfer learning
+- **Climate Change Studies**: Model transferability under changing conditions
 - **Regional Hydrology**: Russian river basin characterization
-- **Model Intercomparison**: Benchmarking different modeling approaches
-- **ESG Risk Assessment**: Flood modeling for financial institutions
+- **Model Intercomparison**: Benchmarking conceptual vs. ML vs. DL approaches
+- **ESG Risk Assessment**: Flood modeling for financial institutions (Sberbank implementation)
+- **Ungauged Basin Prediction**: Spatial transfer using static attributes
+
+## Documentation
+
+### 📚 Main Documentation Files
+
+| Document | Description | When to Read |
+|----------|-------------|--------------|
+| **[README.md](README.md)** (this file) | Project overview, installation, quick start | **Start here** |
+| **[docs/MODELS_OVERVIEW.md](docs/MODELS_OVERVIEW.md)** | All models comparison, selection guide | Choosing a model |
+| **[docs/CONCEPTUAL_MODELS.md](docs/CONCEPTUAL_MODELS.md)** | HBV and GR4J detailed documentation | Using conceptual models |
+| **[docs/MACHINE_LEARNING_MODELS.md](docs/MACHINE_LEARNING_MODELS.md)** | RFR implementations (basin & spatial) | Using ML models |
+
+### 📖 Model-Specific Documentation
+
+| Model | Main Doc | Implementation Doc | When to Use |
+|-------|----------|-------------------|-------------|
+| **HBV** | [CONCEPTUAL_MODELS.md](docs/CONCEPTUAL_MODELS.md) | `src/models/hbv/` | Snow-dominated basins |
+| **GR4J** | [CONCEPTUAL_MODELS.md](docs/CONCEPTUAL_MODELS.md) | `src/models/gr4j/` | Temperate regions, fast computation |
+| **RFR** | [MACHINE_LEARNING_MODELS.md](docs/MACHINE_LEARNING_MODELS.md) | `src/models/rfr/README.md` | Gauged basins, feature interpretation |
+| **RFR-Spatial** | [MACHINE_LEARNING_MODELS.md](docs/MACHINE_LEARNING_MODELS.md) | `src/models/rfr_spatial/README.md` | Ungauged basin prediction |
+| **LSTM/GRU** | Publications (see below) | `archive/` (completed) | Best accuracy (requires NeuralHydrology) |
+
+### 🎯 Quick Navigation
+
+**Want to...**
+- **Compare all models?** → Read [MODELS_OVERVIEW.md](docs/MODELS_OVERVIEW.md)
+- **Train HBV or GR4J?** → Read [CONCEPTUAL_MODELS.md](docs/CONCEPTUAL_MODELS.md) → Run `scripts/hbv_train.py` or `scripts/gr4j_train.py`
+- **Train Random Forest?** → Read [MACHINE_LEARNING_MODELS.md](docs/MACHINE_LEARNING_MODELS.md) → Run `scripts/rfr_train.py`
+- **Predict ungauged basins?** → Read [MACHINE_LEARNING_MODELS.md](docs/MACHINE_LEARNING_MODELS.md) (RFR-Spatial section) → Run `scripts/rfr_spatial_train.py`
+- **Understand LSTM results?** → Read publications below, check `archive/` directory
+
+---
 
 ## Data Availability
 
-The unified digital database is openly available on Zenodo platform [Abramov, Kurochkina, 2023] <https://zenodo.org/records/8432070> and the source code is available on GitHub at <https://github.com/dmbrmv/my_dissertation>.
+The unified digital database is openly available:
+- **Zenodo Repository**: <https://zenodo.org/records/8432070> [Abramov, Kurochkina, 2023]
+- **Source Code**: <https://github.com/dmbrmv/my_dissertation>
+- **License**: Creative Commons Attribution 4.0 International (CC-BY-4.0)
 
 ## Citation
 

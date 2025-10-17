@@ -1,0 +1,518 @@
+2025-10-17 19:54:06 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 19:54:06 | INFO     | PhDLogger | test_improved | TESTING IMPROVED CALIBRATION ON GAUGE 10007
+2025-10-17 19:54:06 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 19:54:06 | ERROR    | PhDLogger | test_improved | Gauge 10007 not found!
+2025-10-17 19:57:11 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 19:57:11 | INFO     | PhDLogger | test_improved | TESTING IMPROVED CALIBRATION ON GAUGE 75257
+2025-10-17 19:57:11 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 19:57:12 | INFO     | PhDLogger | test_improved | Gauge latitude: 58.2487°N
+2025-10-17 19:57:12 | INFO     | PhDLogger | test_improved | Loading data for gauge 75257...
+2025-10-17 19:57:12 | INFO     | PhDLogger | test_improved | Data range: 2008-01-01 00:00:00 to 2020-12-31 00:00:00
+2025-10-17 19:57:12 | INFO     | PhDLogger | test_improved | Data shape: (4749, 7)
+2025-10-17 19:57:12 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 19:57:12 | INFO     | PhDLogger | test_improved | RUNNING OPTIMIZATION (100 trials, 2-year warm-up)
+2025-10-17 19:57:12 | INFO     | PhDLogger | test_improved | ================================================================================
+
+2025-10-17 19:57:12 | INFO     | PhDLogger | main_gr4j_optuna | Using composite 4-objective optimization: test_improved_75257_e5l
+2025-10-17 19:57:12 | INFO     | PhDLogger | main_gr4j_optuna | Optimization started at 2025-10-17 19:57:12.279322 with 2-year warm-up
+2025-10-17 19:57:12 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:12 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:12 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:12 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:12 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:12 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:12 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:12 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:12 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:12 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:12 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:13 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:13 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:13 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:13 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:13 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:13 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:13 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:13 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:13 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:13 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:13 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:13 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:13 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:13 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:14 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:14 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:14 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:14 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:14 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:14 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:14 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:14 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:14 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:14 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:14 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:14 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:14 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:14 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:14 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:15 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:15 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:15 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:15 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:15 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:15 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:15 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:15 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:15 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:15 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:15 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:15 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:15 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:15 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:15 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:16 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:16 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:16 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:16 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:16 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:16 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:16 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:16 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:16 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:16 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:16 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:16 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:16 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:16 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:16 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:16 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:17 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:17 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:17 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:17 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:17 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:17 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:17 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:17 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:17 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:17 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:17 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:17 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:17 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:17 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:18 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:18 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:18 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:18 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:18 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:18 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:18 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:18 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:18 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:18 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:18 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:18 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:18 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:18 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:18 | WARNING  | PhDLogger | main_gr4j_optuna | Insufficient data for 2-year warm-up. Using available data from 2008-01-01 00:00:00
+2025-10-17 19:57:18 | INFO     | PhDLogger | main_gr4j_optuna | Optimization completed in 6.7s with 4 Pareto-optimal solutions
+2025-10-17 19:57:53 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 19:57:53 | INFO     | PhDLogger | test_improved | TESTING IMPROVED CALIBRATION ON GAUGE 75257
+2025-10-17 19:57:53 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 19:57:53 | INFO     | PhDLogger | test_improved | Gauge latitude: 58.2487°N
+2025-10-17 19:57:53 | INFO     | PhDLogger | test_improved | Loading data for gauge 75257...
+2025-10-17 19:57:53 | INFO     | PhDLogger | test_improved | Data range: 2008-01-01 00:00:00 to 2020-12-31 00:00:00
+2025-10-17 19:57:53 | INFO     | PhDLogger | test_improved | Data shape: (4749, 7)
+2025-10-17 19:57:53 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 19:57:53 | INFO     | PhDLogger | test_improved | RUNNING OPTIMIZATION (100 trials, 2-year warm-up)
+2025-10-17 19:57:53 | INFO     | PhDLogger | test_improved | ================================================================================
+
+2025-10-17 19:57:53 | INFO     | PhDLogger | main_gr4j_optuna | Using composite 4-objective optimization: test_improved_75257_e5l
+2025-10-17 19:57:53 | INFO     | PhDLogger | main_gr4j_optuna | Optimization started at 2025-10-17 19:57:53.740273 with 2-year warm-up
+2025-10-17 19:58:00 | INFO     | PhDLogger | main_gr4j_optuna | Optimization completed in 6.8s with 4 Pareto-optimal solutions
+2025-10-17 19:58:16 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 19:58:16 | INFO     | PhDLogger | test_improved | TESTING IMPROVED CALIBRATION ON GAUGE 75257
+2025-10-17 19:58:16 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 19:58:16 | INFO     | PhDLogger | test_improved | Gauge latitude: 58.2487°N
+2025-10-17 19:58:16 | INFO     | PhDLogger | test_improved | Loading data for gauge 75257...
+2025-10-17 19:58:17 | INFO     | PhDLogger | test_improved | Data range: 2008-01-01 00:00:00 to 2020-12-31 00:00:00
+2025-10-17 19:58:17 | INFO     | PhDLogger | test_improved | Data shape: (4749, 7)
+2025-10-17 19:58:17 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 19:58:17 | INFO     | PhDLogger | test_improved | RUNNING OPTIMIZATION (100 trials, 2-year warm-up)
+2025-10-17 19:58:17 | INFO     | PhDLogger | test_improved | ================================================================================
+
+2025-10-17 19:58:17 | INFO     | PhDLogger | main_gr4j_optuna | Using composite 4-objective optimization: test_improved_75257_e5l
+2025-10-17 19:58:17 | INFO     | PhDLogger | main_gr4j_optuna | Optimization started at 2025-10-17 19:58:17.086378 with 2-year warm-up
+2025-10-17 19:58:23 | INFO     | PhDLogger | main_gr4j_optuna | Optimization completed in 6.8s with 4 Pareto-optimal solutions
+2025-10-17 20:01:17 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:01:17 | INFO     | PhDLogger | test_improved | TESTING IMPROVED CALIBRATION ON GAUGE 75257
+2025-10-17 20:01:17 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:01:17 | INFO     | PhDLogger | test_improved | Gauge latitude: 58.2487°N
+2025-10-17 20:01:17 | INFO     | PhDLogger | test_improved | Loading data for gauge 75257...
+2025-10-17 20:01:17 | INFO     | PhDLogger | test_improved | Data range: 2008-01-01 00:00:00 to 2020-12-31 00:00:00
+2025-10-17 20:01:17 | INFO     | PhDLogger | test_improved | Data shape: (4749, 7)
+2025-10-17 20:01:17 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:01:17 | INFO     | PhDLogger | test_improved | RUNNING OPTIMIZATION (100 trials, 2-year warm-up)
+2025-10-17 20:01:17 | INFO     | PhDLogger | test_improved | ================================================================================
+
+2025-10-17 20:01:17 | INFO     | PhDLogger | main_gr4j_optuna | Using composite 4-objective optimization: test_improved_75257_e5l
+2025-10-17 20:01:17 | INFO     | PhDLogger | main_gr4j_optuna | Optimization started at 2025-10-17 20:01:17.735077 with 2-year warm-up
+2025-10-17 20:01:24 | INFO     | PhDLogger | main_gr4j_optuna | Optimization completed in 7.0s with 4 Pareto-optimal solutions
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | OPTIMIZATION RESULTS
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | Found 4 Pareto-optimal solutions
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | 
+Top 5 by KGE:
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | BEST PARAMETERS (weighted selection):
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   x1  :   15.389
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   x2  :    1.335
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   x3  :  363.028
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   x4  :    0.547
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   ctg :    0.623
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   kf  :    1.768
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   tt  :    0.903
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | 
+Parameter realism check:
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   CTG: 0.623 ✓ OK
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   Kf:  1.768 ⚠ Outside typical range (2-6)
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   TT:  0.903 ✓ OK
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | VALIDATION RESULTS
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | Overall metrics:
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   KGE:    0.450
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   NSE:    0.424
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   logNSE: 0.549
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   PBIAS:  +0.02%
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   RMSE:   0.629 mm/day
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | 
+Flow regime performance (NSE by quantile):
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   Very low (Q<Q10):  -345.506
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   Low (Q10-Q30):     -235.700
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   Medium (Q30-Q70):  -28.630
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   High (Q70-Q90):    -0.430
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   Very high (Q>Q90): -2.092
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | SUCCESS CRITERIA:
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   ✗ KGE > 0.6
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   ✗ NSE > 0.5
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   ✓ logNSE > 0.4
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   ✓ |PBIAS| < 15%
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   ✗ All regime NSE > 0.3
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | 
+⚠ Some checks failed (may be normal for difficult basins)
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | ✅ TEST COMPLETED SUCCESSFULLY!
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved | 
+If results look good, run full calibration with:
+2025-10-17 20:01:24 | INFO     | PhDLogger | test_improved |   python scripts/gr4j_optuna.py
+2025-10-17 20:04:31 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:04:31 | INFO     | PhDLogger | test_improved | TESTING IMPROVED CALIBRATION ON GAUGE 75257
+2025-10-17 20:04:31 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:04:32 | INFO     | PhDLogger | test_improved | Gauge latitude: 58.2487°N
+2025-10-17 20:04:32 | INFO     | PhDLogger | test_improved | Loading data for gauge 75257...
+2025-10-17 20:04:32 | INFO     | PhDLogger | test_improved | Data range: 2008-01-01 00:00:00 to 2020-12-31 00:00:00
+2025-10-17 20:04:32 | INFO     | PhDLogger | test_improved | Data shape: (4749, 7)
+2025-10-17 20:04:32 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:04:32 | INFO     | PhDLogger | test_improved | RUNNING OPTIMIZATION (100 trials, 2-year warm-up)
+2025-10-17 20:04:32 | INFO     | PhDLogger | test_improved | ================================================================================
+
+2025-10-17 20:04:32 | INFO     | PhDLogger | main_gr4j_optuna | Using composite 4-objective optimization: test_improved_75257_e5l
+2025-10-17 20:04:32 | INFO     | PhDLogger | main_gr4j_optuna | Optimization started at 2025-10-17 20:04:32.319423 with 2-year warm-up
+2025-10-17 20:04:39 | INFO     | PhDLogger | main_gr4j_optuna | Optimization completed in 6.9s with 4 Pareto-optimal solutions
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | OPTIMIZATION RESULTS
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | Found 4 Pareto-optimal solutions
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | 
+Top 5 by KGE:
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | BEST PARAMETERS (weighted selection):
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   x1  :   15.389
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   x2  :    1.335
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   x3  :  363.028
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   x4  :    0.547
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   ctg :    0.623
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   kf  :    1.768
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   tt  :    0.903
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | 
+Parameter realism check:
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   CTG: 0.623 ✓ OK
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   Kf:  1.768 ⚠ Outside typical range (2-6)
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   TT:  0.903 ✓ OK
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | VALIDATION RESULTS
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | Overall metrics:
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   KGE:    0.450
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   NSE:    0.424
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   logNSE: 0.549
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   PBIAS:  +0.02%
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   RMSE:   0.629 mm/day
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | 
+Flow regime performance (NSE by quantile):
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   Very low (Q<Q10):  -345.506
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   Low (Q10-Q30):     -235.700
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   Medium (Q30-Q70):  -28.630
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   High (Q70-Q90):    -0.430
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   Very high (Q>Q90): -2.092
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | SUCCESS CRITERIA:
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   ✗ KGE > 0.6
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   ✗ NSE > 0.5
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   ✓ logNSE > 0.4
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   ✓ |PBIAS| < 15%
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   ✗ All regime NSE > 0.3
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | 
+⚠ Some checks failed (may be normal for difficult basins)
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | ✅ TEST COMPLETED SUCCESSFULLY!
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved | 
+If results look good, run full calibration with:
+2025-10-17 20:04:39 | INFO     | PhDLogger | test_improved |   python scripts/gr4j_optuna.py
+2025-10-17 20:04:56 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:04:56 | INFO     | PhDLogger | test_improved | TESTING IMPROVED CALIBRATION ON GAUGE 75257
+2025-10-17 20:04:56 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:04:56 | INFO     | PhDLogger | test_improved | Gauge latitude: 58.2487°N
+2025-10-17 20:04:56 | INFO     | PhDLogger | test_improved | Loading data for gauge 75257...
+2025-10-17 20:04:56 | INFO     | PhDLogger | test_improved | Data range: 2008-01-01 00:00:00 to 2020-12-31 00:00:00
+2025-10-17 20:04:56 | INFO     | PhDLogger | test_improved | Data shape: (4749, 7)
+2025-10-17 20:04:56 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:04:56 | INFO     | PhDLogger | test_improved | RUNNING OPTIMIZATION (100 trials, 2-year warm-up)
+2025-10-17 20:04:56 | INFO     | PhDLogger | test_improved | ================================================================================
+
+2025-10-17 20:04:56 | INFO     | PhDLogger | main_gr4j_optuna | Using composite 4-objective optimization: test_improved_75257_e5l
+2025-10-17 20:04:56 | INFO     | PhDLogger | main_gr4j_optuna | Optimization started at 2025-10-17 20:04:56.577498 with 2-year warm-up
+2025-10-17 20:05:03 | INFO     | PhDLogger | main_gr4j_optuna | Optimization completed in 7.2s with 4 Pareto-optimal solutions
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | OPTIMIZATION RESULTS
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | Found 4 Pareto-optimal solutions
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | 
+Top 5 by KGE:
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | BEST PARAMETERS (weighted selection):
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   x1  :   15.389
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   x2  :    1.335
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   x3  :  363.028
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   x4  :    0.547
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   ctg :    0.623
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   kf  :    1.768
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   tt  :    0.903
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | 
+Parameter realism check:
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   CTG: 0.623 ✓ OK
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   Kf:  1.768 ⚠ Outside typical range (2-6)
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   TT:  0.903 ✓ OK
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | VALIDATION RESULTS
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | Overall metrics:
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   KGE:    0.450
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   NSE:    0.424
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   logNSE: 0.549
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   PBIAS:  +0.02%
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   RMSE:   0.629 mm/day
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | 
+Flow regime performance (NSE by quantile):
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   Very low (Q<Q10):  -345.506
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   Low (Q10-Q30):     -235.700
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   Medium (Q30-Q70):  -28.630
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   High (Q70-Q90):    -0.430
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   Very high (Q>Q90): -2.092
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | SUCCESS CRITERIA:
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   ✗ KGE > 0.6
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   ✗ NSE > 0.5
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   ✓ logNSE > 0.4
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   ✓ |PBIAS| < 15%
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   ✗ All regime NSE > 0.3
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | 
+⚠ Some checks failed (may be normal for difficult basins)
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | ✅ TEST COMPLETED SUCCESSFULLY!
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved | 
+If results look good, run full calibration with:
+2025-10-17 20:05:03 | INFO     | PhDLogger | test_improved |   python scripts/gr4j_optuna.py
+2025-10-17 20:05:55 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:05:55 | INFO     | PhDLogger | test_improved | TESTING IMPROVED CALIBRATION ON GAUGE 75257
+2025-10-17 20:05:55 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:05:56 | INFO     | PhDLogger | test_improved | Gauge latitude: 58.2487°N
+2025-10-17 20:05:56 | INFO     | PhDLogger | test_improved | Loading data for gauge 75257...
+2025-10-17 20:05:56 | INFO     | PhDLogger | test_improved | Data range: 2008-01-01 00:00:00 to 2020-12-31 00:00:00
+2025-10-17 20:05:56 | INFO     | PhDLogger | test_improved | Data shape: (4749, 7)
+2025-10-17 20:05:56 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:05:56 | INFO     | PhDLogger | test_improved | RUNNING OPTIMIZATION (1000 trials, 2-year warm-up)
+2025-10-17 20:05:56 | INFO     | PhDLogger | test_improved | ================================================================================
+
+2025-10-17 20:05:56 | INFO     | PhDLogger | main_gr4j_optuna | Using composite 4-objective optimization: test_improved_75257_e5l
+2025-10-17 20:05:56 | INFO     | PhDLogger | main_gr4j_optuna | Optimization started at 2025-10-17 20:05:56.275064 with 2-year warm-up
+2025-10-17 20:06:26 | INFO     | PhDLogger | main_gr4j_optuna | Trial 500: KGE=0.43 LowFlow=0.40 HighFlow=0.50
+2025-10-17 20:06:55 | INFO     | PhDLogger | main_gr4j_optuna | Trial 1000: KGE=0.85 LowFlow=-1.13 HighFlow=0.51
+2025-10-17 20:06:55 | INFO     | PhDLogger | main_gr4j_optuna | Optimization completed in 59.2s with 47 Pareto-optimal solutions
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | OPTIMIZATION RESULTS
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | Found 47 Pareto-optimal solutions
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | 
+Top 5 by KGE:
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | BEST PARAMETERS (weighted selection):
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   x1  :   42.040
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   x2  :    1.335
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   x3  :  121.671
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   x4  :    0.547
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   ctg :    0.512
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   kf  :    2.545
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   tt  :    1.364
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | 
+Parameter realism check:
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   CTG: 0.512 ✓ OK
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   Kf:  2.545 ✓ OK
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   TT:  1.364 ⚠ Outside typical range (-1 to +1)
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | VALIDATION RESULTS
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | Overall metrics:
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   KGE:    0.780
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   NSE:    0.570
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   logNSE: 0.712
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   PBIAS:  +3.07%
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   RMSE:   0.544 mm/day
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | 
+Flow regime performance (NSE by quantile):
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   Very low (Q<Q10):  -135.661
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   Low (Q10-Q30):     -60.905
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   Medium (Q30-Q70):  -11.592
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   High (Q70-Q90):    -2.071
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   Very high (Q>Q90): -1.010
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | SUCCESS CRITERIA:
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   ✓ KGE > 0.6
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   ✓ NSE > 0.5
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   ✓ logNSE > 0.4
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   ✓ |PBIAS| < 15%
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   ✗ All regime NSE > 0.3
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | 
+⚠ Some checks failed (may be normal for difficult basins)
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | ✅ TEST COMPLETED SUCCESSFULLY!
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved | 
+If results look good, run full calibration with:
+2025-10-17 20:06:55 | INFO     | PhDLogger | test_improved |   python scripts/gr4j_optuna.py
+2025-10-17 20:09:43 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:09:43 | INFO     | PhDLogger | test_improved | TESTING IMPROVED CALIBRATION ON GAUGE 75257
+2025-10-17 20:09:43 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:09:43 | INFO     | PhDLogger | test_improved | Gauge latitude: 58.2487°N
+2025-10-17 20:09:43 | INFO     | PhDLogger | test_improved | Loading data for gauge 75257...
+2025-10-17 20:09:43 | INFO     | PhDLogger | test_improved | Data range: 2008-01-01 00:00:00 to 2020-12-31 00:00:00
+2025-10-17 20:09:43 | INFO     | PhDLogger | test_improved | Data shape: (4749, 7)
+2025-10-17 20:09:43 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:09:43 | INFO     | PhDLogger | test_improved | RUNNING OPTIMIZATION (1000 trials, 2-year warm-up)
+2025-10-17 20:09:43 | INFO     | PhDLogger | test_improved | ================================================================================
+
+2025-10-17 20:09:43 | INFO     | PhDLogger | main_gr4j_optuna | Using composite 4-objective optimization: test_improved_75257_e5l
+2025-10-17 20:09:43 | INFO     | PhDLogger | main_gr4j_optuna | Optimization started at 2025-10-17 20:09:43.808657 with 2-year warm-up
+2025-10-17 20:10:13 | INFO     | PhDLogger | main_gr4j_optuna | Trial 500: KGE=0.43 LowFlow=0.40 HighFlow=0.50
+2025-10-17 20:10:41 | INFO     | PhDLogger | main_gr4j_optuna | Trial 1000: KGE=0.85 LowFlow=-1.13 HighFlow=0.51
+2025-10-17 20:10:42 | INFO     | PhDLogger | main_gr4j_optuna | Optimization completed in 58.2s with 47 Pareto-optimal solutions
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | OPTIMIZATION RESULTS
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | Found 47 Pareto-optimal solutions
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | 
+Top 5 by KGE:
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | BEST PARAMETERS (weighted selection):
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   x1  :   42.040
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   x2  :    1.335
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   x3  :  121.671
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   x4  :    0.547
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   ctg :    0.512
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   kf  :    2.545
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   tt  :    1.364
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | 
+Parameter realism check:
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   CTG: 0.512 ✓ OK
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   Kf:  2.545 ✓ OK
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   TT:  1.364 ⚠ Outside typical range (-1 to +1)
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | VALIDATION RESULTS
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | Overall metrics:
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   KGE:    0.780
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   NSE:    0.570
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   logNSE: 0.712
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   PBIAS:  +3.07%
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   RMSE:   0.544 mm/day
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | 
+Flow regime performance (NSE by quantile):
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   Very low (Q<Q10):  -135.661
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   Low (Q10-Q30):     -60.905
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   Medium (Q30-Q70):  -11.592
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   High (Q70-Q90):    -2.071
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   Very high (Q>Q90): -1.010
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | SUCCESS CRITERIA:
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   ✓ KGE > 0.6
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   ✓ NSE > 0.5
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   ✓ logNSE > 0.4
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   ✓ |PBIAS| < 15%
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   ✗ All regime NSE > 0.3
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | 
+⚠ Some checks failed (may be normal for difficult basins)
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | 
+================================================================================
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | ✅ TEST COMPLETED SUCCESSFULLY!
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | ================================================================================
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved | 
+If results look good, run full calibration with:
+2025-10-17 20:10:42 | INFO     | PhDLogger | test_improved |   python scripts/gr4j_optuna.py

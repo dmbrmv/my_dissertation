@@ -243,8 +243,8 @@ def early_stopping_callback_composite(thresholds: dict | None = None):
 
 
 def progress_callback(study: optuna.Study, trial: optuna.trial.FrozenTrial) -> None:
-    """Log progress every 500 trials with composite metrics."""
-    if (trial.number + 1) % 500 == 0 and len(trial.values) >= 3:
+    """Log progress every 1000 trials with composite metrics."""
+    if (trial.number + 1) % 1000 == 0 and len(trial.values) >= 3:
         logger.info(
             f"Trial {trial.number + 1}: KGE={trial.values[0]:.2f} "
             f"LowFlow={trial.values[1]:.2f} HighFlow={trial.values[2]:.2f}"
@@ -287,7 +287,6 @@ def run_optimization(
         def obj_func(trial: optuna.Trial) -> tuple:
             return multi_objective_detailed(trial, data, calibration_period, warmup_years)
 
-        logger.info(f"Using detailed 6-objective optimization: {study_name}")
     else:
         n_objectives = 4
 
@@ -296,7 +295,9 @@ def run_optimization(
                 trial, data, calibration_period, warmup_years
             )
 
-        logger.info(f"Using composite 4-objective optimization: {study_name}")
+    # Suppress Optuna logging during study creation
+    original_verbosity = optuna.logging.get_verbosity()
+    optuna.logging.set_verbosity(optuna.logging.ERROR)
 
     sampler = optuna.samplers.NSGAIISampler(seed=42)
     study = optuna.create_study(
@@ -306,15 +307,12 @@ def run_optimization(
         load_if_exists=True,
     )
 
-    try:
-        start_time = pd.Timestamp.now()
-        logger.info(
-            f"Optimization started at {start_time} with {warmup_years}-year warm-up"
-        )
+    optuna.logging.set_verbosity(original_verbosity)
 
+    try:
+        # Suppress Optuna's per-trial logging
         original_verbosity = optuna.logging.get_verbosity()
-        if not verbose:
-            optuna.logging.set_verbosity(optuna.logging.WARNING)
+        optuna.logging.set_verbosity(optuna.logging.ERROR)
 
         callbacks = [progress_callback]
         if not use_detailed:
@@ -334,13 +332,6 @@ def run_optimization(
         )
 
         optuna.logging.set_verbosity(original_verbosity)
-
-        end_time = pd.Timestamp.now()
-        duration = (end_time - start_time).total_seconds()
-        logger.info(
-            f"Optimization completed in {duration:.1f}s "
-            f"with {len(study.best_trials)} Pareto-optimal solutions"
-        )
 
     except Exception as e:
         logger.error(f"Optimization failed: {e}")

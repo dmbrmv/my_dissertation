@@ -5,11 +5,10 @@ __pycache__/
 .DS_Store
 .ipynb_checkpoints
 .lr_find*
-test.ipynb
-test_2.ipynb
 .idea
 .vscode
 init
+.github/
 
 ## ignore in esimo
 chromedriver_linux64.zip
@@ -20,51 +19,9 @@ esimo_loader/chrome_folder
 esimo_loader/esimo_dw_logger.log
 esimo_loader/data.csv
 
-
-## ignore in parsers
-ais_parsers/data
-ais_parsers/data_2
-ais_parsers/ais_results_2021
-ais_parsers/results_2024
-
-## ignore inputer
-
-input_creator/Q_H
-
 ## parent data folder
 data/
-# ignore runs
-test_meteo_input/configs
-test_meteo_input/runs*
 
-DELETE_ME/
-
-# ignore visualisator helper
-visualizations/images
-visualizations/recovery
-visualizations/Q_H
-paper_visualisation/
-
-data_builders/test_data
-
-# conceptual runs parameters
-conceptual_runs/cal_res
-conceptual_runs/hbv_*
-conceptual_runs/gr4j_*
-
-conclusions/results
-
-# neural hydrology
-neural_forecast/model_runs
-neural_forecast/single_configs
-neural_forecast/inner_states
-
-# some auxiliary data
-metric_viewer/
-geometry/
-
-# lfs
-meteo_grids_parser/data/russia_ws.gpkg 
-icon_parser/data/static_icon/icon_weights.nc
 # dissertation text folder
 text/
+logs/

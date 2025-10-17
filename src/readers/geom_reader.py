@@ -1,8 +1,13 @@
+from pathlib import Path
+
 import geopandas as gpd
 
 from src.utils.logger import setup_logger
 
-loader_logger = setup_logger("geom_loader", log_file="logs/data_loader.log")
+loader_logger = setup_logger(
+    "geom_loader",
+    log_file=Path(__file__).parent.parent.parent / "logs" / "data_loader.log",
+)
 
 
 def load_geodata(
