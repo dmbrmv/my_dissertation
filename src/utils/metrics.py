@@ -2,7 +2,8 @@
 
 This module contains functions for calculating common performance metrics
 used in hydrology to evaluate models. The metrics include NSE, KGE, PBIAS,
-RMSE, log-transformed NSE, r-squared, and peak-flow relative error.
+RMSE, log-transformed NSE, r-squared, Pearson correlation, and peak-flow
+relative error.
 """
 
 import numpy as np
@@ -171,9 +172,10 @@ def log_nash_sutcliffe_efficiency(
 
 
 def r_squared(observed: np.ndarray, simulated: np.ndarray) -> float:
-    """Calculate coefficient of determination (R²) between observed and simulated values.
+    """Calculate coefficient of determination (R²).
 
-    R² = [Σ((Obs - mean(Obs)) * (Sim - mean(Sim)))]² / [Σ(Obs - mean(Obs))² * Σ(Sim - mean(Sim))²]
+    R² = [Σ((Obs - mean(Obs)) * (Sim - mean(Sim)))]² /
+         [Σ(Obs - mean(Obs))² * Σ(Sim - mean(Sim))²]
 
     Args:
         observed: Array of observed values
@@ -195,6 +197,39 @@ def r_squared(observed: np.ndarray, simulated: np.ndarray) -> float:
 
     # Return squared value
     return r**2
+
+
+def pearson_correlation(observed: np.ndarray, simulated: np.ndarray) -> float:
+    """Calculate Pearson correlation coefficient between observed and simulated.
+
+    Pearson correlation measures the linear relationship between two
+    variables, ranging from -1 (perfect negative correlation) to 1
+    (perfect positive correlation).
+
+    r = Σ[(Obs - mean(Obs)) * (Sim - mean(Sim))] / √[Σ(Obs - mean(Obs))² *
+    Σ(Sim - mean(Sim))²]
+
+    Args:
+        observed: Array of observed values
+        simulated: Array of simulated values
+
+    Returns:
+        Pearson correlation coefficient [-1, 1], where 1 is perfect positive
+        linear correlation, 0 is no correlation, and -1 is perfect negative
+        linear correlation
+    """
+    # Remove any paired NaN values
+    mask = ~(np.isnan(observed) | np.isnan(simulated))
+    observed = observed[mask]
+    simulated = simulated[mask]
+
+    if len(observed) < 2:
+        return np.nan
+
+    # Calculate Pearson correlation using numpy
+    r = np.corrcoef(observed, simulated)[0, 1]
+
+    return float(r)
 
 
 def peak_flow_error(observed: np.ndarray, simulated: np.ndarray, percentile: float = 95):
@@ -263,6 +298,7 @@ def evaluate_model(observed, simulated) -> dict[str, float]:
     )
     log_nse = log_nash_sutcliffe_efficiency(observed_clean, simulated_clean)
     r2 = r_squared(observed_clean, simulated_clean)
+    pearson_r = pearson_correlation(observed_clean, simulated_clean)
     pfe = peak_flow_error(observed_clean, simulated_clean)
 
     # Create metrics dictionary
@@ -274,6 +310,7 @@ def evaluate_model(observed, simulated) -> dict[str, float]:
         "MAE": float(mae),
         "logNSE": float(log_nse),
         "R2": float(r2),
+        "r": float(pearson_r),
         "PFE": float(pfe),
     }
 

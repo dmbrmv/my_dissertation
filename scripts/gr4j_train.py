@@ -10,11 +10,15 @@ This script uses multi-objective optimization with:
 from functools import partial
 import multiprocessing as mp
 from pathlib import Path
+import sys
 
 import geopandas as gpd
 import numpy as np
 import pandas as pd
 import xarray as xr
+
+sys.path.append("./")
+
 
 from src.models.gr4j import model as gr4j
 from src.models.gr4j.gr4j_optuna import run_optimization
@@ -231,9 +235,9 @@ def main() -> None:
     validation_period = ("2019-01-01", "2020-12-31")
 
     # Save to results directory
-    save_storage = Path("data/res/gr4j_optuna/")
+    save_storage = Path("data/optimization/gr4j_optuna/")
     save_storage.mkdir(parents=True, exist_ok=True)  # Optimization settings
-    n_trials = 4200  # Same as before for fair comparison
+    n_trials = 1500  # Same as before for fair comparison
     timeout = 1200  # 20 minutes per gauge/dataset
     warmup_years = 2  # NEW: 2-year warm-up (2008-2009 for calibration start 2010)
     overwrite_existing_results = False
@@ -249,17 +253,10 @@ def main() -> None:
     logger.info(f"Datasets: {', '.join(datasets)}")
     logger.info(f"Calibration period: {calibration_period[0]} to {calibration_period[1]}")
     logger.info(f"Validation period: {validation_period[0]} to {validation_period[1]}")
-    logger.info(f"Warm-up period: {warmup_years} years (NEW)")
+    logger.info(f"Warm-up period: {warmup_years} years")
     logger.info(f"Trials per gauge/dataset: {n_trials}")
     logger.info(f"Timeout per gauge/dataset: {timeout}s ({timeout / 60:.1f} min)")
     logger.info(f"Results directory: {save_storage}")
-    logger.info("=" * 80)
-    logger.info("Key improvements:")
-    logger.info("  ✓ 2-year warm-up for snowpack initialization")
-    logger.info("  ✓ Corrected CemaNeige bounds (CTG: 0-1, Kf: 1-10)")
-    logger.info("  ✓ Composite flow metrics (4 objectives)")
-    logger.info("  ✓ Enhanced low-flow weighting (35% vs 50%)")
-    logger.info("  ✓ Flow regime diagnostics")
     logger.info("=" * 80)
 
     # Run optimization in parallel

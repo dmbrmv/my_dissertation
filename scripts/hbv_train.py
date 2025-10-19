@@ -5,8 +5,11 @@ from __future__ import annotations
 from functools import partial
 import multiprocessing as mp
 from pathlib import Path
+import sys
 
 import geopandas as gpd
+
+sys.path.append("./")
 
 from src.models.hbv.hbv_calibrator import process_hbv_gauge
 from src.models.hbv.parallel import run_parallel_optimization

@@ -12,7 +12,9 @@ This script uses multi-objective optimization with:
 
 import multiprocessing as mp
 from pathlib import Path
+import sys
 
+sys.path.append("./")
 from src.models.rfr.parallel import process_rfr_gauge, run_parallel_optimization
 from src.readers.geom_reader import load_geodata
 from src.utils.logger import setup_logger

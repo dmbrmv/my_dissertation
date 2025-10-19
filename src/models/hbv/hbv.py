@@ -34,13 +34,13 @@ def simulation(
 
     Args:
         data: DataFrame with columns 'Temp' (°C), 'Prec' (mm/day), 'Evap' (mm/day).
-        params: List of 16 HBV parameters:
-            [0] beta: shape parameter for runoff contribution [1, 6]
+        params: List of 16 HBV parameters (aligned with bounds()):
+            [0] beta: runoff contribution parameter [1, 6]
             [1] cet: evaporation correction factor [0, 0.3]
             [2] fc: maximum soil moisture storage (mm) [50, 500]
-            [3] k0: recession coefficient for surface runoff [0.01, 0.4]
-            [4] k1: recession coefficient for upper groundwater [0.01, 0.4]
-            [5] k2: recession coefficient for lower groundwater [0.001, 0.15]
+            [3] k0: recession coefficient (surface) [0.01, 0.4]
+            [4] k1: recession coefficient (upper GW) [0.01, 0.4]
+            [5] k2: recession coefficient (lower GW) [0.001, 0.15]
             [6] lp: evaporation threshold (SM/FC) [0.3, 1]
             [7] maxbas: Butterworth filter order [1, 7]
             [8] perc: percolation rate (mm/day) [0, 3]
@@ -58,6 +58,7 @@ def simulation(
     temp = data["Temp"].values
     prec = data["Prec"].values
     evap = data["Evap"].values
+    day_of_year = data.index.dayofyear  # type: ignore[attr-defined]
 
     # Unpack parameters with descriptive names
     (
@@ -103,6 +104,14 @@ def simulation(
     rain = np.where(temp > tt, prec, 0.0)
     snow = np.where(temp <= tt, prec, 0.0)
     snow = sfcf * snow
+
+    # Evaporation correction based on temperature deviation from long-term mean
+    if cet > 0:
+        # Calculate long-term daily temperature averages
+        temp_df = pd.DataFrame({"temp": temp, "doy": day_of_year})
+        temp_mean_by_doy = temp_df.groupby("doy")["temp"].transform("mean").values
+        # Apply correction: Evap_corrected = (1 + CET * (T - T_mean)) * Evap
+        evap = (1 + cet * (temp - temp_mean_by_doy)) * evap
 
     # Control evaporation (non-negative)
     evap = np.where(evap > 0, evap, 0.0)
@@ -205,8 +214,8 @@ def _soil_routine(
     Returns:
         Tuple of (soil_moisture, recharge, actual_evap).
     """
-    # Calculate soil wetness
-    soil_wetness = (sm_prev / fc) ** beta
+    # Calculate soil wetness (safe division)
+    soil_wetness = (sm_prev / max(fc, 1e-8)) ** beta
     soil_wetness = np.clip(soil_wetness, 0.0, 1.0)
 
     # Calculate recharge
@@ -219,8 +228,8 @@ def _soil_routine(
     sm = sm - excess
     recharge = recharge + excess
 
-    # Calculate actual evapotranspiration
-    evap_factor = sm / (lp * fc)
+    # Calculate actual evapotranspiration (safe division)
+    evap_factor = sm / max(lp * fc, 1e-8)
     evap_factor = np.clip(evap_factor, 0.0, 1.0)
     et_actual = evap * evap_factor
     et_actual = min(sm, et_actual)
@@ -295,7 +304,7 @@ def _apply_routing(q_sim: np.ndarray, maxbas: float) -> np.ndarray:
 
 
 def bounds() -> tuple[tuple[float, float], ...]:
-    """Return parameter bounds for HBV model.
+    """Return parameter bounds for HBV model (Bergström, 1986).
 
     Returns:
         Tuple of (min, max) bounds for 16 parameters:
@@ -303,22 +312,22 @@ def bounds() -> tuple[tuple[float, float], ...]:
         pcorr, tt, cfmax, sfcf, cfr, cwh.
     """
     return (
-        (1.0, 6.0),  # beta
-        (0.0, 0.3),  # cet
-        (50.0, 500.0),  # fc
-        (0.01, 0.4),  # k0
-        (0.01, 0.4),  # k1
-        (0.001, 0.15),  # k2
-        (0.3, 1.0),  # lp
-        (1.0, 7.0),  # maxbas
-        (0.0, 3.0),  # perc
-        (0.0, 500.0),  # uzl
-        (0.5, 2.0),  # pcorr
-        (-1.5, 2.5),  # tt
-        (1.0, 10.0),  # cfmax
-        (0.4, 1.0),  # sfcf
-        (0.0, 1.0),  # cfr
-        (0.0, 0.2),  # cwh
+        (1.0, 6.0),  # beta - runoff contribution parameter
+        (0.0, 0.3),  # cet - evaporation correction factor
+        (50.0, 500.0),  # fc - maximum soil moisture storage (mm)
+        (0.01, 0.4),  # k0 - recession coefficient (surface)
+        (0.01, 0.4),  # k1 - recession coefficient (upper GW)
+        (0.001, 0.15),  # k2 - recession coefficient (lower GW)
+        (0.3, 1.0),  # lp - evaporation threshold (SM/FC)
+        (1.0, 7.0),  # maxbas - Butterworth filter order
+        (0.0, 3.0),  # perc - percolation rate (mm/day)
+        (0.0, 500.0),  # uzl - threshold for surface runoff (mm)
+        (0.5, 2.0),  # pcorr - precipitation correction factor
+        (-1.5, 2.5),  # tt - temperature threshold for snow/rain (°C)
+        (1.0, 10.0),  # cfmax - snow melt rate (mm/day/°C)
+        (0.4, 1.0),  # sfcf - snowfall correction factor
+        (0.0, 0.1),  # cfr - refreezing coefficient
+        (0.0, 0.2),  # cwh - water holding capacity in snow
     )
 
 
