@@ -33,7 +33,7 @@ def simulation(
     """Run HBV rainfall-runoff simulation with snow module.
 
     Args:
-        data: DataFrame with columns 'Temp' (°C), 'Prec' (mm/day), 'Evap' (mm/day).
+        data: DataFrame with columns 'temp' (°C), 'prcp' (mm/day), 'evap' (mm/day).
         params: List of 16 HBV parameters (aligned with bounds()):
             [0] beta: runoff contribution parameter [1, 6]
             [1] cet: evaporation correction factor [0, 0.3]
@@ -55,9 +55,9 @@ def simulation(
     Returns:
         Array of simulated runoff (mm/day).
     """
-    temp = data["Temp"].values
-    prec = data["Prec"].values
-    evap = data["Evap"].values
+    temp = data["temp"].values
+    prcp = data["prcp"].values
+    evap = data["evap"].values
     day_of_year = data.index.dayofyear  # type: ignore[attr-defined]
 
     # Unpack parameters with descriptive names
@@ -81,7 +81,7 @@ def simulation(
     ) = params
 
     # Initialize state arrays
-    n_steps = len(prec)
+    n_steps = len(prcp)
     snowpack = np.zeros(n_steps)
     snowpack[0] = 0.0001
     meltwater = np.zeros(n_steps)
@@ -98,11 +98,11 @@ def simulation(
     q_sim[0] = 0.0001
 
     # Apply precipitation correction
-    prec = pcorr * prec
+    prcp = pcorr * prcp
 
     # Separate precipitation into rain and snow
-    rain = np.where(temp > tt, prec, 0.0)
-    snow = np.where(temp <= tt, prec, 0.0)
+    rain = np.where(temp > tt, prcp, 0.0)
+    snow = np.where(temp <= tt, prcp, 0.0)
     snow = sfcf * snow
 
     # Evaporation correction based on temperature deviation from long-term mean

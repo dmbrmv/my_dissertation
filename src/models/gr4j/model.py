@@ -38,9 +38,9 @@ def simulation(data: pd.DataFrame, params: list[float]) -> np.ndarray:
 
     # Get effective precipitation considering snow if snow params provided
     if snow_params is not None:
-        prec = cema_neige.simulation(data, snow_params)
+        prcp = cema_neige.simulation(data, snow_params)
     else:
-        prec = data["prcp"].values
+        prcp = data["prcp"].values
 
     # Get potential evapotranspiration
     evap = data["pet_mm_day"].values
@@ -53,7 +53,7 @@ def simulation(data: pd.DataFrame, params: list[float]) -> np.ndarray:
     state = np.array([x1 / 2.0, x3 / 2.0])
 
     # Initialize output array
-    q_out = np.zeros(len(prec))
+    q_out = np.zeros(len(prcp))
 
     # Initialize unit hydrograph states
     uh1_state = np.zeros(nh)
@@ -64,11 +64,11 @@ def simulation(data: pd.DataFrame, params: list[float]) -> np.ndarray:
     ord_uh2 = _compute_uh2(x4, nh)
 
     # Main simulation loop
-    for t in range(len(prec)):
+    for t in range(len(prcp)):
         # Process rainfall vs. evaporation interactions
-        if prec[t] <= evap[t]:
+        if prcp[t] <= evap[t]:
             # Case: Evaporation dominates
-            net_evap = evap[t] - prec[t]
+            net_evap = evap[t] - prcp[t]
             evap_factor = min(13.0, net_evap / x1)  # Cap to avoid extreme values
             tws = np.tanh(evap_factor)
             store_ratio = state[0] / x1
@@ -83,7 +83,7 @@ def simulation(data: pd.DataFrame, params: list[float]) -> np.ndarray:
             effective_rainfall = 0.0
         else:
             # Case: Rainfall dominates
-            net_rainfall = prec[t] - evap[t]
+            net_rainfall = prcp[t] - evap[t]
             rainfall_factor = min(13.0, net_rainfall / x1)  # Cap to avoid extreme values
             tws = np.tanh(rainfall_factor)
             store_ratio = state[0] / x1

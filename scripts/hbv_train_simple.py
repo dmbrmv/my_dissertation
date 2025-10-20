@@ -179,13 +179,13 @@ def process_gauge_simple(
                 hbv_data["day_of_year"].tolist(),
                 latitude,
             )
-            hbv_data["Evap"] = np.asarray(evap, dtype=float)
+            hbv_data["evap"] = np.asarray(evap, dtype=float)
 
             # Rename columns for HBV
             hbv_data.rename(
                 columns={
-                    "t_mean_e5l": "Temp",
-                    f"prcp_{dataset}": "Prec",
+                    "t_mean_e5l": "temp",
+                    f"prcp_{dataset}": "prcp",
                 },
                 inplace=True,
             )
