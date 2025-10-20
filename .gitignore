@@ -114,7 +114,6 @@ data/cache/
 results/
 outputs/
 figures/
-plots/
 
 # Configuration with sensitive data
 secrets.yml
