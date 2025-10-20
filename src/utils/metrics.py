@@ -6,7 +6,14 @@ RMSE, log-transformed NSE, r-squared, Pearson correlation, and peak-flow
 relative error.
 """
 
+import warnings
+
 import numpy as np
+
+# Suppress overflow warnings during optimization
+# We handle extreme values explicitly with checks and return -999.0
+warnings.filterwarnings("ignore", message="overflow encountered")
+warnings.filterwarnings("ignore", message="invalid value encountered")
 
 
 def nash_sutcliffe_efficiency(observed: np.ndarray, simulated: np.ndarray) -> float:
@@ -60,20 +67,49 @@ def kling_gupta_efficiency(observed: np.ndarray, simulated: np.ndarray) -> float
     observed = observed[mask]
     simulated = simulated[mask]
 
-    if len(observed) == 0 or np.mean(observed) == 0 or np.std(observed) == 0:
+    if len(observed) == 0:
+        return np.nan
+
+    # Check for extreme simulated values (from bad parameter combinations)
+    # These cause overflow in subsequent calculations
+    if np.any(np.isinf(simulated)) or np.any(np.abs(simulated) > 1e6):
+        return -999.0  # Return very poor score for invalid simulations
+
+    obs_mean = np.mean(observed)
+    obs_std = np.std(observed)
+    sim_mean = np.mean(simulated)
+    sim_std = np.std(simulated)
+
+    # Check for division by zero conditions
+    if obs_mean == 0 or obs_std == 0:
         return np.nan
 
     # Correlation component
-    r = np.corrcoef(observed, simulated)[0, 1]
+    if obs_std == 0 or sim_std == 0:
+        r = 0.0
+    else:
+        r = np.corrcoef(observed, simulated)[0, 1]
+        if np.isnan(r):
+            r = 0.0
 
-    # Variability component
-    alpha = np.std(simulated) / np.std(observed)
+    # Variability component (avoid division by zero)
+    alpha = sim_std / obs_std if obs_std > 0 else 1.0
 
-    # Bias component
-    beta = np.mean(simulated) / np.mean(observed)
+    # Bias component (avoid division by zero)
+    beta = sim_mean / obs_mean if obs_mean != 0 else 1.0
 
-    # KGE calculation
-    kge = 1 - np.sqrt((r - 1) ** 2 + (alpha - 1) ** 2 + (beta - 1) ** 2)
+    # Clip extreme values to prevent overflow in KGE calculation
+    # During optimization, bad parameters can produce extreme values
+    alpha = np.clip(alpha, 0.0, 1e6)
+    beta = np.clip(beta, 0.0, 1e6)
+
+    # KGE calculation with overflow protection
+    try:
+        kge = 1 - np.sqrt((r - 1) ** 2 + (alpha - 1) ** 2 + (beta - 1) ** 2)
+        if np.isnan(kge) or np.isinf(kge):
+            return -999.0  # Return very poor score for invalid combinations
+    except (FloatingPointError, RuntimeWarning):
+        return -999.0
 
     return kge
 

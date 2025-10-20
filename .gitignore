@@ -21,6 +21,7 @@ esimo_loader/data.csv
 
 ## parent data folder
 data/
+data
 
 # dissertation text folder
 text/
