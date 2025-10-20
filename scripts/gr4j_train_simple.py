@@ -201,22 +201,37 @@ def process_gauge_simple(
                 logger.warning(f"No valid trials for {gauge_id}/{dataset}")
                 continue
 
-            # Get best parameters
-            best_params = dict(study.best_trial.params)
+            # Get best parameters IN THE CORRECT ORDER
+            # CRITICAL: Must match the order in objective_single_kge params list!
+            best_trial_params = study.best_trial.params
+            best_params = [
+                best_trial_params["x1"],
+                best_trial_params["x2"],
+                best_trial_params["x3"],
+                best_trial_params["x4"],
+                best_trial_params["ctg"],
+                best_trial_params["kf"],
+                best_trial_params["tt"],
+            ]
 
-            # Validate
-            val_start = pd.to_datetime(validation_period[0])
-            val_warmup_start = val_start - pd.DateOffset(years=warmup_years)
+            # Validate with continuous simulation (preserves model states)
+            # Run from calibration start through validation end
+            calib_start = pd.to_datetime(calibration_period[0])
+            warmup_start_calib = calib_start - pd.DateOffset(years=warmup_years)
+            if warmup_start_calib < gr4j_data.index[0]:
+                warmup_start_calib = gr4j_data.index[0]
 
-            if val_warmup_start < gr4j_data.index[0]:
-                val_warmup_start = gr4j_data.index[0]
+            val_end = pd.to_datetime(validation_period[1])
+            continuous_data = gr4j_data.loc[warmup_start_calib:val_end, :]
 
-            gr4j_val_full = gr4j_data.loc[val_warmup_start : validation_period[1], :]
-            q_sim_full = gr4j.simulation(gr4j_val_full, list(best_params.values()))
+            q_sim_full = gr4j.simulation(continuous_data, best_params)
 
             # Extract validation period
-            n_val_warmup = len(gr4j_data[val_warmup_start:val_start]) - 1
-            q_sim = q_sim_full[n_val_warmup:]
+            # CRITICAL: Count days in SAME dataframe we're simulating
+            n_days_before_val = (
+                len(continuous_data[warmup_start_calib : validation_period[0]]) - 1
+            )
+            q_sim = q_sim_full[n_days_before_val:]
 
             gr4j_validation = gr4j_data.loc[
                 validation_period[0] : validation_period[1], :
@@ -236,9 +251,11 @@ def process_gauge_simple(
 
             output_file.write_text(json.dumps(metrics, indent=2))
 
-            # Save best params
+            # Save best params with correct names
+            param_names = ["x1", "x2", "x3", "x4", "ctg", "kf", "tt"]
+            best_params_dict = dict(zip(param_names, best_params, strict=True))
             param_file = result_path / f"{gauge_id}_{dataset}_parameters.json"
-            param_file.write_text(json.dumps(best_params, indent=2))
+            param_file.write_text(json.dumps(best_params_dict, indent=2))
 
             logger.info(
                 f"✓ {gauge_id}/{dataset}: "

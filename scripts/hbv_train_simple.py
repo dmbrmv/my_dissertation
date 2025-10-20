@@ -179,13 +179,13 @@ def process_gauge_simple(
                 hbv_data["day_of_year"].tolist(),
                 latitude,
             )
-            hbv_data["Evap"] = np.asarray(evap, dtype=float)
+            hbv_data["evap"] = np.asarray(evap, dtype=float)
 
             # Rename columns for HBV
             hbv_data.rename(
                 columns={
-                    "t_mean_e5l": "Temp",
-                    f"prcp_{dataset}": "Prec",
+                    "t_mean_e5l": "temp",
+                    f"prcp_{dataset}": "prcp",
                 },
                 inplace=True,
             )
@@ -217,22 +217,46 @@ def process_gauge_simple(
             if study.best_trial is None:
                 continue
 
-            # Get best parameters
-            best_params = list(study.best_trial.params.values())
+            # Get best parameters IN THE CORRECT ORDER
+            # CRITICAL: Must match the order in objective_single_kge params list!
+            best_trial_params = study.best_trial.params
+            best_params = [
+                best_trial_params["parBETA"],
+                best_trial_params["parCET"],
+                best_trial_params["parFC"],
+                best_trial_params["parK0"],
+                best_trial_params["parK1"],
+                best_trial_params["parK2"],
+                best_trial_params["parLP"],
+                best_trial_params["parMAXBAS"],
+                best_trial_params["parPERC"],
+                best_trial_params["parUZL"],
+                best_trial_params["parPCORR"],
+                best_trial_params["parTT"],
+                best_trial_params["parCFMAX"],
+                best_trial_params["parSFCF"],
+                best_trial_params["parCFR"],
+                best_trial_params["parCWH"],
+            ]
 
-            # Validate
-            val_start = pd.to_datetime(validation_period[0])
-            val_warmup_start = val_start - pd.DateOffset(years=warmup_years)
+            # Validate with continuous simulation (preserves model states)
+            # Run from warmup start through validation end, then extract validation period
+            calib_start = pd.to_datetime(calibration_period[0])
+            warmup_start_calib = calib_start - pd.DateOffset(years=warmup_years)
+            if warmup_start_calib < hbv_data.index[0]:
+                warmup_start_calib = hbv_data.index[0]
 
-            if val_warmup_start < hbv_data.index[0]:
-                val_warmup_start = hbv_data.index[0]
+            val_end = pd.to_datetime(validation_period[1])
+            continuous_data = hbv_data.loc[warmup_start_calib:val_end, :]
 
-            hbv_val_full = hbv_data.loc[val_warmup_start : validation_period[1], :]
-            q_sim_full = hbv.simulation(hbv_val_full, best_params)
+            q_sim_full = hbv.simulation(continuous_data, best_params)
 
             # Extract validation period
-            n_val_warmup = len(hbv_data[val_warmup_start:val_start]) - 1
-            q_sim = q_sim_full[n_val_warmup:]
+            # CRITICAL: Count days in SAME dataframe we're simulating
+            n_days_before_val = (
+                len(continuous_data[warmup_start_calib : validation_period[0]]) - 1
+            )
+            q_sim = q_sim_full[n_days_before_val:]
 
             validation_df = hbv_data.loc[validation_period[0] : validation_period[1], :]
             q_obs = np.asarray(validation_df["q_mm_day"].values, dtype=float)

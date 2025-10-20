@@ -10,7 +10,9 @@ import pandas as pd
 # Import logger setup
 from ...utils.logger import setup_logger
 
-logger = setup_logger(function_name="gr4j_cema_neige", level="INFO", log_file="logs/gr4j_optuna.log")
+logger = setup_logger(
+    function_name="gr4j_cema_neige", level="INFO", log_file="logs/gr4j_optuna.log"
+)
 
 
 def simulation(
@@ -51,7 +53,7 @@ def simulation(
 
     # Input data extraction
     temp = data["t_mean"].values
-    prec = data["prcp"].values
+    prcp = data["prcp"].values
 
     # Constants
     tmelt = 0.0  # Melting temperature threshold
@@ -71,7 +73,10 @@ def simulation(
             Mean annual solid precipitation value
         """
         years = np.unique(data.index.year)
-        annual_vals = [data.prcp[data.prcp.index.year == year][data.t_mean < tt].sum() for year in years]
+        annual_vals = [
+            data.prcp[data.prcp.index.year == year][data.t_mean < tt].sum()
+            for year in years
+        ]
         return np.mean(annual_vals)
 
     # Initialize model states
@@ -90,8 +95,8 @@ def simulation(
     # Main simulation loop
     for t in range(len(temp)):
         # Solid and liquid precipitation accounting
-        pliq = (1 - fraq_solid_precip[t]) * prec[t]  # Liquid precipitation
-        psol = fraq_solid_precip[t] * prec[t]  # Solid precipitation
+        pliq = (1 - fraq_solid_precip[t]) * prcp[t]  # Liquid precipitation
+        psol = fraq_solid_precip[t] * prcp[t]  # Solid precipitation
 
         # Update snow pack volume before melt
         g += psol

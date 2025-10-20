@@ -33,7 +33,7 @@ def simulation(
     """Run HBV rainfall-runoff simulation with snow module.
 
     Args:
-        data: DataFrame with columns 'Temp' (°C), 'Prec' (mm/day), 'Evap' (mm/day).
+        data: DataFrame with columns 'temp' (°C), 'prcp' (mm/day), 'evap' (mm/day).
         params: List of 16 HBV parameters (aligned with bounds()):
             [0] beta: runoff contribution parameter [1, 6]
             [1] cet: evaporation correction factor [0, 0.3]
@@ -55,9 +55,9 @@ def simulation(
     Returns:
         Array of simulated runoff (mm/day).
     """
-    temp = data["Temp"].values
-    prec = data["Prec"].values
-    evap = data["Evap"].values
+    temp = data["temp"].values
+    prcp = data["prcp"].values
+    evap = data["evap"].values
     day_of_year = data.index.dayofyear  # type: ignore[attr-defined]
 
     # Unpack parameters with descriptive names
@@ -81,7 +81,7 @@ def simulation(
     ) = params
 
     # Initialize state arrays
-    n_steps = len(prec)
+    n_steps = len(prcp)
     snowpack = np.zeros(n_steps)
     snowpack[0] = 0.0001
     meltwater = np.zeros(n_steps)
@@ -98,11 +98,11 @@ def simulation(
     q_sim[0] = 0.0001
 
     # Apply precipitation correction
-    prec = pcorr * prec
+    prcp = pcorr * prcp
 
     # Separate precipitation into rain and snow
-    rain = np.where(temp > tt, prec, 0.0)
-    snow = np.where(temp <= tt, prec, 0.0)
+    rain = np.where(temp > tt, prcp, 0.0)
+    snow = np.where(temp <= tt, prcp, 0.0)
     snow = sfcf * snow
 
     # Evaporation correction based on temperature deviation from long-term mean
@@ -131,7 +131,7 @@ def simulation(
         )
 
         # Soil and evaporation routine
-        soil_moisture[t], recharge, et_actual[t] = _soil_routine(
+        soil_moisture[t], recharge, excess, et_actual[t] = _soil_routine(
             soil_moisture[t - 1],
             rain[t],
             tosoil,
@@ -146,6 +146,7 @@ def simulation(
             upper_zone[t - 1],
             lower_zone[t - 1],
             recharge,
+            excess,
             perc_rate,
             k0,
             k1,
@@ -208,41 +209,67 @@ def _soil_routine(
     fc: float,
     beta: float,
     lp: float,
-) -> tuple[float, float, float]:
+) -> tuple[float, float, float, float]:
     """Execute soil moisture accounting and evapotranspiration.
 
-    Returns:
-        Tuple of (soil_moisture, recharge, actual_evap).
-    """
-    # Calculate soil wetness (safe division)
-    soil_wetness = (sm_prev / max(fc, 1e-8)) ** beta
-    soil_wetness = np.clip(soil_wetness, 0.0, 1.0)
+    Follows Bergström (1986) HBV structure:
+    1. Calculate soil wetness from previous SM: soil_wetness = (SM/FC)^BETA
+    2. Calculate recharge: recharge = (rain + tosoil) * soil_wetness
+    3. Update SM: SM = SM_prev + rain + tosoil - recharge
+    4. Handle excess (overflow, kept SEPARATE from recharge)
+    5. Calculate and apply actual ET
+    6. Ensure non-negative storage
 
-    # Calculate recharge
+    Returns:
+        Tuple of (soil_moisture, recharge, excess, actual_evap).
+    """
+    # Step 1: Calculate soil wetness from PREVIOUS soil moisture
+    if fc > 0:
+        soil_wetness = (sm_prev / fc) ** beta
+        # Constrain to [0, 1] range
+        soil_wetness = max(0.0, min(1.0, soil_wetness))
+    else:
+        soil_wetness = 0.0
+
+    # Step 2: Calculate groundwater recharge from both rain and snowmelt
     recharge = (rain + tosoil) * soil_wetness
+
+    # Step 3: Update soil moisture (before evaporation)
     sm = sm_prev + rain + tosoil - recharge
 
-    # Handle excess water
+    # Step 4: Handle excess water (overflow, kept SEPARATE from recharge!)
     excess = sm - fc
-    excess = max(0.0, excess)
-    sm = sm - excess
-    recharge = recharge + excess
+    if excess > 0:
+        sm = fc
+    else:
+        excess = 0.0
 
-    # Calculate actual evapotranspiration (safe division)
-    evap_factor = sm / max(lp * fc, 1e-8)
-    evap_factor = np.clip(evap_factor, 0.0, 1.0)
+    # Step 5: Calculate evaporation factor based on current soil moisture
+    if lp * fc > 0:
+        evap_factor = sm / (lp * fc)
+        evap_factor = max(0.0, min(1.0, evap_factor))
+    else:
+        evap_factor = 0.0
+
+    # Step 6: Calculate actual evaporation
     et_actual = evap * evap_factor
-    et_actual = min(sm, et_actual)
+    # Cannot evaporate more than available
+    et_actual = min(et_actual, sm)
 
+    # Step 7: Apply evaporation to soil moisture
     sm = sm - et_actual
 
-    return sm, recharge, et_actual
+    # Step 8: Ensure non-negative soil moisture
+    sm = max(0.0, sm)
+
+    return sm, recharge, excess, et_actual
 
 
 def _groundwater_routine(
     suz_prev: float,
     slz_prev: float,
     recharge: float,
+    excess: float,
     perc_rate: float,
     k0: float,
     k1: float,
@@ -251,30 +278,43 @@ def _groundwater_routine(
 ) -> tuple[float, float, float]:
     """Execute upper and lower groundwater box dynamics.
 
+    Follows Bergström (1986) HBV structure:
+    1. Add recharge AND excess to upper zone: SUZ = SUZ + recharge + excess
+    2. Percolation to lower zone: perc = min(SUZ, PERC)
+    3. Update SUZ: SUZ = SUZ - perc
+    4. Calculate Q0 from upper zone: Q0 = K0 * max(SUZ - UZL, 0)
+    5. Update SUZ: SUZ = SUZ - Q0
+    6. Calculate Q1 from remaining upper zone: Q1 = K1 * SUZ
+    7. Update SUZ: SUZ = SUZ - Q1
+    8. Calculate Q2 from lower zone: Q2 = K2 * SLZ
+
     Returns:
         Tuple of (upper_zone, lower_zone, total_runoff).
     """
-    # Update upper zone
-    suz = suz_prev + recharge
+    # Step 1: Add both recharge AND excess to upper zone
+    suz = suz_prev + recharge + excess
 
-    # Percolation
-    perc = min(suz, perc_rate)
+    # Step 2: Percolation from upper to lower zone (before runoff)
+    perc = min(perc_rate, suz)
     suz = suz - perc
 
-    # Surface runoff (Q0)
+    # Step 3: Calculate Q0 (surface/quick runoff from upper part of SUZ)
     q0 = k0 * max(suz - uzl, 0.0)
     suz = suz - q0
 
-    # Upper zone runoff (Q1)
+    # Step 4: Calculate Q1 (intermediate runoff from remaining SUZ)
     q1 = k1 * suz
     suz = suz - q1
 
-    # Update lower zone
+    # Step 5: Update lower zone and calculate Q2 (baseflow)
     slz = slz_prev + perc
 
-    # Lower zone runoff (Q2)
     q2 = k2 * slz
     slz = slz - q2
+
+    # Step 6: Ensure non-negative storages
+    suz = max(0.0, suz)
+    slz = max(0.0, slz)
 
     # Total runoff
     q_total = q0 + q1 + q2
@@ -293,10 +333,12 @@ def _apply_routing(q_sim: np.ndarray, maxbas: float) -> np.ndarray:
         Smoothed runoff array.
     """
     maxbas_int = int(maxbas)
-    if maxbas_int == 1:
+    if maxbas_int <= 1:
         return q_sim
 
-    b, a = ss.butter(maxbas_int, 1.0 / maxbas_int)
+    # Safe division with explicit check
+    cutoff_freq = 1.0 / max(maxbas_int, 1)
+    b, a = ss.butter(maxbas_int, cutoff_freq)
     q_smoothed = ss.lfilter(b, a, q_sim)
     q_smoothed = np.where(q_smoothed > 0, q_smoothed, 0.0)
 

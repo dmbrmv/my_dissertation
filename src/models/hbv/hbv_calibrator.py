@@ -61,11 +61,11 @@ def load_hbv_input(
         hbv_df["day_of_year"].tolist(),
         latitude,
     )
-    hbv_df["Evap"] = np.asarray(evap, dtype=float)
+    hbv_df["evap"] = np.asarray(evap, dtype=float)
     hbv_df.rename(
         columns={
-            "t_mean_e5l": "Temp",
-            f"prcp_{dataset}": "Prec",
+            "t_mean_e5l": "temp",
+            f"prcp_{dataset}": "prcp",
         },
         inplace=True,
     )

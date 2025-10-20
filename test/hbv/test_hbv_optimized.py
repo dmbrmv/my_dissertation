@@ -21,9 +21,9 @@ def test_hbv_numerical_equivalence() -> None:
 
     test_data = pd.DataFrame(
         {
-            "Temp": np.random.uniform(-5, 25, n_days),
-            "Prec": np.random.uniform(0, 50, n_days),
-            "Evap": np.random.uniform(0, 5, n_days),
+            "temp": np.random.uniform(-5, 25, n_days),
+            "prcp": np.random.uniform(0, 50, n_days),
+            "evap": np.random.uniform(0, 5, n_days),
         },
         index=dates,
     )
@@ -87,9 +87,9 @@ def test_edge_cases() -> None:
     # Test 1: No precipitation
     test_data_dry = pd.DataFrame(
         {
-            "Temp": np.full(n_days, 15.0),
-            "Prec": np.zeros(n_days),
-            "Evap": np.full(n_days, 2.0),
+            "temp": np.full(n_days, 15.0),
+            "prcp": np.zeros(n_days),
+            "evap": np.full(n_days, 2.0),
         },
         index=dates,
     )
@@ -103,9 +103,9 @@ def test_edge_cases() -> None:
     # Test 2: Heavy precipitation
     test_data_wet = pd.DataFrame(
         {
-            "Temp": np.full(n_days, 15.0),
-            "Prec": np.full(n_days, 100.0),
-            "Evap": np.full(n_days, 2.0),
+            "temp": np.full(n_days, 15.0),
+            "prcp": np.full(n_days, 100.0),
+            "evap": np.full(n_days, 2.0),
         },
         index=dates,
     )
@@ -118,9 +118,9 @@ def test_edge_cases() -> None:
     # Test 3: Cold conditions (snow accumulation)
     test_data_cold = pd.DataFrame(
         {
-            "Temp": np.full(n_days, -10.0),
-            "Prec": np.full(n_days, 5.0),
-            "Evap": np.full(n_days, 0.5),
+            "temp": np.full(n_days, -10.0),
+            "prcp": np.full(n_days, 5.0),
+            "evap": np.full(n_days, 0.5),
         },
         index=dates,
     )
