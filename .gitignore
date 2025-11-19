@@ -111,6 +111,7 @@ data/temp/
 data/cache/
 
 # Results and figures (if too large)
+test/
 results/
 outputs/
 figures/

@@ -59,9 +59,13 @@ def _sort_categories(raw_cats: list[str]) -> list[str]:
 def _plot_basemap(ax, basemap_data, aea_crs_proj4):
     """Plot basemap polygons."""
     basemap_data.to_crs(aea_crs_proj4).plot(
-        ax=ax, color="grey", edgecolor="black", legend=False, alpha=0.8
+        ax=ax,
+        color="gray",
+        edgecolor="black",
+        linewidth=0.3,
+        legend=False,
+        alpha=0.8,
     )
-
 
 def _plot_points(
     ax,

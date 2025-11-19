@@ -271,35 +271,46 @@ def get_attribute_categories() -> dict[str, list[str]]:
 def _get_feature_priority_map() -> dict[str, tuple[int, str, str]]:
     """Return feature priority mapping for cluster naming.
 
+    Priority levels (lower number = higher priority):
+    1 - Critical/Rare: Distinctive hydrological controls (permafrost, karst, urban)
+    2 - Important: Significant hydrological influences (lakes, reservoirs, snow)
+    3 - Moderate: Common descriptors (elevation, cropland)
+    4 - Low: Ubiquitous features (forest handled separately, soil texture)
+
     Returns:
         Dict mapping feature code to (priority, short_name, long_name)
     """
     return {
-        # Cryosphere (highest priority)
+        # Priority 1: Critical - Rare and highly distinctive features
         "prm_pc_use": (1, "Permafrost", "permafrost-affected"),
-        "gla_pc_use": (3, "Glacial", "glacier-fed"),
-        "snw_pc_uyr": (2, "Snow-dominated", "snow-dominated"),
-        # Climate & Water Balance
-        "ele_mt_uav": (2, "Highland", "mountain"),
-        "pre_mm_uyr": (3, "Humid", "high-precipitation"),
-        "aet_mm_uyr": (3, "High-ET", "high evapotranspiration"),
-        "pet_mm_uyr": (3, "High-PET", "high potential ET"),
-        # Hydrology & Regulation
-        "lka_pc_use": (2, "Lake-regulated", "lake-regulated"),
-        "inu_pc_ult": (3, "Inundation-prone", "wetland-influenced"),
-        "gwt_cm_sav": (2, "Deep-GW", "deep groundwater"),
-        "kar_pc_use": (2, "Karst", "karst"),
-        # Land cover
-        "for_pc_use": (1, "Forested", "forest-dominated"),
-        "crp_pc_use": (1, "Cropland", "cropland"),
-        "pst_pc_use": (1, "Pasture", "pasture"),
-        "ire_pc_use": (1, "Irrigated", "irrigated"),
+        "kar_pc_use": (1, "Karst", "karst-influenced"),
         "urb_pc_use": (1, "Urban", "urbanized"),
-        "pac_pc_use": (1, "Protected", "protected areas"),
-        # Soil
-        "cly_pc_uav": (2, "Clay-rich", "clay soils"),
-        "slt_pc_uav": (2, "Silty", "silt soils"),
-        "snd_pc_uav": (2, "Sandy", "sandy soils"),
+        "ire_pc_use": (1, "Irrigated", "irrigated"),
+        "gla_pc_use": (1, "Glacial", "glacier-fed"),
+        # Priority 2: Important - Significant hydrological controls
+        "lka_pc_use": (2, "Lake-regulated", "lake-regulated"),
+        "rev_mc_usu": (2, "Reservoir-regulated", "reservoir-regulated"),
+        "lkv_mc_usu": (2, "Lake-rich", "lake-rich"),
+        "snw_pc_uyr": (2, "Snow-dominated", "snow-dominated"),
+        "inu_pc_ult": (2, "Inundation-prone", "wetland-influenced"),
+        "gwt_cm_uav": (2, "Deep-GW", "deep groundwater"),
+        "gwt_cm_sav": (2, "Deep-GW", "deep groundwater"),
+        "slp_dg_uav": (2, "Steep", "steep terrain"),
+        "sgr_dk_uav": (2, "High-gradient", "high stream gradient"),
+        # Priority 3: Moderate - Common land use and topographic features
+        "ele_mt_uav": (3, "Highland", "mountain"),
+        "ws_area": (3, "Large", "large watershed"),
+        "crp_pc_use": (3, "Cropland", "cropland"),
+        "pst_pc_use": (3, "Pasture", "pasture"),
+        "pac_pc_use": (3, "Protected", "protected areas"),
+        # Priority 4: Low - Ubiquitous or gradual features
+        "pre_mm_uyr": (4, "Humid", "high-precipitation"),
+        "aet_mm_uyr": (4, "High-ET", "high evapotranspiration"),
+        "pet_mm_uyr": (4, "High-PET", "high potential ET"),
+        "cly_pc_uav": (4, "Clay-rich", "clay soils"),
+        "slt_pc_uav": (4, "Silty", "silt soils"),
+        "snd_pc_uav": (4, "Sandy", "sandy soils"),
+        # Note: for_pc_use handled separately with extreme-value logic
     }
 
 
@@ -330,6 +341,17 @@ def _build_primary_components(
             norm_val: float = normalized_row[feat]  # type: ignore[assignment]
             high_with_priority.append((priority, norm_val, feat, short_name))
 
+    # Handle forest separately - only include if extreme
+    if "for_pc_use" in high_features.index:
+        forest_raw: float = raw_row["for_pc_use"]  # type: ignore[assignment]
+        forest_norm: float = normalized_row["for_pc_use"]  # type: ignore[assignment]
+        if forest_raw > 80:
+            # Very high forest
+            high_with_priority.append((1, forest_norm, "for_pc_use", "Heavily Forested"))
+        elif forest_raw < 10:
+            # Sparse forest (distinctive in Russia)
+            high_with_priority.append((2, forest_norm, "for_pc_use", "Sparsely Forested"))
+
     high_with_priority.sort(key=lambda x: (x[0], -x[1]))
 
     # Add primary and secondary characteristics
@@ -357,13 +379,21 @@ def _format_primary_feature(feat: str, name: str, raw_val: float) -> str:
     """
     if feat == "ele_mt_uav":
         return f"{name} ({raw_val:.0f}m)"
-    if feat.endswith(("_pc_use", "_pc_uyr", "_pc_ult")):
+    if feat.endswith(("_pc_use", "_pc_uyr", "_pc_ult", "_pc_uav")):
         return f"{name} ({raw_val:.1f}%)"
     if feat == "pre_mm_uyr":
         return f"{name} ({raw_val:.0f}mm/yr)"
-    if feat == "gwt_cm_sav":
+    if feat in ("gwt_cm_sav", "gwt_cm_uav"):
         gw_label = "Deep GW" if raw_val > 200 else "Shallow GW"
         return f"{gw_label} ({raw_val:.0f}cm)"
+    if feat in ("lkv_mc_usu", "rev_mc_usu"):
+        return f"{name} ({raw_val:.0f}Mm³)"
+    if feat == "slp_dg_uav":
+        return f"{name} ({raw_val:.1f}°)"
+    if feat == "sgr_dk_uav":
+        return f"{name} ({raw_val:.3f})"
+    if feat == "ws_area":
+        return f"{name} ({raw_val:.0f}km²)"
     return name
 
 
@@ -373,6 +403,9 @@ def _build_moderate_components(
 ) -> list[str]:
     """Build name components from moderate-value features.
 
+    Checks second-tier distinctive features before falling back to forest.
+    Only includes forest if extreme (>80% or <20%).
+
     Args:
         normalized_row: Normalized centroid values
         raw_row: Raw centroid values
@@ -380,26 +413,104 @@ def _build_moderate_components(
     Returns:
         List of name component strings
     """
-    name_components: list[str] = []
+    # Check distinctive moderate features first
+    distinctive_components = _extract_distinctive_features(raw_row)
+    if len(distinctive_components) >= 2:
+        return distinctive_components[:2]
+
+    # Add topographic descriptors if needed
+    if len(distinctive_components) < 2:
+        topo_components = _extract_topographic_features(normalized_row, raw_row)
+        distinctive_components.extend(topo_components)
+
+    # Only add forest if nothing else found and it's extreme
+    if len(distinctive_components) == 0:
+        forest_component = _extract_extreme_forest(raw_row)
+        if forest_component:
+            distinctive_components.append(forest_component)
+
+    return distinctive_components[:2]
+
+
+def _extract_distinctive_features(raw_row: pd.Series) -> list[str]:
+    """Extract distinctive moderate features from raw data.
+
+    Args:
+        raw_row: Raw centroid values
+
+    Returns:
+        List of distinctive feature descriptions
+    """
+    components: list[str] = []
+    checks = [
+        ("lka_pc_use", "Lake-influenced", 3.0),
+        ("crp_pc_use", "Agricultural", 25.0),
+        ("slp_dg_uav", "Hilly", 3.0),
+        ("kar_pc_use", "Karst", 10.0),
+        ("urb_pc_use", "Urban", 2.0),
+        ("inu_pc_ult", "Wetland", 5.0),
+    ]
+
+    for feat, label, threshold in checks:
+        if feat in raw_row:
+            feat_val: float = raw_row[feat]  # type: ignore[assignment]
+            if feat_val > threshold:
+                components.append(f"{label} ({feat_val:.1f})")
+                if len(components) >= 2:
+                    break
+
+    return components
+
+
+def _extract_topographic_features(
+    normalized_row: pd.Series,
+    raw_row: pd.Series,
+) -> list[str]:
+    """Extract topographic feature descriptions.
+
+    Args:
+        normalized_row: Normalized centroid values
+        raw_row: Raw centroid values
+
+    Returns:
+        List of topographic feature descriptions
+    """
+    components: list[str] = []
 
     elev_norm: float = normalized_row.get("ele_mt_uav", 0.5)  # type: ignore[assignment]
-    precip_norm: float = normalized_row.get("pre_mm_uyr", 0.5)  # type: ignore[assignment]
-    forest_norm: float = normalized_row.get("for_pc_use", 0.5)  # type: ignore[assignment]
-
-    if 0.35 < elev_norm < 0.65 and 0.35 < precip_norm < 0.65:
+    if 0.35 < elev_norm < 0.65:
         elev_val: float = raw_row.get("ele_mt_uav", 0)  # type: ignore[assignment]
-        name_components.append(_classify_elevation(elev_val))
+        components.append(_classify_elevation(elev_val))
 
-        precip_val: float = raw_row.get("pre_mm_uyr", 0)  # type: ignore[assignment]
-        precip_label = _classify_precipitation(precip_val)
-        if precip_label:
-            name_components.append(precip_label)
+    if len(components) < 2:
+        precip_norm: float = normalized_row.get("pre_mm_uyr", 0.5)  # type: ignore[assignment]
+        if 0.35 < precip_norm < 0.65:
+            precip_val: float = raw_row.get("pre_mm_uyr", 0)  # type: ignore[assignment]
+            precip_label = _classify_precipitation(precip_val)
+            if precip_label:
+                components.append(precip_label)
 
-    if len(name_components) < 2 and forest_norm > 0.5:
-        forest_val: float = raw_row["for_pc_use"]  # type: ignore[assignment]
-        name_components.append(f"Forested ({forest_val:.1f}%)")
+    return components
 
-    return name_components
+
+def _extract_extreme_forest(raw_row: pd.Series) -> str | None:
+    """Extract forest descriptor only if extreme values.
+
+    Args:
+        raw_row: Raw centroid values
+
+    Returns:
+        Forest description or None
+    """
+    if "for_pc_use" not in raw_row:
+        return None
+
+    forest_val: float = raw_row["for_pc_use"]  # type: ignore[assignment]
+    if forest_val > 80:
+        return f"Heavily Forested ({forest_val:.1f}%)"
+    if forest_val < 20:
+        return f"Sparsely Forested ({forest_val:.1f}%)"
+    return None
 
 
 def _classify_elevation(elev_val: float) -> str:
