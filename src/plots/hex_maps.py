@@ -297,52 +297,89 @@ def hex_model_distribution_plot(
     min_r_km: float = 40.0,
     max_r_km: float = 150.0,
     cmap_name: str = "turbo",
+    color_list: list[str] | None = None,
     skip_colors: int = 0,
     rus_extent: tuple = (50, 140, 32, 90),
     figsize: tuple = (10.0, 5.0),
+    basemap_color: str = "grey",
+    basemap_edgecolor: str = "black",
+    basemap_linewidth: float = 0.4,
     basemap_alpha: float = 0.8,
-    legend: bool = True,
-    legend_columns: int = 2,
+    legend_show: bool = True,
+    legend_cols: int = 2,
     legend_kwargs: dict | None = None,
-    histogram: bool = True,
+    with_histogram: bool = True,
+    histogram_col: str | None = None,
     histogram_rect: tuple[float, float, float, float] = (0.05, 0.05, 0.30, 0.24),
+    histogram_xticklabels: list[str] | None = None,
     histogram_label_rotation: float = 0.0,
+    histogram_count_format: str = "%d",
     title: str | None = None,
 ) -> tuple[plt.Figure, plt.Axes, gpd.GeoDataFrame, pd.Series]:
-    """Visualise the dominant model per hexagon along with category counts."""
+    """Visualize the dominant model per hexagon along with category counts.
+
+    Now aligned with unified plotting infrastructure: uses consistent parameter
+    naming (with_histogram, legend_cols) and supports explicit color lists.
+
+    Args:
+        watersheds: GeoDataFrame with watershed geometries.
+        basemap_data: GeoDataFrame for basemap boundaries.
+        model_col: Column name containing model classifications.
+        model_dict: Dict mapping model labels to numeric codes.
+        min_overlap_share: Minimum watershed overlap fraction to include.
+        dominant_threshold: Minimum frequency for non-ambiguous classification.
+        ambiguous_label: Label for hexes below dominant threshold.
+        r_km: Hex radius in km (None = auto-calculate).
+        target_ws_per_hex: Target watersheds per hex for radius calculation.
+        quantile: Quantile for radius calculation.
+        min_r_km: Minimum hex radius.
+        max_r_km: Maximum hex radius.
+        cmap_name: Colormap name (used if color_list not provided).
+        color_list: Explicit list of colors (overrides cmap_name).
+        skip_colors: Number of colors to skip when sampling colormap.
+        rus_extent: Map extent [lon_min, lon_max, lat_min, lat_max].
+        figsize: Figure size (width, height) in inches.
+        basemap_color: Basemap polygon fill color.
+        basemap_edgecolor: Basemap polygon edge color.
+        basemap_linewidth: Basemap polygon edge width.
+        basemap_alpha: Basemap transparency.
+        legend_show: Whether to show legend.
+        legend_cols: Number of columns in legend.
+        legend_kwargs: Additional legend kwargs (overrides defaults).
+        with_histogram: Show histogram inset.
+        histogram_col: Column for histogram (None = use model_col).
+        histogram_rect: Position [x, y, width, height] in axes coordinates.
+        histogram_xticklabels: Custom x-tick labels.
+        histogram_label_rotation: X-tick label rotation angle.
+        histogram_count_format: Format string for bar count labels.
+        title: Plot title.
+
+    Returns:
+        Tuple of (figure, axes, hex_grid_gdf, category_counts_series).
+    """
+    from src.plots.styling_utils import get_russia_projection, get_unified_colors
+
     if model_col not in watersheds.columns:
         raise KeyError(f"Column '{model_col}' not found in watersheds GeoDataFrame.")
     if watersheds.empty:
         raise ValueError("Watersheds GeoDataFrame is empty.")
 
+    # Setup projection using shared helper
+    aea_crs = get_russia_projection()
+    aea_proj4 = aea_crs.proj4_init
+
     if r_km is None:
         if target_ws_per_hex is not None:
-            aea_proj = ccrs.AlbersEqualArea(
-                central_longitude=100,
-                standard_parallels=(50, 70),
-                central_latitude=56,
-                false_easting=0,
-                false_northing=0,
-            ).proj4_init
             r_km = suggest_hex_radius(
                 watersheds,
                 target_ws_per_hex=target_ws_per_hex,
                 quantile=quantile,
                 min_r_km=min_r_km,
                 max_r_km=max_r_km,
-                crs=aea_proj,
+                crs=aea_proj4,
             )
         else:
             r_km = 75.0
-
-    aea_crs = ccrs.AlbersEqualArea(
-        central_longitude=100,
-        standard_parallels=(50, 70),
-        central_latitude=56,
-        false_easting=0,
-        false_northing=0,
-    )
-    aea_proj4 = aea_crs.proj4_init
 
     watersheds_eq = to_equal_area(watersheds, crs=aea_proj4).copy()
     watersheds_eq.loc[:, "orig_area"] = watersheds_eq.geometry.area
@@ -421,14 +458,14 @@ def hex_model_distribution_plot(
     hex_grid.loc[:, "model_idx"] = hex_grid["dominant_model"].map(label_to_idx)
     hex_grid.loc[:, "model_code"] = hex_grid["dominant_model"].map(model_dict)
 
-    base_cmap = mpl.colormaps[cmap_name]
+    # Use unified color generation
     required_colors = len(label_order)
-    sampled = base_cmap(np.linspace(0, 1, required_colors + skip_colors))
-    if skip_colors:
-        sampled = sampled[skip_colors:]
-    if len(sampled) < required_colors:
-        raise ValueError("Not enough colours sampled from colormap. Reduce skip_colors.")
-    sampled = sampled[:required_colors]
+    sampled = get_unified_colors(
+        required_colors,
+        color_list=color_list,
+        cmap_name=cmap_name,
+        skip_colors=skip_colors,
+    )
     cmap = colors.ListedColormap(sampled, name=f"{cmap_name}_models")
     bounds = np.arange(required_colors + 1) - 0.5
     norm = mpl.colors.BoundaryNorm(bounds, required_colors)
@@ -439,7 +476,11 @@ def hex_model_distribution_plot(
     ax.set_extent(rus_extent)  # type: ignore
 
     basemap_data.to_crs(aea_proj4).plot(
-        ax=ax, color="grey", edgecolor="black", alpha=basemap_alpha, linewidth=0.4
+        ax=ax,
+        color=basemap_color,
+        edgecolor=basemap_edgecolor,
+        alpha=basemap_alpha,
+        linewidth=basemap_linewidth,
     )
 
     hexes_to_plot = hex_grid.to_crs(aea_proj4)
@@ -458,7 +499,7 @@ def hex_model_distribution_plot(
         missing_kwds={"color": "#DF60DF00"},
     )
 
-    if legend:
+    if legend_show:
         legend_handles = [
             Line2D(
                 [],
@@ -479,7 +520,7 @@ def hex_model_distribution_plot(
             "bbox_transform": ax.transAxes,
             "frameon": False,
             "borderpad": 0.3,
-            "ncol": legend_columns,
+            "ncol": legend_cols,
             "columnspacing": 0.8,
             "handletextpad": 0.35,
         }
@@ -494,7 +535,7 @@ def hex_model_distribution_plot(
         .rename("count")
     )
 
-    if histogram:
+    if with_histogram:
         ax_hist = ax.inset_axes(histogram_rect)
         bars = ax_hist.bar(
             np.arange(required_colors),
@@ -504,13 +545,16 @@ def hex_model_distribution_plot(
             edgecolor="black",
             linewidth=1,
         )
-        ax_hist.bar_label(bars, fmt="%d")
+        ax_hist.bar_label(bars, fmt=histogram_count_format)
         ax_hist.set_facecolor("white")
         ax_hist.tick_params(width=1)
         ax_hist.grid(False)
         ax_hist.set_xticks(np.arange(required_colors))
+
+        # Use custom labels if provided, otherwise use label_order
+        xticklabels = histogram_xticklabels if histogram_xticklabels else label_order
         ax_hist.set_xticklabels(
-            label_order,
+            xticklabels,
             rotation=histogram_label_rotation,
             ha="right" if histogram_label_rotation else "center",
         )

@@ -10,7 +10,165 @@ coverage before replying.
 
 **IMPORTANT:** Do NOT create summary.md, report.md, or any documentation files 
 unless explicitly requested by the user. Focus on code and technical solutions only.
-In order to run python use conda env: conda activate camels_ru
+In order to run python use conda env: conda activate geo
+
+## Notebook philosophy: marimo-style architecture
+**CRITICAL: Migrating from Jupyter (.ipynb) to marimo-style reactive notebooks.**
+
+- **Prefer marimo notebooks** (`.py` format with `@app.cell` decorators) over `.ipynb`.
+- **Notebooks are for visualization and evaluation ONLY** — not computation.
+- **No heavy calculations in notebook cells**: All data processing, model training, 
+  feature engineering, and complex computations belong in dedicated modules under `src/`.
+- Notebook cells should **only**:
+  1. Import pre-computed results from `src/` functions.
+  2. Call lightweight visualization/plotting functions.
+  3. Display metrics, tables, or summary statistics.
+- **Organizational pattern**:
+  ```
+  src/
+    └── analytics/        # Computation-heavy analysis functions
+        └── chapter_one/  # e.g., basin clustering, regime analysis
+        └── chapter_two/  # e.g., model calibration runners
+        └── chapter_three/# e.g., forecast evaluation
+  notebooks/
+    └── ChapterOne.py     # marimo notebook: imports from src/analytics/chapter_one
+  ```
+- When creating new analysis code:
+  1. Write computational logic in `src/analytics/<topic>/` with full type hints.
+  2. Create marimo notebook that imports and visualizes results.
+  3. Never inline multi-line loops, model training, or file I/O in notebook cells.
+
+## marimo Reactive Notebook Rules (STRICTLY ENFORCED)
+**marimo models notebooks as Directed Acyclic Graphs (DAGs) with automatic reactivity.**
+
+### Core Constraint: One Cell, One Variable
+**🚨 CRITICAL: Every global variable MUST be defined in exactly ONE cell.**
+
+- ❌ **NEVER define the same global variable in multiple cells**
+- ❌ **NEVER use the same loop iterator (`i`, `j`, `idx`) in multiple cells**
+- ❌ **NEVER use the same temporary variable (`ax`, `fig`, `df`) in multiple cells**
+- ✅ **Each cell exports ONLY its essential results as global variables**
+- ✅ **All temporary/intermediate variables MUST use underscore prefix (`_`)**
+
+### Variable Scoping Pattern
+```python
+# Cell A: Exports global variables for downstream cells
+cluster_centroids = geo_scaled.groupby("cluster")[features].mean()
+cluster_labels = fcluster(Z, t=n_clusters, criterion="maxclust")
+
+# Use underscore prefix for ALL temporary variables
+for _idx, _cluster_id in enumerate(range(1, n_clusters + 1)):
+    _centroid_values = cluster_centroids.loc[_cluster_id, :]
+    _normalized = (_centroid_values - _centroid_values.min()) / _centroid_values.max()
+    # Process data...
+
+# Cell B: Can use cluster_centroids and cluster_labels (defined in Cell A)
+# But MUST use different loop variable names
+for _i in range(len(cluster_centroids)):
+    _data = cluster_centroids.iloc[_i]
+    # NEVER reuse _idx from Cell A
+```
+
+### Underscore Prefix Rules
+**Use `_` prefix for ANY variable that:**
+1. **Loop iterators**: `_i`, `_idx`, `_cid`, `_cluster_id`, `_row`, `_col`
+2. **Temporary computation results**: `_temp`, `_result`, `_intermediate`
+3. **Plotting objects**: `_fig`, `_ax`, `_axes`, `_lines`
+4. **Function returns within cell**: `_short_name`, `_description`, `_values`
+5. **Intermediate DataFrames/Series**: `_df_temp`, `_series_subset`
+6. **Any variable used ONLY within the current cell**
+
+### Export Pattern (What NOT to Prefix)
+**Only these should be global (no underscore):**
+```python
+# ✅ Final results needed by downstream cells
+cluster_analysis_df = pd.DataFrame(...)
+cluster_names = pd.Series(...)
+cluster_display_names = pd.Series(...)
+fig_final = plt.figure(...)
+
+# ❌ Don't export temporary computation variables
+# Use _temp_df, _intermediate_result, etc.
+```
+
+### Common Pitfalls & Solutions
+```python
+# ❌ BAD: Multiple cells define 'ax'
+# Cell 1
+ax = plt.subplot()
+
+# Cell 2  
+ax = plt.subplot()  # ERROR: 'ax' redefined
+
+# ✅ GOOD: Use underscore prefix for plotting objects
+# Cell 1
+_ax1 = plt.subplot()
+fig_cluster_map = plt.gcf()  # Export only the figure
+
+# Cell 2
+_ax2 = plt.subplot()
+fig_comparison = plt.gcf()
+```
+
+```python
+# ❌ BAD: Same loop variable across cells
+# Cell 1
+for cid in range(n_clusters):
+    process(cid)
+
+# Cell 2
+for cid in range(n_clusters):  # ERROR: 'cid' redefined
+    visualize(cid)
+
+# ✅ GOOD: Use underscore prefix for ALL loop variables
+# Cell 1
+for _cid in range(n_clusters):
+    process(_cid)
+
+# Cell 2
+for _cid in range(n_clusters):  # OK: both use underscore
+    visualize(_cid)
+```
+
+### Reactivity Flow
+```python
+# Cell A defines: data_scaled, cluster_labels
+data_scaled = (data - data.min()) / (data.max() - data.min())
+cluster_labels = kmeans.fit_predict(data_scaled)
+
+# Cell B references data_scaled → Cell B automatically re-runs when Cell A changes
+cluster_centers = data_scaled.groupby(cluster_labels).mean()
+
+# Cell C references cluster_centers → Cell C re-runs when Cell B changes
+fig_viz = plot_clusters(cluster_centers)
+```
+
+### Functions in Cells
+```python
+# ✅ Define helper functions but keep loop variables local
+def classify_cluster(centroid: pd.Series) -> str:
+    """Helper function for classification."""
+    # Internal variables can be named normally
+    dominant_feature = centroid.idxmax()
+    return f"Cluster dominated by {dominant_feature}"
+
+# When using the function, still use underscore for loop vars
+cluster_classifications = {}
+for _cid, _centroid in cluster_centroids.iterrows():
+    cluster_classifications[_cid] = classify_cluster(_centroid)
+
+# Export only the result
+cluster_names = pd.Series(cluster_classifications)
+```
+
+### Quick Reference Checklist
+Before writing marimo cell code:
+1. ✅ What global variables does this cell EXPORT? (no underscore)
+2. ✅ All loop iterators use underscore prefix? (`_i`, `_idx`, `_cid`)
+3. ✅ All plotting objects use underscore prefix? (`_fig`, `_ax`, `_axes`)
+4. ✅ All temporary variables use underscore prefix? (`_temp`, `_result`)
+5. ✅ No variable name conflicts with other cells?
+6. ✅ Cell exports only ESSENTIAL results needed downstream?
 
 ## Language & formatting (enforced by pyproject.toml)
 - **Python 3.12** semantics; Ruff formatter with **90-char line length**.

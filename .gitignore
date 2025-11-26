@@ -167,3 +167,5 @@ test/results/
 !pyproject.toml
 !**/config.yml
 !**/model_config.yml
+
+res/

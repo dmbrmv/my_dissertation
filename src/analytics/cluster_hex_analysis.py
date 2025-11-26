@@ -521,3 +521,69 @@ def consolidate_hybrid_combinations(
     mapping_df["class_total_gauges"] = mapping_df["hybrid_class"].map(class_counts)
 
     return result, mapping_df
+
+
+def create_hybrid_labels(
+    geo_labels: np.ndarray,
+    hydro_labels: np.ndarray,
+    russian_naming: bool = True,
+) -> np.ndarray:
+    """Create hybrid geo×hydro cluster labels.
+
+    Args:
+        geo_labels: Geographic cluster labels (e.g., [1, 2, 1, ...]).
+        hydro_labels: Hydrological cluster labels (e.g., [3, 1, 2, ...]).
+        russian_naming: If True, use Ф#-Г# format; else G#-H# format.
+
+    Returns:
+        Array of hybrid labels (e.g., ["Ф1-Г3", "Ф2-Г1", ...]).
+
+    Example:
+        >>> hybrid = create_hybrid_labels(
+        ...     np.array([1, 2, 1]), np.array([3, 1, 2]), russian_naming=True
+        ... )
+        >>> hybrid
+        array(['Ф1-Г3', 'Ф2-Г1', 'Ф1-Г2'], dtype='<U6')
+    """
+    if len(geo_labels) != len(hydro_labels):
+        msg = f"Length mismatch: geo={len(geo_labels)}, hydro={len(hydro_labels)}"
+        raise ValueError(msg)
+
+    geo_prefix = "Ф" if russian_naming else "G"
+    hydro_prefix = "Г" if russian_naming else "H"
+
+    hybrid_labels = np.array(
+        [
+            f"{geo_prefix}{g}-{hydro_prefix}{h}"
+            for g, h in zip(geo_labels, hydro_labels, strict=True)
+        ]
+    )
+
+    return hybrid_labels
+
+
+def format_cluster_name_russian(
+    cluster_type: str,
+    cluster_id: int,
+) -> str:
+    """Format cluster name with Russian letter prefix.
+
+    Args:
+        cluster_type: "geo" or "hydro".
+        cluster_id: Cluster number (1-indexed).
+
+    Returns:
+        Formatted string (e.g., "Ф3" for geo, "Г5" for hydro).
+
+    Example:
+        >>> format_cluster_name_russian("geo", 3)
+        'Ф3'
+        >>> format_cluster_name_russian("hydro", 5)
+        'Г5'
+    """
+    if cluster_type == "geo":
+        return f"Ф{cluster_id}"
+    if cluster_type == "hydro":
+        return f"Г{cluster_id}"
+    msg = f"Unknown cluster_type: {cluster_type}. Expected 'geo' or 'hydro'."
+    raise ValueError(msg)

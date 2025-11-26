@@ -1,5 +1,3 @@
-import re
-
 import cartopy.crs as ccrs
 import geopandas as gpd
 from matplotlib import cm
@@ -11,18 +9,21 @@ import pandas as pd
 
 
 def _get_aea_crs() -> ccrs.AlbersEqualArea:
-    """Return Albers Equal Area CRS for Russia."""
-    return ccrs.AlbersEqualArea(
-        central_longitude=100,
-        standard_parallels=(50, 70),
-        central_latitude=56,
-        false_easting=0,
-        false_northing=0,
-    )
+    """Return Albers Equal Area CRS for Russia.
+
+    Deprecated: Use get_russia_projection() from styling_utils instead.
+    This is kept for backward compatibility with older code.
+    """
+    from src.plots.styling_utils import get_russia_projection
+
+    return get_russia_projection()
 
 
 def _sort_categories(raw_cats: list[str]) -> list[str]:
     """Sort categories by letter prefix, numeric suffix, or alphabetically.
+
+    Deprecated: Use sort_plot_categories() from styling_utils instead.
+    This is kept for backward compatibility with older code.
 
     Args:
         raw_cats: List of category strings to sort.
@@ -30,30 +31,9 @@ def _sort_categories(raw_cats: list[str]) -> list[str]:
     Returns:
         Sorted list of categories.
     """
+    from src.plots.styling_utils import sort_plot_categories
 
-    def _extract_letter_prefix(s: str) -> str | None:
-        m = re.match(r"^([a-z])\)", s)
-        return m.group(1) if m else None
-
-    def _extract_first_int(s: str) -> int | None:
-        m = re.search(r"(\d+)", s)
-        return int(m.group(1)) if m else None
-
-    cats_with_prefix = [(s, _extract_letter_prefix(s)) for s in raw_cats]
-    if any(prefix is not None for _, prefix in cats_with_prefix):
-        return [s for s, _ in sorted(cats_with_prefix, key=lambda x: (x[1] is None, x[1] or ""))]
-
-    cats_with_nums = [(s, _extract_first_int(s)) for s in raw_cats]
-    if any(n is not None for _, n in cats_with_nums):
-        return [
-            s
-            for s, _ in sorted(
-                cats_with_nums,
-                key=lambda x: (x[1] is None, x[1] if x[1] is not None else x[0]),
-            )
-        ]
-
-    return sorted(raw_cats)
+    return sort_plot_categories(raw_cats)
 
 
 def _plot_basemap(ax, basemap_data, aea_crs_proj4):
@@ -66,6 +46,7 @@ def _plot_basemap(ax, basemap_data, aea_crs_proj4):
         legend=False,
         alpha=0.8,
     )
+
 
 def _plot_points(
     ax,
@@ -227,7 +208,13 @@ def _plot_ugms(ax, ugms_gdf, metric_col, cmap, norm_cmap, aea_crs_proj4):
 
 
 def _add_histogram(
-    ax, gdf_to_plot, distinction_col, metric_col, list_of_limits, specific_xlabel, color_list=None
+    ax,
+    gdf_to_plot,
+    distinction_col,
+    metric_col,
+    list_of_limits,
+    specific_xlabel,
+    color_list=None,
 ):
     """Add histogram inset to plot.
 
@@ -260,7 +247,9 @@ def _add_histogram(
     ax_hist = ax.inset_axes([0.00, 0.05, 0.33, 0.24])
 
     # Use provided colors if available, otherwise default to red
-    bar_colors = color_list if color_list and len(color_list) >= len(hist_df.columns) else "red"
+    bar_colors = (
+        color_list if color_list and len(color_list) >= len(hist_df.columns) else "red"
+    )
 
     extra_hist = hist_df.sum(axis=0).plot.bar(
         ax=ax_hist,
@@ -326,9 +315,16 @@ def russia_plots(
     base_linewidth: float = 0.35,
     marker_size_corrections: dict | None = None,
 ):
-    """Plot Russia map with points or polygons and optional histogram."""
+    """Plot Russia map with points or polygons and optional histogram.
+
+    Now uses shared styling utilities from styling_utils module for
+    consistent projection, basemap rendering, and marker cycling.
+    """
+    from src.plots.styling_utils import get_russia_projection
+
     specific_xlabel = specific_xlabel or []
-    aea_crs = _get_aea_crs()
+    # Use shared projection helper
+    aea_crs = get_russia_projection()
     aea_crs_proj4 = aea_crs.proj4_init
     if rus_extent is None:
         rus_extent = [50, 140, 32, 90]
