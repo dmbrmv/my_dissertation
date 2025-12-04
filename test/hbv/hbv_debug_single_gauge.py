@@ -20,7 +20,7 @@ sys.path.append("./")
 from src.models.gr4j.pet import pet_oudin
 from src.models.hbv import hbv
 from src.utils.logger import setup_logger
-from src.utils.metrics import evaluate_model, kling_gupta_efficiency
+from timeseries_stats.metrics import evaluate_model, kling_gupta_efficiency
 
 # Setup logging
 Path("logs").mkdir(exist_ok=True)

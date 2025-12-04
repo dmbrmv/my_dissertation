@@ -31,8 +31,8 @@ sys.path.append("./")
 
 from src.models.gr4j.pet import pet_oudin
 from src.models.hbv import hbv
+from src.timeseries_stats.metrics import evaluate_model, kling_gupta_efficiency
 from src.utils.logger import setup_logger
-from src.utils.metrics import evaluate_model, kling_gupta_efficiency
 
 Path("logs").mkdir(exist_ok=True)
 logger = setup_logger("hbv_simple", log_file="logs/hbv_simple_optim.log", level="INFO")

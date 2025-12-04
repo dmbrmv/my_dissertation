@@ -27,7 +27,7 @@ from src.models.gr4j.pet import pet_oudin
 from src.models.hbv import hbv
 from src.readers.geom_reader import load_geodata
 from src.utils.logger import setup_logger
-from src.utils.metrics import evaluate_model
+from timeseries_stats.metrics import evaluate_model
 
 Path("logs").mkdir(exist_ok=True)
 logger = setup_logger("hbv_predict", log_file="logs/hbv_predict.log", level="INFO")

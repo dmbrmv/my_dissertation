@@ -90,21 +90,50 @@ def filter_hydroatlas_features(
     return hydro_subset, selected_features
 
 
-def get_cluster_markers(n_clusters: int = 15) -> list[str]:
+def get_cluster_markers(n_clusters: int = 20) -> list[str]:
     """Return list of matplotlib marker symbols for cluster visualization.
+
+    Cycles through base markers when n_clusters exceeds the number of unique markers.
+    Only uses filled markers that work well with edge colors.
 
     Args:
         n_clusters: Number of markers needed
 
     Returns:
-        List of marker symbols
+        List of marker symbols (may contain repeats for n_clusters > 15)
     """
-    markers = ["o", "s", "^", "v", "<", ">", "D", "P", "X", "*", "h", "H", "8", "p", "d"]
-    return markers[:n_clusters]
+    # Use only filled markers that work well with edge colors
+    # Avoid unfilled markers like '_', '|', '.', '+' that cause warnings
+    base_markers = [
+        "o",  # circle
+        "s",  # square
+        "^",  # triangle up
+        "v",  # triangle down
+        "<",  # triangle left
+        ">",  # triangle right
+        "D",  # diamond
+        "P",  # plus (filled)
+        "X",  # x (filled)
+        "*",  # star
+        "h",  # hexagon1
+        "H",  # hexagon2
+        "8",  # octagon
+        "p",  # pentagon
+        "d",  # thin diamond
+    ]
+
+    # Cycle through markers if we need more than base set
+    markers = [base_markers[i % len(base_markers)] for i in range(n_clusters)]
+    return markers
 
 
-def get_cluster_colors(n_clusters: int = 15) -> list[str]:
+def get_cluster_colors(n_clusters: int = 20) -> list[str]:
     """Return list of color codes for cluster visualization.
+
+    Uses strategic color cycling to maximize visual distinction:
+    - First 15: Primary distinct colors from matplotlib palette
+    - 16-30: Secondary complementary colors
+    - 30+: Cycles through base colors with offset to avoid adjacent repeats
 
     Args:
         n_clusters: Number of colors needed
@@ -112,51 +141,85 @@ def get_cluster_colors(n_clusters: int = 15) -> list[str]:
     Returns:
         List of hex color codes
     """
-    colors = [
-        "#1f77b4",
-        "#ff7f0e",
-        "#2ca02c",
-        "#d62728",
-        "#9467bd",
-        "#8c564b",
-        "#e377c2",
-        "#7f7f7f",
-        "#bcbd22",
-        "#17becf",
-        "#aec7e8",
-        "#ffbb78",
-        "#98df8a",
-        "#ff9896",
-        "#c5b0d5",
+    # Primary palette (high contrast, perceptually distinct)
+    primary_colors = [
+        "#1f77b4",  # blue
+        "#ff7f0e",  # orange
+        "#2ca02c",  # green
+        "#d62728",  # red
+        "#9467bd",  # purple
+        "#8c564b",  # brown
+        "#e377c2",  # pink
+        "#7f7f7f",  # gray
+        "#bcbd22",  # olive
+        "#17becf",  # cyan
+        "#1a9850",  # forest green
+        "#fdae61",  # light orange
+        "#d73027",  # bright red
+        "#4575b4",  # steel blue
+        "#a50026",  # maroon
     ]
-    return colors[:n_clusters]
+
+    # Secondary palette (lighter/darker variations)
+    secondary_colors = [
+        "#aec7e8",  # light blue
+        "#ffbb78",  # light orange
+        "#98df8a",  # light green
+        "#ff9896",  # light red
+        "#c5b0d5",  # light purple
+        "#c49c94",  # light brown
+        "#f7b6d2",  # light pink
+        "#bdbdbd",  # light gray
+        "#dbdb8d",  # light olive
+        "#9edae5",  # light cyan
+        "#74c476",  # medium green
+        "#fd8d3c",  # medium orange
+        "#fc4e2a",  # medium red
+        "#6baed6",  # medium blue
+        "#e31a1c",  # bright red
+    ]
+
+    all_colors = primary_colors + secondary_colors
+
+    # Cycle through colors if we need more
+    if n_clusters <= len(all_colors):
+        return all_colors[:n_clusters]
+    else:
+        # Use intelligent cycling - offset to avoid adjacent similar colors
+        colors = all_colors.copy()
+        remaining = n_clusters - len(all_colors)
+        for i in range(remaining):
+            # Offset by half the palette to avoid adjacent similar colors
+            offset_idx = (i + len(all_colors) // 2) % len(all_colors)
+            colors.append(all_colors[offset_idx])
+        return colors
 
 
 def get_marker_size_corrections() -> dict[str, float]:
     """Return marker size correction factors for visual balance.
 
     Different marker shapes require size adjustments to appear
-    visually consistent.
+    visually consistent. Only includes well-behaved filled markers.
 
     Returns:
         Dict mapping marker symbol to size correction factor
     """
     return {
-        "o": 1.00,
-        "^": 1.15,
-        "v": 1.15,
-        "<": 1.15,
-        ">": 1.15,
-        "d": 1.00,
-        "p": 1.05,
-        "h": 1.05,
-        "H": 0.95,
-        "8": 1.00,
-        "X": 1.10,
-        "*": 1.20,
-        "D": 0.85,
-        "P": 0.90,
-        "s": 0.80,
+        "o": 1.00,  # circle - baseline
+        "s": 0.80,  # square - appears larger
+        "^": 1.15,  # triangle up
+        "v": 1.15,  # triangle down
+        "<": 1.15,  # triangle left
+        ">": 1.15,  # triangle right
+        "D": 0.85,  # diamond - appears larger
+        "P": 0.90,  # plus (filled)
+        "X": 1.10,  # x (filled)
+        "*": 1.20,  # star - needs to be larger
+        "h": 1.05,  # hexagon1
+        "H": 0.95,  # hexagon2 - appears larger
+        "8": 1.00,  # octagon
+        "p": 1.05,  # pentagon
+        "d": 1.00,  # thin diamond
     }
 
 

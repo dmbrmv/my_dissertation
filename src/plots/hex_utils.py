@@ -98,7 +98,9 @@ def aggregate_nse_to_hex(
         inter["a"] = inter.area
         inter = inter[inter["a"] >= min_overlap_share * inter["orig_area"]]
         grouped = inter.groupby("hex_id")
-        val = grouped.apply(lambda df: np.average(df[nse_col], weights=df["a"]))
+        val = grouped.apply(
+            lambda df: np.average(df[nse_col], weights=df["a"]), include_groups=False
+        )
         cnt = grouped.size()
 
     out = hexes.reset_index(names="hex_id").merge(

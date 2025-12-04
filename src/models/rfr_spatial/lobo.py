@@ -22,7 +22,7 @@ from src.models.rfr_spatial.optimization import (
     train_universal_model,
 )
 from src.utils.logger import setup_logger
-from src.utils.metrics import evaluate_model
+from timeseries_stats.metrics import evaluate_model
 
 logger = setup_logger("rfr_lobo", log_file="logs/rfr_lobo.log")
 

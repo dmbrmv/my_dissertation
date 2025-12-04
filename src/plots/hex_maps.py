@@ -256,7 +256,7 @@ def hexes_plots_n(
                 ax_hist.set_xticklabels(xlbl)
                 ax_hist.set(frame_on=False)
 
-                plt.setp(ax_hist.get_xticklabels(), fontsize=8)
+                plt.setp(ax_hist.get_xticklabels(), fontsize=8, rotation=30)
                 plt.setp(ax_hist.get_yticklabels(), fontsize=8)
 
         if title_text is not None and idx < len(title_text):
@@ -569,4 +569,341 @@ def hex_model_distribution_plot(
     return fig, ax, hexes_to_plot, category_counts
 
 
-__all__ = ["hexes_plot", "hexes_plots_n", "hex_model_distribution_plot"]
+def hex_model_distribution_plots_n(
+    watersheds: gpd.GeoDataFrame,
+    basemap_data: gpd.GeoDataFrame,
+    model_cols: list[str],
+    model_dict: dict[str, float] | list[dict[str, float]],
+    *,
+    label_list: list[str] | None = None,
+    nrows: int = 2,
+    ncols: int = 2,
+    min_overlap_share: float = 0.15,
+    dominant_threshold: float = 0.33,
+    ambiguous_label: str = "Неоднозначно",
+    r_km: float | None = None,
+    target_ws_per_hex: float | None = 6.0,
+    quantile: float = 0.5,
+    min_r_km: float = 40.0,
+    max_r_km: float = 150.0,
+    color_list: list[str] | list[list[str]] | None = None,
+    cmap_name: str = "turbo",
+    rus_extent: tuple = (50, 140, 32, 90),
+    figsize: tuple = (18, 14),
+    basemap_color: str = "grey",
+    basemap_edgecolor: str = "black",
+    basemap_linewidth: float = 0.4,
+    basemap_alpha: float = 0.8,
+    title_text: list[str] | None = None,
+    with_histogram: bool = True,
+    histogram_rect: list[float] | None = None,
+    histogram_label_rotation: float = 20,
+    legend_show: bool = True,
+    legend_kwargs: dict | None = None,
+) -> tuple[plt.Figure, np.ndarray, dict[str, gpd.GeoDataFrame], dict[str, pd.Series]]:
+    """Create multi-panel hex model distribution plots in a grid layout.
+
+    Each subplot includes its own histogram and legend, matching the style
+    of hex_model_distribution_plot.
+
+    Args:
+        watersheds: GeoDataFrame with watershed geometries and model columns
+        basemap_data: GeoDataFrame for basemap boundaries
+        model_cols: List of column names containing model classifications
+        model_dict: Dict mapping model labels to numeric codes, OR a list of dicts
+            (one per column) for heterogeneous categories across subplots
+        label_list: Panel labels (e.g., ["а)", "б)", "в)", "г)"])
+        nrows: Number of rows in subplot grid
+        ncols: Number of columns in subplot grid
+        min_overlap_share: Minimum watershed overlap fraction
+        dominant_threshold: Minimum frequency for non-ambiguous classification
+        ambiguous_label: Label for ambiguous hexes
+        r_km: Hex radius in km (None = auto-calculate)
+        target_ws_per_hex: Target watersheds per hex
+        quantile: Quantile for radius calculation
+        min_r_km: Minimum hex radius
+        max_r_km: Maximum hex radius
+        color_list: Explicit list of colors, OR a list of color lists (one per column)
+            for heterogeneous categories across subplots
+        cmap_name: Colormap name (used if color_list not provided)
+        rus_extent: Map extent [lon_min, lon_max, lat_min, lat_max]
+        figsize: Figure size (width, height)
+        basemap_color: Basemap fill color
+        basemap_edgecolor: Basemap edge color
+        basemap_linewidth: Basemap line width
+        basemap_alpha: Basemap transparency
+        title_text: List of titles for each subplot
+        with_histogram: Whether to show histogram on each subplot
+        histogram_rect: Position [x, y, width, height] for histogram inset
+        histogram_label_rotation: Rotation angle for histogram x-tick labels
+        legend_show: Whether to show legend on each subplot
+        legend_kwargs: Additional kwargs for legend
+
+    Returns:
+        Tuple of (figure, axes_array, dict_of_hex_gdfs, dict_of_category_counts)
+    """
+    from shapely.geometry import box
+
+    from .hex_utils import build_hex_grid, suggest_hex_radius, to_equal_area
+    from .styling_utils import get_russia_projection, get_unified_colors
+
+    if len(model_cols) > nrows * ncols:
+        raise ValueError(
+            f"Too many model columns ({len(model_cols)}) for grid ({nrows}x{ncols})"
+        )
+
+    if histogram_rect is None:
+        histogram_rect = [0.02, 0.02, 0.25, 0.35]
+
+    # Normalize model_dict to list format
+    if isinstance(model_dict, dict):
+        model_dicts = [model_dict] * len(model_cols)
+    else:
+        if len(model_dict) != len(model_cols):
+            raise ValueError(
+                f"model_dict list length ({len(model_dict)}) must match "
+                f"model_cols length ({len(model_cols)})"
+            )
+        model_dicts = model_dict
+
+    # Normalize color_list to list-of-lists format
+    if color_list is None:
+        color_lists = [None] * len(model_cols)
+    elif isinstance(color_list[0], str):
+        # Single color list for all columns
+        color_lists = [color_list] * len(model_cols)  # type: ignore
+    else:
+        # List of color lists
+        if len(color_list) != len(model_cols):
+            raise ValueError(
+                f"color_list length ({len(color_list)}) must match "
+                f"model_cols length ({len(model_cols)})"
+            )
+        color_lists = color_list  # type: ignore
+
+    # Setup projection
+    aea_crs = get_russia_projection()
+    aea_proj4 = aea_crs.proj4_init
+
+    # Create figure with subplots
+    fig, axes = plt.subplots(
+        nrows, ncols, figsize=figsize, subplot_kw={"projection": aea_crs}
+    )
+    axes_flat = np.array(axes).flatten()
+
+    # Prepare data once
+    ws_eq = to_equal_area(watersheds, crs=aea_proj4).copy()
+    ws_eq.loc[:, "orig_area"] = ws_eq.geometry.area
+    extent_poly = box(*ws_eq.total_bounds)
+
+    if r_km is None:
+        r_km = suggest_hex_radius(
+            watersheds,
+            target_ws_per_hex=target_ws_per_hex,
+            quantile=quantile,
+            min_r_km=min_r_km,
+            max_r_km=max_r_km,
+            crs=aea_proj4,
+        )
+
+    hex_grid = build_hex_grid(extent_poly, r_km=r_km, crs=aea_proj4)
+    basemap_proj = basemap_data.to_crs(aea_proj4)
+
+    # Store results
+    hex_results = {}
+    category_counts_dict = {}
+
+    # Plot each model column
+    for idx, model_col in enumerate(model_cols):
+        if idx >= len(axes_flat):
+            break
+
+        ax = axes_flat[idx]
+        ws_data = ws_eq[[model_col, "geometry", "orig_area"]].copy()
+
+        # Get per-column dict and colors
+        curr_model_dict = model_dicts[idx]
+        curr_color_list = color_lists[idx]
+
+        # Setup colors for this subplot
+        label_order = [lbl for lbl in curr_model_dict.keys() if isinstance(lbl, str)]
+        if ambiguous_label and ambiguous_label not in label_order:
+            label_order.append(ambiguous_label)
+
+        n_colors = len(label_order)
+        if curr_color_list:
+            colors_to_use = curr_color_list[:n_colors]
+        else:
+            colors_to_use = get_unified_colors(n_colors, cmap_name=cmap_name)
+
+        cmap = colors.ListedColormap(colors_to_use, name=f"cat_{idx}")
+        bounds = np.arange(n_colors + 1) - 0.5
+        norm = mpl.colors.BoundaryNorm(bounds, n_colors)
+        label_to_idx = {lbl: i for i, lbl in enumerate(label_order)}
+
+        # Aggregate to hexagons
+        intersections = gpd.overlay(
+            ws_data,
+            hex_grid.reset_index().rename(columns={"index": "hex_idx"})[
+                ["hex_idx", "geometry"]
+            ],
+            how="intersection",
+        )
+        intersections.loc[:, "intersect_area"] = intersections.geometry.area
+        intersections = intersections[
+            intersections["intersect_area"]
+            >= min_overlap_share * intersections["orig_area"]
+        ]
+
+        # Find dominant model per hex
+        counts = (
+            intersections.groupby(["hex_idx", model_col]).size().reset_index(name="count")
+        )
+        totals = counts.groupby("hex_idx")["count"].sum().reset_index(name="total")
+        counts = counts.merge(totals, on="hex_idx")
+        counts.loc[:, "freq"] = counts["count"] / counts["total"]
+
+        top = counts.sort_values(
+            ["hex_idx", "freq"], ascending=[True, False]
+        ).drop_duplicates("hex_idx")
+
+        hex_plot = hex_grid.copy()
+        hex_plot.loc[:, "dominant"] = hex_plot.index.map(
+            top.set_index("hex_idx")[model_col]
+        )
+        hex_plot.loc[:, "dominant_share"] = hex_plot.index.map(
+            top.set_index("hex_idx")["freq"]
+        )
+
+        # Mark ambiguous
+        if ambiguous_label:
+            mask = hex_plot["dominant_share"].notna() & (
+                hex_plot["dominant_share"] < dominant_threshold
+            )
+            hex_plot.loc[mask, "dominant"] = ambiguous_label
+
+        # Map to indices
+        hex_plot.loc[:, "model_idx"] = hex_plot["dominant"].map(label_to_idx)
+
+        # Store results
+        hex_results[model_col] = hex_plot.to_crs(aea_proj4)
+
+        # Plot
+        ax.set_aspect("equal")
+        ax.axis("off")
+        ax.set_extent(rus_extent)  # type: ignore
+
+        basemap_proj.plot(
+            ax=ax,
+            color=basemap_color,
+            edgecolor=basemap_edgecolor,
+            alpha=basemap_alpha,
+            linewidth=basemap_linewidth,
+        )
+
+        valid = hex_plot.loc[hex_plot["model_idx"].notna()].to_crs(aea_proj4)
+        if not valid.empty:
+            valid.plot(
+                ax=ax,
+                column="model_idx",
+                cmap=cmap,
+                norm=norm,
+                edgecolor="black",
+                linewidth=0.2,
+                legend=False,
+            )
+
+        # Calculate category counts for this subplot
+        category_counts = (
+            valid["dominant"]
+            .value_counts()
+            .reindex(label_order, fill_value=0)
+            .rename("count")
+        )
+        category_counts_dict[model_col] = category_counts
+
+        # Add histogram inset
+        if with_histogram:
+            ax_hist = ax.inset_axes(histogram_rect)
+            bars = ax_hist.bar(
+                np.arange(n_colors),
+                category_counts.values,
+                width=0.9,
+                color=colors_to_use,
+                edgecolor="black",
+                linewidth=1,
+            )
+            ax_hist.bar_label(bars, fmt="%d")
+            ax_hist.set_facecolor("white")
+            ax_hist.tick_params(width=1)
+            ax_hist.grid(False)
+            ax_hist.set_xticks(np.arange(n_colors))
+            ax_hist.set_xticklabels(
+                label_order,
+                rotation=histogram_label_rotation,
+                ha="right" if histogram_label_rotation else "center",
+            )
+            ax_hist.set(frame_on=False)
+            plt.setp(ax_hist.get_xticklabels(), fontsize=8)
+            plt.setp(ax_hist.get_yticklabels(), fontsize=8)
+
+        # Add per-subplot legend
+        if legend_show:
+            legend_handles = [
+                Line2D(
+                    [],
+                    [],
+                    marker="h",
+                    linestyle="",
+                    markerfacecolor=colors_to_use[i],
+                    markeredgecolor="black",
+                    markeredgewidth=0.8,
+                    markersize=11,
+                    label=label,
+                )
+                for i, label in enumerate(label_order)
+            ]
+            legend_defaults = {
+                "loc": "lower right",
+                "bbox_to_anchor": (1.0, 0.0),
+                "frameon": False,
+                "ncol": 2,
+                "columnspacing": 0.8,
+                "handletextpad": 0.35,
+                "fontsize": 9,
+            }
+            if legend_kwargs:
+                legend_defaults.update(legend_kwargs)
+            ax.legend(handles=legend_handles, **legend_defaults)
+
+        # Add title
+        if title_text and idx < len(title_text):
+            ax.set_title(title_text[idx], fontsize=12)
+
+        # Add label
+        if label_list and idx < len(label_list):
+            ax.text(
+                0,
+                1,
+                label_list[idx],
+                transform=ax.transAxes,
+                ha="left",
+                va="top",
+                fontsize=14,
+            )
+
+    # Hide unused subplots
+    for idx in range(len(model_cols), len(axes_flat)):
+        axes_flat[idx].set_visible(False)
+
+    plt.tight_layout()
+
+    return fig, axes, hex_results, category_counts_dict
+
+
+__all__ = [
+    "hexes_plot",
+    "hexes_plots_n",
+    "hex_model_distribution_plot",
+    "hex_model_distribution_plots_n",
+]

@@ -27,7 +27,7 @@ sys.path.append("./")
 from src.models.gr4j.pet import pet_oudin
 from src.readers.geom_reader import load_geodata
 from src.utils.logger import setup_logger
-from src.utils.metrics import evaluate_model
+from timeseries_stats.metrics import evaluate_model
 
 Path("logs").mkdir(exist_ok=True)
 logger = setup_logger("rfr_predict", log_file="logs/rfr_predict.log", level="INFO")

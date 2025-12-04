@@ -18,7 +18,7 @@ from src.models.rfr.rfr_optuna import (
     train_final_model,
 )
 from src.utils.logger import setup_logger
-from src.utils.metrics import evaluate_model
+from timeseries_stats.metrics import evaluate_model
 
 logger = setup_logger("rfr_parallel", log_file="logs/rfr_parallel.log")
 

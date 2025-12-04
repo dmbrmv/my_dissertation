@@ -13,11 +13,11 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor  # type: ignore[import-untyped]
 
 from src.utils.logger import setup_logger
-from src.utils.metrics import (
+from timeseries_stats.metrics import (
     kling_gupta_efficiency,
     percent_bias,
 )
-from src.utils.metrics_enhanced import (
+from timeseries_stats.metrics_enhanced import (
     composite_high_flow_metric,
     composite_low_flow_metric,
 )

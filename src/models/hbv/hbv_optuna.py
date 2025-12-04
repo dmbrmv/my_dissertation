@@ -17,12 +17,12 @@ import pandas as pd
 
 from src.models.hbv import hbv
 from src.utils.logger import setup_logger
-from src.utils.metrics import (
+from timeseries_stats.metrics import (
     evaluate_model,
     kling_gupta_efficiency,
     percent_bias,
 )
-from src.utils.metrics_enhanced import (
+from timeseries_stats.metrics_enhanced import (
     composite_high_flow_metric,
     composite_low_flow_metric,
     sqrt_nse,
@@ -105,7 +105,7 @@ def multi_objective_detailed(
 
     sqrt_metric = sqrt_nse(q_obs, q_sim)
 
-    from src.utils.metrics_enhanced import inverse_nse  # avoid circular import
+    from timeseries_stats.metrics_enhanced import inverse_nse  # avoid circular import
 
     inv_metric = inverse_nse(q_obs, q_sim)
     pbias_abs = abs(_nan_guard(metrics.get("PBIAS"), 999.0))

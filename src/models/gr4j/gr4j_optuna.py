@@ -13,12 +13,12 @@ import pandas as pd
 
 from src.models.gr4j import model as gr4j
 from src.utils.logger import setup_logger
-from src.utils.metrics import (
+from timeseries_stats.metrics import (
     evaluate_model,
     kling_gupta_efficiency,
     percent_bias,
 )
-from src.utils.metrics_enhanced import (
+from timeseries_stats.metrics_enhanced import (
     composite_high_flow_metric,
     composite_low_flow_metric,
     sqrt_nse,
@@ -190,7 +190,7 @@ def multi_objective_detailed(
     nse_sqrt = sqrt_nse(np.asarray(q_obs), np.asarray(q_sim))
 
     # Import here to avoid circular dependency
-    from src.utils.metrics_enhanced import inverse_nse
+    from timeseries_stats.metrics_enhanced import inverse_nse
 
     inv_nse = inverse_nse(np.asarray(q_obs), np.asarray(q_sim))
 

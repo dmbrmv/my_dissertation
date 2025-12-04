@@ -14,7 +14,7 @@ from src.models.gr4j.gr4j_optuna import run_optimization
 from src.models.gr4j.pareto import save_optimization_results, select_best_trial_weighted
 from src.models.gr4j.pet import pet_oudin
 from src.utils.logger import setup_logger
-from src.utils.metrics import evaluate_model
+from timeseries_stats.metrics import evaluate_model
 
 logger = setup_logger("main_gr4j_optuna", log_file="logs/gr4j_optuna.log")
 

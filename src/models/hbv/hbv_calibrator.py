@@ -18,8 +18,8 @@ from src.models.hbv.pareto import (
     select_best_trial_weighted,
 )
 from src.utils.logger import setup_logger
-from src.utils.metrics import evaluate_model
-from src.utils.metrics_enhanced import analyze_flow_regimes
+from timeseries_stats.metrics import evaluate_model
+from timeseries_stats.metrics_enhanced import analyze_flow_regimes
 
 logger = setup_logger("main_hbv_optuna", log_file="logs/hbv_optuna.log")
 

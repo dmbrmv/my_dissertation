@@ -18,8 +18,8 @@ from src.models.gr4j.pareto import analyze_pareto_front, select_best_trial_weigh
 from src.models.gr4j.pet import pet_oudin
 from src.readers.geom_reader import load_geodata
 from src.utils.logger import setup_logger
-from src.utils.metrics import evaluate_model
-from src.utils.metrics_enhanced import analyze_flow_regimes
+from timeseries_stats.metrics import evaluate_model
+from timeseries_stats.metrics_enhanced import analyze_flow_regimes
 
 # Setup
 Path("logs").mkdir(exist_ok=True)
