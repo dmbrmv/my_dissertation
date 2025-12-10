@@ -247,15 +247,87 @@ def compute_cluster_centroids(
 
 
 def scale_to_unit_range(data: pd.DataFrame) -> pd.DataFrame:
-    """Scale DataFrame columns to [0, 1] range (min-max normalization).
+    """Scale DataFrame columns to [0, 1] range with automatic outlier treatment.
+
+    Implements a hybrid pre-processing strategy to address extreme outliers and
+    skewed distributions before final min-max scaling:
+
+    - **Group A (Log-then-Clip):** Zero-inflated, heavy-tailed features undergo
+      log transformation (log(x + 1)) followed by aggressive winsorization at
+      the 99th percentile to prevent massive outliers from dominating the scale.
+      Applied to: rev_mc_usu, lkv_mc_usu, urb_pc_use, ire_pc_use, lka_pc_use.
+
+    - **Group B (Winsorization):** Features with moderate outliers are capped
+      at the 1st and 99th percentiles to limit extreme value influence while
+      preserving most data. Applied to: inu_pc_ult, kar_pc_use, prm_pc_use.
+
+    - **Group C (Standard):** All other features undergo only min-max scaling.
+
+    After group-specific treatment, all features are scaled to [0, 1] using
+    min-max normalization to ensure equal contribution to clustering algorithms.
 
     Args:
-        data: DataFrame with numeric features.
+        data: DataFrame with numeric features (HydroATLAS attributes).
 
     Returns:
-        Scaled DataFrame with same shape.
+        Scaled DataFrame with same shape, all values in [0, 1].
+
+    Example:
+        >>> geo_scaled = scale_to_unit_range(geo_subset)
+        >>> # Automatic outlier treatment + min-max scaling applied
     """
-    return (data - data.min()) / (data.max() - data.min())
+    # Define feature groups for differential treatment
+    _group_a_log_clip = [
+        "rev_mc_usu",
+        "lkv_mc_usu",
+        "urb_pc_use",
+        "ire_pc_use",
+        "lka_pc_use",
+    ]
+    _group_b_winsorize = ["inu_pc_ult", "kar_pc_use", "prm_pc_use"]
+
+    # Create copy to avoid modifying original
+    _treated = data.copy()
+
+    # Group A: Log transformation + aggressive upper clipping (handles zero-inflated,
+    # heavy-tailed distributions)
+    for _col in _group_a_log_clip:
+        if _col in _treated.columns:
+            # Step 1: Log transform to compress scale
+            _treated[_col] = np.log1p(_treated[_col])  # log(1 + x) handles zeros
+
+            # Step 2: Clip at 99th percentile to remove mega-outliers that distort
+            # the [0, 1] scale even after logging
+            _upper = _treated[_col].quantile(0.99)
+            _treated[_col] = _treated[_col].clip(upper=_upper)
+            log.debug("Log-then-clipped column %s at upper=%.2f", _col, _upper)
+
+    # Group B: Winsorization at 1st/99th percentiles
+    for _col in _group_b_winsorize:
+        if _col in _treated.columns:
+            _lower = _treated[_col].quantile(0.01)
+            _upper = _treated[_col].quantile(0.99)
+            _treated[_col] = _treated[_col].clip(lower=_lower, upper=_upper)
+            log.debug("Winsorized column %s: [%.2f, %.2f]", _col, _lower, _upper)
+
+    # Apply min-max scaling to all columns (including treated ones)
+    _scaled = (_treated - _treated.min()) / (_treated.max() - _treated.min())
+
+    _n_log_clip = len([c for c in _group_a_log_clip if c in data.columns])
+    _n_winsor = len([c for c in _group_b_winsorize if c in data.columns])
+    _n_standard = len(data.columns) - len(
+        [c for c in _group_a_log_clip + _group_b_winsorize if c in data.columns]
+    )
+
+    log.info(
+        "Scaled %d features: %d log-then-clipped, %d winsorized, %d standard",
+        len(_scaled.columns),
+        _n_log_clip,
+        _n_winsor,
+        _n_standard,
+    )
+
+    return _scaled
 
 
 def compute_distances_from_centroids(

@@ -32,7 +32,9 @@ def _first_pass(discharge: np.ndarray, alpha: float) -> tuple[np.ndarray, np.nda
     q_f_1[0] = discharge[0]
 
     for j in range(len(discharge) - 1):
-        q_f_1[j + 1] = alpha * q_f_1[j] + 0.5 * (1 + alpha) * (discharge[j + 1] - discharge[j])
+        q_f_1[j + 1] = alpha * q_f_1[j] + 0.5 * (1 + alpha) * (
+            discharge[j + 1] - discharge[j]
+        )
 
     for j in range(len(discharge)):
         if q_f_1[j] < 0:
@@ -63,7 +65,9 @@ def _backward_pass(
     q_f_2[-1] = base_flow[-1]
 
     for j in range(len(base_flow) - 2, -1, -1):
-        q_f_2[j] = alpha * q_f_2[j + 1] + 0.5 * (1 + alpha) * (base_flow[j] - base_flow[j + 1])
+        q_f_2[j] = alpha * q_f_2[j + 1] + 0.5 * (1 + alpha) * (
+            base_flow[j] - base_flow[j + 1]
+        )
 
     for j in range(len(base_flow) - 1, -1, -1):
         if q_f_2[j] < 0:
@@ -94,7 +98,9 @@ def _forward_pass(
     q_f_3[0] = base_flow[0]
 
     for j in range(len(base_flow) - 1):
-        q_f_3[j + 1] = alpha * q_f_3[j] + 0.5 * (1 + alpha) * (base_flow[j + 1] - base_flow[j])
+        q_f_3[j + 1] = alpha * q_f_3[j] + 0.5 * (1 + alpha) * (
+            base_flow[j + 1] - base_flow[j]
+        )
 
     for j in range(len(base_flow)):
         if q_f_3[j] < 0:
@@ -319,6 +325,8 @@ def calculate_bfi(
     Returns:
         Base Flow Index value
     """
-    separator = BaseFlowSeparation(alpha=alpha, passes=passes, reflect_points=reflect_points)
+    separator = BaseFlowSeparation(
+        alpha=alpha, passes=passes, reflect_points=reflect_points
+    )
     bfi, _ = separator.separate(discharge)
     return bfi

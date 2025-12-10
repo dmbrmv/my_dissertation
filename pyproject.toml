@@ -1,7 +1,7 @@
 [tool.ruff]
 # Honor classic PEP 8 width for code (90) and keep notebooks in scope.
 line-length = 90
-target-version = "py312"
+target-version = "py310"
 extend-include = ["*.ipynb"]
 exclude = [
   ".git",
@@ -74,7 +74,7 @@ docstring-code-format = true
 docstring-code-line-length = 72
 
 [tool.pyright]
-pythonVersion = "3.12"
+pythonVersion = "3.10"
 typeCheckingMode = "basic"
 exclude = [
   "**/data",
@@ -94,4 +94,4 @@ description = "Discharge model comparison for Russian river basins"
 authors = [{ name = "Dmitrii Abramov", email = "dmbrmv96@gmail.com" }]
 readme = "README.md"
 license = { text = "MIT" }
-requires-python = ">=3.12"
+requires-python = ">=3.10"
