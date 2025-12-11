@@ -29,14 +29,32 @@ class FlowExtremes:
         self.mean_flow = np.mean(self.discharge)
         self.median_flow = np.median(self.discharge)
 
-    def calculate_flow_quantiles(self, quantiles: list[float] | None = None) -> dict[str, float]:
+    def calculate_flow_quantiles(
+        self, quantiles: list[float] | None = None
+    ) -> dict[str, float]:
         """Calculate flow quantiles for extreme analysis.
+
+        IMPORTANT HYDROLOGICAL CONVENTION:
+            - Q5 (High Flow) = flow exceeded 5% of time = 95th percentile = quantile(0.95)
+            - Q95 (Low Flow) = flow exceeded 95% of time = 5th percentile = quantile(0.05)
+
+        This function returns PERCENTILES (q05_0, q95_0), NOT exceedance probabilities.
+        To get hydrological Q5 and Q95, map as follows:
+            - obs_q5 = quantiles["q95_0"]   # High flow (95th percentile)
+            - obs_q95 = quantiles["q05_0"]  # Low flow (5th percentile)
 
         Args:
             quantiles: List of quantiles (0-1). Default: standard extreme quantiles
 
         Returns:
-            Dictionary of flow quantiles
+            Dictionary of flow quantiles with keys like "q05_0" (5th percentile),
+            "q95_0" (95th percentile), etc.
+
+        Example:
+            >>> extremes = FlowExtremes(discharge_series)
+            >>> quantiles = extremes.calculate_flow_quantiles([0.05, 0.95])
+            >>> high_flow_q5 = quantiles["q95_0"]  # 95th percentile = Q5
+            >>> low_flow_q95 = quantiles["q05_0"]  # 5th percentile = Q95
         """
         if quantiles is None:
             quantiles = [0.01, 0.05, 0.1, 0.9, 0.95, 0.99]
@@ -44,7 +62,9 @@ class FlowExtremes:
         result = {}
         for q in quantiles:
             percentile = q * 100
-            result[f"q{percentile:04.1f}".replace(".", "_")] = float(np.nanquantile(self.discharge, q))
+            result[f"q{percentile:04.1f}".replace(".", "_")] = float(
+                np.nanquantile(self.discharge, q)
+            )
 
         return result
 
@@ -84,8 +104,12 @@ class FlowExtremes:
             "high_flow_mean": float(np.mean(high_flows)),
             "high_flow_max": float(np.max(high_flows)),
             "high_flow_events": len(event_durations),
-            "high_flow_avg_duration": float(np.mean(event_durations)) if event_durations else 0.0,
-            "high_flow_max_duration": int(np.max(event_durations)) if event_durations else 0,
+            "high_flow_avg_duration": float(np.mean(event_durations))
+            if event_durations
+            else 0.0,
+            "high_flow_max_duration": int(np.max(event_durations))
+            if event_durations
+            else 0,
         }
 
     def analyze_low_flows(self, threshold_multiplier: float = 0.2) -> dict[str, float]:
@@ -124,8 +148,12 @@ class FlowExtremes:
             "low_flow_mean": float(np.mean(low_flows)),
             "low_flow_min": float(np.min(low_flows)),
             "low_flow_events": len(event_durations),
-            "low_flow_avg_duration": float(np.mean(event_durations)) if event_durations else 0.0,
-            "low_flow_max_duration": int(np.max(event_durations)) if event_durations else 0,
+            "low_flow_avg_duration": float(np.mean(event_durations))
+            if event_durations
+            else 0.0,
+            "low_flow_max_duration": int(np.max(event_durations))
+            if event_durations
+            else 0,
         }
 
     def calculate_drought_indices(self) -> dict[str, float]:
@@ -134,9 +162,10 @@ class FlowExtremes:
         Returns:
             Dictionary of drought indices
         """
-        # Q95 and Q7,10 approximations
-        q95 = np.nanquantile(self.discharge, 0.05)  # 95th percentile exceedance
-        q90 = np.nanquantile(self.discharge, 0.10)  # 90th percentile exceedance
+        # IMPORTANT: np.quantile(0.05) = 5th percentile = Q95 (flow exceeded 95% of time)
+        # This is the LOW FLOW metric, not to be confused with the 95th percentile
+        q95 = np.nanquantile(self.discharge, 0.05)  # Low flow: 5th percentile = Q95
+        q90 = np.nanquantile(self.discharge, 0.10)  # 10th percentile
 
         # Base flow index approximation using Q95
         bfi_approx = q95 / self.mean_flow if self.mean_flow > 0 else np.nan
@@ -147,7 +176,9 @@ class FlowExtremes:
         if len(valid_low_flows) > 0:
             mean_lf = np.nanmean(valid_low_flows)
             std_lf = np.nanstd(valid_low_flows)
-            low_flow_cv = std_lf / mean_lf if mean_lf != 0 and not np.isnan(mean_lf) else np.nan
+            low_flow_cv = (
+                std_lf / mean_lf if mean_lf != 0 and not np.isnan(mean_lf) else np.nan
+            )
         else:
             low_flow_cv = np.nan
 
@@ -171,7 +202,9 @@ class FlowExtremes:
 
         # Flood threshold (commonly 2x mean annual flood)
         annual_maxima = self._get_annual_maxima()
-        mean_annual_flood = np.mean(annual_maxima) if len(annual_maxima) > 0 else self.mean_flow
+        mean_annual_flood = (
+            np.mean(annual_maxima) if len(annual_maxima) > 0 else self.mean_flow
+        )
 
         flood_threshold = 2 * mean_annual_flood
         flood_events = self.discharge[self.discharge > flood_threshold]
