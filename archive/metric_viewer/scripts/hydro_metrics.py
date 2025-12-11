@@ -1,10 +1,11 @@
+from copy import deepcopy
+import math
 import random
+
+import matplotlib.pyplot as plt
 import numba
 import numpy as np
 import pandas as pd
-from copy import deepcopy
-import math
-import matplotlib.pyplot as plt
 
 """
 Расчёт ведётся для листа в котором нет пропусков. 
@@ -57,10 +58,7 @@ Backward pass
 
 @numba.jit(nopython=True)
 def BackwardPass(Q_forward_1, alpha):
-    """
-    Здесь Q - n-мерный лист в зависимости от числа разбиений
-    """
-
+    """Здесь Q - n-мерный лист в зависимости от числа разбиений"""
     Qq = Q_forward_1[0]
     Qb = Q_forward_1[1]
 
@@ -127,8 +125,7 @@ BFI calculations for given alpha
 
 @numba.jit(nopython=True)
 def bfi(Q, alpha, passes, reflect):
-    """
-    we reflect the first reflect values and the last reflect values.
+    """We reflect the first reflect values and the last reflect values.
     this is to get rid of 'warm up' problems © Anthony Ladson
     """
     Qin = Q
@@ -192,14 +189,12 @@ BFI calculations for 1000 alpha between 0.9 and 0.98
 
 @numba.jit(nopython=True)
 def bfi_1000(Q, passes, reflect):
-    """
-    Расчёт проводится для 1000 случайных значений alpha
+    """Расчёт проводится для 1000 случайных значений alpha
     в диапазоне он 0.9 до 0.98
 
     we reflect the first reflect values and the last reflect values.
     this is to get rid of 'warm up' problems © Anthony Ladson
     """
-
     random.seed(1996)
     alpha_coefficients = [np.float64(random.uniform(0.9, 0.98)) for i in range(1000)]
 
@@ -300,7 +295,7 @@ def slope_fdc_gauge(hydro_year: pd.Series):
 
 
 def hfd_calc(calendar_year: pd.Series, hydro_year: pd.Series):
-    """date on which the cumulative discharge since 1 October
+    """Date on which the cumulative discharge since 1 October
     reaches half of the annual discharge
 
     Args:
@@ -338,12 +333,11 @@ def high_q_freq(hydro_year: pd.Series):
 
 
 def low_q_freq(hydro_year: pd.Series):
-    """frequency of low-flow days (< 0.2 times the mean daily flow)
+    """Frequency of low-flow days (< 0.2 times the mean daily flow)
 
     Args:
         hydro_year (pd.Series): _description_
     """
-
     hydro_year = deepcopy(hydro_year)
     med_val = np.nanmean(hydro_year) * 2e-1
 

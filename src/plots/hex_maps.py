@@ -902,7 +902,6 @@ def hex_model_distribution_plots_n(
 
 
 __all__ = [
-    "hexes_plot",
     "hexes_plots_n",
     "hex_model_distribution_plot",
     "hex_model_distribution_plots_n",

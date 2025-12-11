@@ -1,6 +1,6 @@
+from copy import deepcopy
 import math
 import random
-from copy import deepcopy
 
 import numba
 import numpy as np
@@ -133,7 +133,9 @@ def bfi(Q, alpha, passes, reflect):
     "reflect our lists"
 
     if len(Q) - 1 > reflect:
-        Q_reflect = np.array([np.float64(np.nan) for _ in range(len(Q) + 2 * reflect)], dtype=np.float64)
+        Q_reflect = np.array(
+            [np.float64(np.nan) for _ in range(len(Q) + 2 * reflect)], dtype=np.float64
+        )
 
         Q_reflect[:reflect] = Q[(reflect):0:-1]
         Q_reflect[(reflect) : (reflect + len(Q))] = Q
@@ -142,7 +144,9 @@ def bfi(Q, alpha, passes, reflect):
         ]
 
     else:
-        Q_reflect = np.array([np.float64(np.nan) for _ in range(len(Q))], dtype=np.float64)
+        Q_reflect = np.array(
+            [np.float64(np.nan) for _ in range(len(Q))], dtype=np.float64
+        )
         Q_reflect = Q
 
     Q1 = FirstPass(Q_reflect, alpha)
@@ -200,7 +204,9 @@ def bfi_1000(Q, passes, reflect):
     "reflect our lists"
 
     if len(Q) - 1 > reflect:
-        Q_reflect = np.array([np.float64(np.nan) for _ in range(len(Q) + 2 * reflect)], dtype=np.float64)
+        Q_reflect = np.array(
+            [np.float64(np.nan) for _ in range(len(Q) + 2 * reflect)], dtype=np.float64
+        )
 
         Q_reflect[:reflect] = Q[(reflect):0:-1]
         Q_reflect[(reflect) : (reflect + len(Q))] = Q
@@ -209,7 +215,9 @@ def bfi_1000(Q, passes, reflect):
         ]
 
     else:
-        Q_reflect = np.array([np.float64(np.nan) for _ in range(len(Q))], dtype=np.float64)
+        Q_reflect = np.array(
+            [np.float64(np.nan) for _ in range(len(Q))], dtype=np.float64
+        )
         Q_reflect = Q
 
     bfi_record = []
@@ -342,7 +350,9 @@ def low_q_freq(hydro_year: pd.Series):
 def low_q_dur(hydro_year: pd.Series):
     mean_lim = np.nanmean(hydro_year)
 
-    mean_masks = np.ma.clump_unmasked(np.ma.masked_where(hydro_year > mean_lim, hydro_year))
+    mean_masks = np.ma.clump_unmasked(
+        np.ma.masked_where(hydro_year > mean_lim, hydro_year)
+    )
 
     return [hydro_year[mask] for mask in mean_masks]
 
@@ -350,7 +360,9 @@ def low_q_dur(hydro_year: pd.Series):
 def high_q_dur(hydro_year: pd.Series):
     mean_lim = np.nanmedian(hydro_year) * 2
 
-    mean_masks = np.ma.clump_unmasked(np.ma.masked_where(hydro_year < mean_lim, hydro_year))
+    mean_masks = np.ma.clump_unmasked(
+        np.ma.masked_where(hydro_year < mean_lim, hydro_year)
+    )
 
     return [hydro_year[mask] for mask in mean_masks]
 
@@ -423,7 +435,8 @@ def hydro_job(hydro_year: pd.Series, calendar_year: pd.Series):
 
 def nse(predictions, targets):
     return 1 - (
-        np.nansum((targets - predictions) ** 2) / np.nansum((targets - np.nanmean(targets)) ** 2)
+        np.nansum((targets - predictions) ** 2)
+        / np.nansum((targets - np.nanmean(targets)) ** 2)
     )
 
 
@@ -431,7 +444,9 @@ def kge(predictions, targets):
     sim_mean = np.mean(targets, axis=0, dtype=np.float64)
     obs_mean = np.mean(predictions, dtype=np.float64)
 
-    r_num = np.sum((targets - sim_mean) * (predictions - obs_mean), axis=0, dtype=np.float64)
+    r_num = np.sum(
+        (targets - sim_mean) * (predictions - obs_mean), axis=0, dtype=np.float64
+    )
     r_den = np.sqrt(
         np.sum((targets - sim_mean) ** 2, axis=0, dtype=np.float64)
         * np.sum((predictions - obs_mean) ** 2, dtype=np.float64)
@@ -440,7 +455,9 @@ def kge(predictions, targets):
     # calculate error in spread of flow alpha
     alpha = np.std(targets, axis=0) / np.std(predictions, dtype=np.float64)
     # calculate error in volume beta (bias of mean discharge)
-    beta = np.sum(targets, axis=0, dtype=np.float64) / np.sum(predictions, dtype=np.float64)
+    beta = np.sum(targets, axis=0, dtype=np.float64) / np.sum(
+        predictions, dtype=np.float64
+    )
     # calculate the Kling-Gupta Efficiency KGE
     kge_ = 1 - np.sqrt((r - 1) ** 2 + (alpha - 1) ** 2 + (beta - 1) ** 2)
 

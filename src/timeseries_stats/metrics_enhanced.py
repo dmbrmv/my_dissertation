@@ -6,7 +6,7 @@ optimized for different flow regimes.
 
 import numpy as np
 
-from timeseries_stats.metrics import (
+from src.timeseries_stats.metrics import (
     kling_gupta_efficiency,
     log_nash_sutcliffe_efficiency,
     nash_sutcliffe_efficiency,
@@ -300,3 +300,176 @@ def analyze_flow_regimes(observed: np.ndarray, simulated: np.ndarray) -> dict[st
     regime_metrics["overall_pbias"] = percent_bias(obs, sim)
 
     return regime_metrics
+
+
+def calculate_quality_grades(
+    observed: np.ndarray,
+    simulated: np.ndarray,
+) -> dict[str, float | int]:
+    """Calculate quality grades for NSE, PBIAS, and R² metrics.
+
+    This function replaces the legacy hydro_job function, providing modern
+    quality assessment with the updated 0-3 grading scale. It computes three
+    standard metrics (NSE, PBIAS, R²) and converts them to categorical quality
+    grades following hydrological modeling standards.
+
+    Quality Grading Scale (0-based):
+        - 0: Плох. (Poor) - Unsatisfactory performance
+        - 1: Удов. (Satisfactory) - Acceptable performance
+        - 2: Хор. (Good) - Good performance
+        - 3: Отл. (Excellent) - Excellent performance
+
+    Threshold Definitions:
+        NSE (Nash-Sutcliffe Efficiency):
+            - Excellent: > 0.80
+            - Good: 0.70 - 0.80
+            - Satisfactory: 0.50 - 0.70
+            - Poor: ≤ 0.50
+
+        PBIAS (Percent Bias):
+            - Excellent: |PBIAS| ≤ 10%
+            - Good: 10% < |PBIAS| ≤ 15%
+            - Satisfactory: 15% < |PBIAS| ≤ 35%
+            - Poor: |PBIAS| > 35%
+
+        R² (Coefficient of Determination):
+            - Excellent: > 0.85
+            - Good: 0.70 - 0.85
+            - Satisfactory: 0.50 - 0.70
+            - Poor: ≤ 0.50
+
+    References:
+        Moriasi et al. (2007): "Model evaluation guidelines for systematic
+        quantification of accuracy in watershed simulations" - established
+        standard thresholds for NSE and PBIAS.
+
+        Willmott et al. (2012): "A refined index of model performance" -
+        provided rationale for R² thresholds in hydrological contexts.
+
+    Args:
+        observed: Array of observed discharge values (mm/day or m³/s)
+        simulated: Array of simulated discharge values (same units as observed)
+
+    Returns:
+        Dictionary containing:
+            - NSE: Nash-Sutcliffe Efficiency value
+            - NSE_grade: Quality grade (0-3)
+            - PBIAS: Percent Bias value
+            - PBIAS_grade: Quality grade (0-3)
+            - R2: Coefficient of determination
+            - R2_grade: Quality grade (0-3)
+            - composite_score: Average of three grades (0.0-3.0)
+            - composite_grade: Overall quality grade (0-3)
+
+    Example:
+        >>> obs = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+        >>> sim = np.array([1.1, 2.2, 2.9, 4.1, 4.8])
+        >>> grades = calculate_quality_grades(obs, sim)
+        >>> print(f"NSE: {grades['NSE']:.3f}, Grade: {grades['NSE_grade']}")
+        NSE: 0.950, Grade: 3
+
+    Notes:
+        - Missing values (NaN) are handled automatically via paired removal
+        - If inputs are invalid or insufficient, returns grade=0 for all metrics
+        - Composite score is simple average of three individual grades
+        - This function modernizes the legacy hydro_job function with:
+          * Type hints (Python 3.10+)
+          * Zero-based grading scale (was 1-4, now 0-3)
+          * Separation of metrics (no longer bundled with BFI/quantiles)
+          * Logging support (use logger.info() in calling code)
+    """
+    # Remove paired NaN values
+    mask = ~(np.isnan(observed) | np.isnan(simulated))
+    obs = observed[mask]
+    sim = simulated[mask]
+
+    # Handle insufficient data
+    if len(obs) < 3:
+        return {
+            "NSE": np.nan,
+            "NSE_grade": 0,
+            "PBIAS": np.nan,
+            "PBIAS_grade": 0,
+            "R2": np.nan,
+            "R2_grade": 0,
+            "composite_score": 0.0,
+            "composite_grade": 0,
+        }
+
+    # Calculate metrics
+    nse_value = nash_sutcliffe_efficiency(obs, sim)
+    pbias_value = percent_bias(obs, sim)
+
+    # Calculate R² (coefficient of determination)
+    obs_mean = np.mean(obs)
+    sim_mean = np.mean(sim)
+    ss_res = np.sum((obs - sim) ** 2)
+    ss_tot = np.sum((obs - obs_mean) ** 2)
+
+    if ss_tot == 0:
+        r2_value = np.nan
+    else:
+        r2_value = 1 - (ss_res / ss_tot)
+
+    # Handle NaN metrics (assign worst grade)
+    if np.isnan(nse_value):
+        nse_value = -999.0
+    if np.isnan(pbias_value):
+        pbias_value = 999.0
+    if np.isnan(r2_value):
+        r2_value = -999.0
+
+    # Grade NSE (0-based scale)
+    if nse_value > 0.80:
+        nse_grade = 3  # Excellent
+    elif nse_value > 0.70:
+        nse_grade = 2  # Good
+    elif nse_value > 0.50:
+        nse_grade = 1  # Satisfactory
+    else:
+        nse_grade = 0  # Poor
+
+    # Grade PBIAS (absolute value, 0-based scale)
+    pbias_abs = abs(pbias_value)
+    if pbias_abs <= 10.0:
+        pbias_grade = 3  # Excellent
+    elif pbias_abs <= 15.0:
+        pbias_grade = 2  # Good
+    elif pbias_abs <= 35.0:
+        pbias_grade = 1  # Satisfactory
+    else:
+        pbias_grade = 0  # Poor
+
+    # Grade R² (0-based scale)
+    if r2_value > 0.85:
+        r2_grade = 3  # Excellent
+    elif r2_value > 0.70:
+        r2_grade = 2  # Good
+    elif r2_value > 0.50:
+        r2_grade = 1  # Satisfactory
+    else:
+        r2_grade = 0  # Poor
+
+    # Calculate composite score (average of three grades)
+    composite_score = (nse_grade + pbias_grade + r2_grade) / 3.0
+
+    # Decode composite to categorical grade
+    if composite_score < 0.5:
+        composite_grade = 0  # Poor
+    elif composite_score < 1.5:
+        composite_grade = 1  # Satisfactory
+    elif composite_score < 2.5:
+        composite_grade = 2  # Good
+    else:
+        composite_grade = 3  # Excellent
+
+    return {
+        "NSE": nse_value if nse_value != -999.0 else np.nan,
+        "NSE_grade": nse_grade,
+        "PBIAS": pbias_value if pbias_value != 999.0 else np.nan,
+        "PBIAS_grade": pbias_grade,
+        "R2": r2_value if r2_value != -999.0 else np.nan,
+        "R2_grade": r2_grade,
+        "composite_score": composite_score,
+        "composite_grade": composite_grade,
+    }

@@ -525,4 +525,4 @@ def hex_model_distribution_plot(
     return fig, ax, hexes_to_plot, category_counts
 
 
-__all__ = ["hexes_plot", "hexes_plots_n", "hex_model_distribution_plot"]
+__all__ = ["hexes_plots_n", "hex_model_distribution_plot"]
