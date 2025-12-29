@@ -26,8 +26,8 @@ sys.path.append("./")
 from src.models.gr4j.pet import pet_oudin
 from src.models.hbv import hbv
 from src.readers.geom_reader import load_geodata
+from src.timeseries_stats.metrics import evaluate_model
 from src.utils.logger import setup_logger
-from timeseries_stats.metrics import evaluate_model
 
 Path("logs").mkdir(exist_ok=True)
 logger = setup_logger("hbv_predict", log_file="logs/hbv_predict.log", level="INFO")
@@ -125,7 +125,7 @@ def predict_hbv(
 
         # Prepare HBV input data
         hbv_data = df.loc[
-            :, ["q_mm_day", f"prcp_{dataset}", "t_max_e5l", "t_min_e5l"]
+            :, ["q_mm_day", f"prcp_{dataset}", "t_min_e5l", "t_max_e5l"]
         ].copy()
 
         # Calculate mean temperature
@@ -141,15 +141,13 @@ def predict_hbv(
             hbv_data["day_of_year"].tolist(),
             latitude,
         )
-        hbv_data["pet"] = np.asarray(pet, dtype=float)
+        hbv_data["evap"] = np.asarray(pet, dtype=float)
 
         # Rename columns to match HBV expectations
         hbv_data.rename(
             columns={
                 f"prcp_{dataset}": "prcp",
-                "t_mean_e5l": "tmean",
-                "t_max_e5l": "tmax",
-                "t_min_e5l": "tmin",
+                "t_mean_e5l": "temp",
             },
             inplace=True,
         )
@@ -278,7 +276,7 @@ def main() -> None:
                 gauges_gdf=gauges,
                 prediction_period=None,  # Full period
                 warmup_years=2,
-                save_format="parquet",
+                save_format="csv",
             )
 
             if result is not None:

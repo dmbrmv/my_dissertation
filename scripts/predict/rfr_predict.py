@@ -26,8 +26,8 @@ sys.path.append("./")
 
 from src.models.gr4j.pet import pet_oudin
 from src.readers.geom_reader import load_geodata
+from src.timeseries_stats.metrics import evaluate_model
 from src.utils.logger import setup_logger
-from timeseries_stats.metrics import evaluate_model
 
 Path("logs").mkdir(exist_ok=True)
 logger = setup_logger("rfr_predict", log_file="logs/rfr_predict.log", level="INFO")
@@ -154,7 +154,9 @@ def predict_rfr(
 
     # Load static attributes
     try:
-        static_df = pd.read_csv(static_file, index_col=0)
+        static_df = pd.read_csv(
+            static_file, index_col="gauge_id", dtype={"gauge_id": str}
+        )
         if gauge_id not in static_df.index:
             logger.error(f"Gauge {gauge_id} not found in static attributes")
             return None
@@ -315,7 +317,7 @@ def main() -> None:
     rolling_windows = [1, 2, 4, 8, 16, 32]
 
     # Static attributes
-    static_file = Path("data/attributes/hydro_atlas_cis_camels.csv")
+    static_file = Path("data/attributes/static_with_height.csv")
     static_parameters = [
         "for_pc_sse",
         "crp_pc_sse",
@@ -376,7 +378,7 @@ def main() -> None:
                 rolling_windows=rolling_windows,
                 training_period=("2008-01-01", "2018-12-31"),
                 prediction_period=None,  # Full period
-                save_format="parquet",
+                save_format="csv",
             )
 
             if result is not None:

@@ -26,8 +26,8 @@ sys.path.append("./")
 from src.models.gr4j import model as gr4j
 from src.models.gr4j.pet import pet_oudin
 from src.readers.geom_reader import load_geodata
+from src.timeseries_stats.metrics import evaluate_model
 from src.utils.logger import setup_logger
-from timeseries_stats.metrics import evaluate_model
 
 Path("logs").mkdir(exist_ok=True)
 logger = setup_logger("gr4j_predict", log_file="logs/gr4j_predict.log", level="INFO")
@@ -107,22 +107,24 @@ def predict_gr4j(
             df = ds.to_dataframe()
 
         # Prepare GR4J input data
-        gr4j_data = df.loc[:, ["q_mm_day", f"prcp_{dataset}", "t_max_e5l"]].copy()
+        gr4j_data = df.loc[
+            :, ["q_mm_day", f"prcp_{dataset}", "t_min_e5l", "t_max_e5l"]
+        ].copy()
         gr4j_data.dropna(inplace=True)
-
+        gr4j_data["t_mean"] = (gr4j_data["t_max_e5l"] + gr4j_data["t_min_e5l"]) / 2
         # Calculate PET using Oudin formula
         gr4j_data["day_of_year"] = gr4j_data.index.to_series().dt.dayofyear.values
 
         pet = pet_oudin(
-            gr4j_data["t_max_e5l"].tolist(),
+            gr4j_data["t_mean"].tolist(),
             gr4j_data["day_of_year"].tolist(),
             latitude,
         )
-        gr4j_data["pet"] = np.asarray(pet, dtype=float)
+        gr4j_data["pet_mm_day"] = np.asarray(pet, dtype=float)
 
         # Rename columns to match GR4J expectations
         gr4j_data.rename(
-            columns={f"prcp_{dataset}": "prcp", "t_max_e5l": "tmean"},
+            columns={f"prcp_{dataset}": "prcp"},
             inplace=True,
         )
 
@@ -253,7 +255,7 @@ def main() -> None:
                 gauges_gdf=gauges,
                 prediction_period=None,  # Full period
                 warmup_years=2,
-                save_format="parquet",
+                save_format="csv",
             )
 
             if result is not None:
