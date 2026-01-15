@@ -2,10 +2,10 @@ import glob
 from pathlib import Path
 
 import geopandas as gpd
-import torch
 from neuralhydrology.nh_run import eval_run
 from neuralhydrology.utils.config import Config
 from scripts.file_manipulator import train_rewriter
+import torch
 
 gpd.options.io_engine = "pyogrio"
 
@@ -23,12 +23,14 @@ if device.type == "cuda":
 
 
 def best_epoch_finder(log_file: Path) -> int:
-    with open(f"{log_file}", "r") as f:
+    with open(f"{log_file}") as f:
         lines = f.readlines()
     full_lines = [line for line in lines if ("NSE" in line) & ("Epoch" in line)]
 
     epoch_nse = {
-        int(line.split(" Epoch ")[1].split(" ")[0]): float(line.split(" NSE: ")[1].split(",")[0])
+        int(line.split(" Epoch ")[1].split(" ")[0]): float(
+            line.split(" NSE: ")[1].split(",")[0]
+        )
         for line in full_lines
     }
 
@@ -68,10 +70,16 @@ nc_variable = "nc_all_q"
 ts_dir = Path("../data/time_series")
 for gauge_id in available_gauges:
     configs = list(
-        Path(f"../data/lstm_single_run/{gauge_id}").glob("cudalstm_q_mm_day*mswep*/config.yml")
+        Path(f"../data/lstm_single_run/{gauge_id}").glob(
+            "cudalstm_q_mm_day*mswep*/config.yml"
+        )
     )
     configs_names = [i.parents[0].stem for i in configs]
-    logs = list(Path(f"../data/lstm_single_run/{gauge_id}").glob("cudalstm_q_mm_day*mswep*/output.log"))
+    logs = list(
+        Path(f"../data/lstm_single_run/{gauge_id}").glob(
+            "cudalstm_q_mm_day*mswep*/output.log"
+        )
+    )
     try:
         best_epochs = list(best_epoch_finder(log) for log in logs)
     except ValueError:

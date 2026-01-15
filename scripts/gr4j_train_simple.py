@@ -30,9 +30,8 @@ sys.path.append("./")
 
 from src.models.gr4j import model as gr4j
 from src.models.gr4j.pet import pet_oudin
-from src.readers.geom_reader import load_geodata
+from src.timeseries_stats.metrics import evaluate_model, kling_gupta_efficiency
 from src.utils.logger import setup_logger
-from timeseries_stats.metrics import evaluate_model, kling_gupta_efficiency
 
 Path("logs").mkdir(exist_ok=True)
 logger = setup_logger("gr4j_simple", log_file="logs/gr4j_simple_optim.log", level="INFO")
@@ -270,7 +269,9 @@ def process_gauge_simple(
 def main() -> None:
     """Run SIMPLIFIED single-objective GR4J calibration."""
     # Load gauge data
-    ws, gauges = load_geodata(folder_depth=".")
+    # ws, gauges = load_geodata(folder_depth=".")
+    gauges = gpd.read_file("res/FineTuneGauges.gpkg")
+    gauges = gauges.set_index("gauge_id")
 
     logger.info("Finding gauges with valid data...")
     full_gauges = [
@@ -279,10 +280,10 @@ def main() -> None:
     logger.info(f"Found {len(full_gauges)} valid gauges")
 
     # Optimization parameters
-    calibration_period = ("2010-01-01", "2018-12-31")
-    validation_period = ("2019-01-01", "2020-12-31")
+    calibration_period = ("2010-01-01", "2016-12-31")
+    validation_period = ("2017-01-01", "2018-12-31")
 
-    save_storage = Path("data/optimization/gr4j_simple/")
+    save_storage = Path("data/optimization_poor_gauges/gr4j_simple/")
     save_storage.mkdir(parents=True, exist_ok=True)
 
     n_trials = 1000  # Sufficient for single objective
@@ -320,7 +321,8 @@ def main() -> None:
     logger.info(f"Remaining: {total_tasks - completed_count} tasks")
 
     # Process gauges in parallel
-    n_processes = max(1, mp.cpu_count() - 2)  # Leave 2 cores free
+    # n_processes = max(1, mp.cpu_count() - 2)  # Leave 2 cores free
+    n_processes = 10
     logger.info(f"Starting parallel optimization with {n_processes} processes")
 
     # Create partial function with fixed parameters

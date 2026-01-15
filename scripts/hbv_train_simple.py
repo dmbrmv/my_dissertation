@@ -312,20 +312,21 @@ def process_gauge_simple(
 
 def main() -> None:
     """Run SIMPLIFIED single-objective HBV calibration."""
-    from src.readers.geom_reader import load_geodata
-
+    # from src.readers.geom_reader import load_geodata
     # Load gauge data
-    _, gauges = load_geodata(folder_depth=".")
+    # _, gauges = load_geodata(folder_depth=".")
+    gauges = gpd.read_file("res/FineTuneGauges.gpkg")
+    gauges = gauges.set_index("gauge_id")
 
     full_gauges = [
         i.stem for i in Path("data/nc_all_q").glob("*.nc") if i.stem in gauges.index
     ]
 
     # Optimization parameters
-    calibration_period = ("2010-01-01", "2018-12-31")
-    validation_period = ("2019-01-01", "2020-12-31")
+    calibration_period = ("2010-01-01", "2016-12-31")
+    validation_period = ("2017-01-01", "2018-12-31")
 
-    save_storage = Path("data/optimization/hbv_simple/")
+    save_storage = Path("data/optimization_poor_gauges/hbv_simple/")
     save_storage.mkdir(parents=True, exist_ok=True)
 
     n_trials = 1500
@@ -363,7 +364,8 @@ def main() -> None:
     logger.info(f"Remaining: {total_tasks - completed_count} tasks")
 
     # Process gauges in parallel
-    n_processes = max(1, mp.cpu_count() - 2)
+    # n_processes = max(1, mp.cpu_count() - 2)
+    n_processes = 10
     logger.info(f"Starting parallel optimization with {n_processes} processes")
 
     # Create partial function with fixed parameters

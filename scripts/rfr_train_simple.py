@@ -18,9 +18,9 @@ from concurrent.futures import ProcessPoolExecutor
 from functools import partial
 import json
 import logging
-import multiprocessing as mp
 from pathlib import Path
 import sys
+import warnings
 
 import geopandas as gpd
 import numpy as np
@@ -32,9 +32,11 @@ import xarray as xr
 sys.path.append("./")
 
 from src.models.gr4j.pet import pet_oudin
+from src.timeseries_stats.metrics import evaluate_model, kling_gupta_efficiency
 from src.utils.logger import setup_logger
-from timeseries_stats.metrics import evaluate_model, kling_gupta_efficiency
 
+# Suppress sklearn parallel warnings when using ProcessPoolExecutor
+warnings.filterwarnings("ignore", message=".*sklearn.utils.parallel.delayed.*")
 Path("logs").mkdir(exist_ok=True)
 logger = setup_logger("rfr_simple", log_file="logs/rfr_simple_optim.log", level="INFO")
 
@@ -100,8 +102,18 @@ def objective_single_kge(
     y_train: np.ndarray,
     X_val: np.ndarray,
     y_val: np.ndarray,
+    n_jobs: int = 1,
 ) -> float:
-    """Single-objective KGE optimization for Random Forest."""
+    """Single-objective KGE optimization for Random Forest.
+
+    Args:
+        trial: Optuna trial object
+        X_train: Training features
+        y_train: Training targets
+        X_val: Validation features
+        y_val: Validation targets
+        n_jobs: Number of parallel jobs for RF (1 avoids nested parallelization)
+    """
     # Suggest hyperparameters
     n_estimators = trial.suggest_int("n_estimators", 50, 300)
     max_depth = trial.suggest_int("max_depth", 5, 30)
@@ -110,7 +122,7 @@ def objective_single_kge(
     max_features = trial.suggest_categorical("max_features", ["sqrt", "log2", 0.5, 0.7])
 
     try:
-        # Train model
+        # Train model (n_jobs=1 to avoid nested parallelization with ProcessPoolExecutor)
         rf = RandomForestRegressor(
             n_estimators=n_estimators,
             max_depth=max_depth,
@@ -118,7 +130,7 @@ def objective_single_kge(
             min_samples_leaf=min_samples_leaf,
             max_features=max_features,
             random_state=42,
-            n_jobs=-1,
+            n_jobs=n_jobs,
         )
 
         rf.fit(X_train, y_train)
@@ -242,7 +254,7 @@ def process_gauge_simple(
                 study_name=f"RF_simple_{gauge_id}_{dataset}",
             )
 
-            # Define objective with captured variables
+            # Define objective with captured variables (n_jobs=1 avoids nesting)
             def opt_func(
                 trial: optuna.Trial,
                 X_tr: np.ndarray = X_train,
@@ -250,7 +262,7 @@ def process_gauge_simple(
                 X_v: np.ndarray = X_val,
                 y_v: np.ndarray = y_val,
             ) -> float:
-                return objective_single_kge(trial, X_tr, y_tr, X_v, y_v)
+                return objective_single_kge(trial, X_tr, y_tr, X_v, y_v, n_jobs=1)
 
             study.optimize(
                 opt_func,
@@ -272,7 +284,7 @@ def process_gauge_simple(
                 min_samples_leaf=best_params["min_samples_leaf"],
                 max_features=best_params["max_features"],
                 random_state=42,
-                n_jobs=-1,
+                n_jobs=1,  # Avoid nested parallelization with ProcessPoolExecutor
             )
 
             rf_final.fit(X_train, y_train)
@@ -303,20 +315,22 @@ def process_gauge_simple(
 
 def main() -> None:
     """Run SIMPLIFIED single-objective Random Forest calibration."""
-    from src.readers.geom_reader import load_geodata
+    # from src.readers.geom_reader import load_geodata
 
     # Load gauge data
-    _, gauges = load_geodata(folder_depth=".")
+    # _, gauges = load_geodata(folder_depth=".")
+    gauges = gpd.read_file("res/FineTuneGauges.gpkg")
+    gauges = gauges.set_index("gauge_id")
 
     full_gauges = [
         i.stem for i in Path("data/nc_all_q").glob("*.nc") if i.stem in gauges.index
     ]
 
     # Configuration
-    calibration_period = ("2008-01-01", "2018-12-31")
-    validation_period = ("2019-01-01", "2020-12-31")
+    calibration_period = ("2008-01-01", "2016-12-31")
+    validation_period = ("2017-01-01", "2018-12-31")
 
-    save_storage = Path("data/optimization/rfr_simple/")
+    save_storage = Path("data/optimization_poor_gauges/rfr_simple/")
     save_storage.mkdir(parents=True, exist_ok=True)
 
     # Rolling windows
@@ -383,7 +397,8 @@ def main() -> None:
     logger.info(f"Remaining: {total_tasks - completed_count} tasks")
 
     # Process gauges in parallel
-    n_processes = max(1, mp.cpu_count() - 2)
+    # n_processes = max(1, mp.cpu_count() - 2)
+    n_processes = 10
     logger.info(f"Starting parallel optimization with {n_processes} processes")
 
     # Create partial function with fixed parameters (already imported at top)

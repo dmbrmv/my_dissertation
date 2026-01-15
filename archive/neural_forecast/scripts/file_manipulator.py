@@ -1,6 +1,6 @@
 import glob
-import shutil
 from pathlib import Path
+import shutil
 
 import xarray as xr
 
@@ -99,12 +99,12 @@ def train_cmip_val(
     - val_end: The end date of the validation period in the format 'YYYY-MM-DD'.
     - possible_nans: The allowable number of nan values in the dataset. Defaults to 0.
 
-    Returns
+    Returns:
     -------
     None: This function does not return any value. It writes the processed data to netCDF files and
     generates a text file listing all processed gauge IDs.
 
-    Raises
+    Raises:
     ------
     ValueError: If the ERA file or CMIP file contains missing data exceeding `possible_nans`.
 
@@ -137,7 +137,9 @@ def train_cmip_val(
                 cmip_file = cmip_file.to_dataframe()
             # rename columns with era correspondend names
             cmip_file = cmip_file.rename(
-                columns={old_col: new_col for new_col, old_col in zip(era_cols, cmip_cols)}
+                columns={
+                    old_col: new_col for new_col, old_col in zip(era_cols, cmip_cols)
+                }
             )
             era_file.loc[f"{val_start}" : f"{val_end}", era_cols] = cmip_file.loc[
                 f"{val_start}" : f"{val_end}", era_cols
@@ -174,14 +176,19 @@ def test_rewriter(
         else:
             try:
                 obs_file = xr.open_dataset(file)
-                obs_file = obs_file.to_dataframe()[["lvl_sm", "q_cms_s", "lvl_mbs", "q_mm_day"]]
+                obs_file = obs_file.to_dataframe()[
+                    ["lvl_sm", "q_cms_s", "lvl_mbs", "q_mm_day"]
+                ]
 
                 cmip_file = xr.open_dataset(f"{cmip_storage}/{gauge_id}.nc")
                 # cmip_file = cmip_file.dropna(dim='date')
                 cmip_file = cmip_file.to_dataframe().droplevel(1)[predictors]
                 cmip_file = cmip_file.dropna()
                 cmip_file = cmip_file.rename(
-                    columns={old_col: new_col for new_col, old_col in zip(era_names, predictors)}
+                    columns={
+                        old_col: new_col
+                        for new_col, old_col in zip(era_names, predictors)
+                    }
                 )
 
                 res_file = cmip_file.join(obs_file).to_xarray()

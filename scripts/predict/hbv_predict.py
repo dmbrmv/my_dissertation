@@ -236,11 +236,13 @@ def predict_hbv(
 def main() -> None:
     """Run HBV inference for all gauges and datasets."""
     # Load gauge data
-    _, gauges = load_geodata(folder_depth=".")
+    # _, gauges = load_geodata(folder_depth=".")
+    gauges = gpd.read_file("res/FineTuneGauges.gpkg")
+    gauges = gauges.set_index("gauge_id")
 
     # Configuration
-    params_path = Path("data/optimization/hbv_simple/")
-    output_path = Path("data/predictions/hbv/")
+    params_path = Path("data/optimization_poor_gauges/hbv_simple/")
+    output_path = Path("data/predictions/hbv_poor_gauges/")
     output_path.mkdir(parents=True, exist_ok=True)
 
     datasets = ["e5l", "gpcp", "e5", "mswep"]

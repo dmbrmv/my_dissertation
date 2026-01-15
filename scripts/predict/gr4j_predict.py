@@ -215,11 +215,12 @@ def predict_gr4j(
 def main() -> None:
     """Run GR4J inference for all gauges and datasets."""
     # Load gauge data
-    _, gauges = load_geodata(folder_depth=".")
-
+    # _, gauges = load_geodata(folder_depth=".")
+    gauges = gpd.read_file("res/FineTuneGauges.gpkg")
+    gauges = gauges.set_index("gauge_id")
     # Configuration
-    params_path = Path("data/optimization/gr4j_simple/")
-    output_path = Path("data/predictions/gr4j/")
+    params_path = Path("data/optimization_poor_gauges/gr4j_simple/")
+    output_path = Path("data/predictions/gr4j_poor_gauges/")
     output_path.mkdir(parents=True, exist_ok=True)
 
     datasets = ["e5l", "gpcp", "e5", "mswep"]

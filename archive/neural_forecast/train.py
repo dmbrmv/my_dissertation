@@ -1,13 +1,13 @@
 import gc
 import glob
-import random
 from pathlib import Path
+import random
 
 import geopandas as gpd
-import torch
 from neuralhydrology.nh_run import start_run
 from neuralhydrology.utils.config import Config
 from scripts.file_manipulator import train_rewriter
+import torch
 
 # setting device on GPU if available, else CPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

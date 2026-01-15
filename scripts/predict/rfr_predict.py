@@ -25,7 +25,6 @@ import xarray as xr
 sys.path.append("./")
 
 from src.models.gr4j.pet import pet_oudin
-from src.readers.geom_reader import load_geodata
 from src.timeseries_stats.metrics import evaluate_model
 from src.utils.logger import setup_logger
 
@@ -304,11 +303,13 @@ def predict_rfr(
 def main() -> None:
     """Run Random Forest inference for all gauges and datasets."""
     # Load gauge data
-    _, gauges = load_geodata(folder_depth=".")
+    # _, gauges = load_geodata(folder_depth=".")
+    gauges = gpd.read_file("res/FineTuneGauges.gpkg")
+    gauges = gauges.set_index("gauge_id")
 
     # Configuration
-    params_path = Path("data/optimization/rfr_simple/")
-    output_path = Path("data/predictions/rfr/")
+    params_path = Path("data/optimization_poor_gauges/rfr_simple/")
+    output_path = Path("data/predictions/rfr_poor_gauges/")
     output_path.mkdir(parents=True, exist_ok=True)
 
     datasets = ["e5l", "gpcp", "e5", "mswep"]
@@ -317,7 +318,7 @@ def main() -> None:
     rolling_windows = [1, 2, 4, 8, 16, 32]
 
     # Static attributes
-    static_file = Path("data/attributes/static_with_height.csv")
+    static_file = Path("data/attributes/hydro_atlas_cis_camels.csv")
     static_parameters = [
         "for_pc_sse",
         "crp_pc_sse",
@@ -376,8 +377,8 @@ def main() -> None:
                 static_file=static_file,
                 static_columns=static_parameters,
                 rolling_windows=rolling_windows,
-                training_period=("2008-01-01", "2018-12-31"),
-                prediction_period=None,  # Full period
+                training_period=("2008-01-01", "2016-12-31"),
+                prediction_period=("2017-01-01", "2018-12-31"),  # Full period
                 save_format="csv",
             )
 
