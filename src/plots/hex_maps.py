@@ -39,6 +39,7 @@ def hexes_plots_n(
     agg: Literal["median", "mean", "max", "min"] = "median",
     area_weighted: bool = False,
     min_overlap_share: float = 0.1,
+    negative_threshold: float | None = None,
     rus_extent: tuple = (50, 140, 32, 90),
     list_of_limits: list[float] | None = None,
     cmap_lims: tuple = (0.0, 1.0),
@@ -100,7 +101,18 @@ def hexes_plots_n(
 
     if list_of_limits:
         cmap = cm.get_cmap(cmap_name, len(list_of_limits) - 1)
-        norm = mpl.colors.BoundaryNorm(list_of_limits, len(list_of_limits) - 1)
+        # Replace inf values with finite bounds for BoundaryNorm
+        finite_limits = (
+            list_of_limits.copy()
+            if isinstance(list_of_limits, list)
+            else list(list_of_limits)
+        )
+        for i, val in enumerate(finite_limits):
+            if np.isinf(val) and val < 0:
+                finite_limits[i] = -1e10
+            elif np.isinf(val) and val > 0:
+                finite_limits[i] = 1e10
+        norm = mpl.colors.BoundaryNorm(finite_limits, len(finite_limits) - 1)
     else:
         cmap = cm.get_cmap(cmap_name)
         vmin, vmax = cmap_lims
@@ -134,6 +146,7 @@ def hexes_plots_n(
             agg=agg,
             area_weighted=area_weighted,
             min_overlap_share=min_overlap_share,
+            negative_threshold=negative_threshold,
         )
         metric_label = f"{agg}_{metric}"
 
@@ -184,6 +197,21 @@ def hexes_plots_n(
         )
         cbar.ax.tick_params(labelsize=8)
 
+        # Fix colorbar tick labels: replace large negative values with -∞ symbol
+        if list_of_limits is not None:
+            current_ticks = cbar.get_ticks()
+            new_labels = []
+            for t in current_ticks:
+                if t < -1e9:  # Very negative = represents -∞
+                    new_labels.append("-∞")
+                elif t > 1e9:  # Very positive = represents ∞
+                    new_labels.append("∞")
+                elif t == int(t):
+                    new_labels.append(f"{int(t)}")
+                else:
+                    new_labels.append(f"{t:.1f}")
+            cbar.ax.set_xticklabels(new_labels)
+
         if cb_label is not None and list_of_limits is not None:
             n_segments = len(cb_label)
             for label_idx, label_text in enumerate(cb_label):
@@ -205,7 +233,7 @@ def hexes_plots_n(
                     "list_of_limits must be provided when with_histogram=True."
                 )
 
-            values = ws_metric[metric].dropna().clip(lower=0)
+            values = ws_metric[metric].dropna()
             if not values.empty:
                 bins = list_of_limits
                 categories = pd.cut(values, bins=bins, include_lowest=True, right=True)
@@ -214,9 +242,18 @@ def hexes_plots_n(
                 ax_hist = ax.inset_axes([0.05, 0.05, 0.30, 0.24])
 
                 edges = list_of_limits
+                # Use finite limits for midpoint calculation (color mapping)
+                finite_edges = [
+                    -1e10
+                    if (np.isinf(e) and e < 0)
+                    else (1e10 if (np.isinf(e) and e > 0) else e)
+                    for e in edges
+                ]
                 bin_midpoints = [
                     (left + right) / 2
-                    for left, right in zip(edges[:-1], edges[1:], strict=False)
+                    for left, right in zip(
+                        finite_edges[:-1], finite_edges[1:], strict=False
+                    )
                 ]
                 colors = [color_mapper.to_rgba(midpoint) for midpoint in bin_midpoints]
 
@@ -237,6 +274,10 @@ def hexes_plots_n(
                 #     ax_hist.set_xlabel(hist_name[idx], fontdict={"fontsize": 8}, loc="center")
 
                 def _fmt_edge(val: float) -> str:
+                    if np.isinf(val) and val < 0:
+                        return "-∞"
+                    if np.isinf(val) and val > 0:
+                        return "∞"
                     val = max(val, edges[0])
                     if np.isclose(val, 0.0, atol=1e-6):
                         val = 0.0
@@ -246,11 +287,6 @@ def hexes_plots_n(
                     f"{_fmt_edge(left)}-{_fmt_edge(right)}"
                     for left, right in zip(edges[:-1], edges[1:], strict=False)
                 ]
-                if len(xlbl) > 4:
-                    xlbl = [
-                        lbl if not (lbl_idx % 2) else ""
-                        for lbl_idx, lbl in enumerate(xlbl)
-                    ]
 
                 ax_hist.set_xticks(np.arange(len(xlbl)))
                 ax_hist.set_xticklabels(xlbl)

@@ -67,8 +67,16 @@ def aggregate_nse_to_hex(
     agg: Literal["median", "mean", "max", "min"] = "median",
     area_weighted: bool = False,
     min_overlap_share: float = 0.1,
+    negative_threshold: float | None = None,
 ) -> gpd.GeoDataFrame:
-    """Aggregate watershed metric values to hex cells using centroid or area weighting."""
+    """Aggregate watershed metric values to hex cells using centroid or area weighting.
+
+    Args:
+        negative_threshold: If provided (e.g., 0.3), hexagons where the fraction of
+            negative values exceeds this threshold will use the minimum value.
+            For example, 0.3 means if >30% of watersheds in a hex are negative,
+            force the hex to show as negative. None disables this behavior.
+    """
     if watersheds.crs != hexes.crs:
         raise ValueError("CRS mismatch. Reproject both to the same equal-area CRS.")
 
@@ -89,6 +97,17 @@ def aggregate_nse_to_hex(
         grouped = joined.groupby("hex_id")[nse_col]
         val = getattr(grouped, agg)()
         cnt = grouped.size()
+
+        # Apply negative threshold: if fraction of negatives > threshold, use min
+        if negative_threshold is not None:
+            min_vals = grouped.min()
+            neg_count = grouped.apply(lambda x: (x < 0).sum())
+            total_count = grouped.size()
+            neg_fraction = neg_count / total_count
+            # Replace with min where negative fraction exceeds threshold
+            for hex_id in val.index:
+                if neg_fraction.loc[hex_id] > negative_threshold:
+                    val.loc[hex_id] = min_vals.loc[hex_id]
     else:
         inter = gpd.overlay(
             watersheds[[nse_col, "geometry", "orig_area"]].copy(),
@@ -102,6 +121,17 @@ def aggregate_nse_to_hex(
             lambda df: np.average(df[nse_col], weights=df["a"]), include_groups=False
         )
         cnt = grouped.size()
+
+        # Apply negative threshold for area-weighted
+        if negative_threshold is not None:
+            min_vals = grouped[nse_col].min()
+            neg_count = grouped[nse_col].apply(lambda x: (x < 0).sum())
+            total_count = grouped.size()
+            neg_fraction = neg_count / total_count
+            # Replace with min where negative fraction exceeds threshold
+            for hex_id in val.index:
+                if hex_id in neg_fraction.index and neg_fraction.loc[hex_id] > negative_threshold:
+                    val.loc[hex_id] = min_vals.loc[hex_id]
 
     out = hexes.reset_index(names="hex_id").merge(
         val.rename(f"{agg}_{nse_col}"), on="hex_id", how="left"
