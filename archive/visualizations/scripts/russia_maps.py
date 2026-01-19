@@ -178,7 +178,7 @@ def russia_plots_n(
     label_list: list,
     nrows: int,
     ncols: int,
-    title_text: list = [""],
+    title_text: list | None = None,
     hist_name: list = [""],
     rus_extent: list = [50, 140, 32, 90],
     list_of_limits: list = [0.0, 0.5, 0.7, 0.8, 1.0],
@@ -187,6 +187,7 @@ def russia_plots_n(
     figsize: tuple = (4.88189, 3.34646),
     just_points: bool = False,
     with_histogram: bool = False,
+    hist_facecolor: str = "red",
     ugms: bool = False,
     ugms_gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(),
 ):
@@ -306,7 +307,12 @@ def russia_plots_n(
             hist_df.columns.name = hist_name[i]
             ax_hist = ax.inset_axes([0.00, 0.05, 0.33, 0.24])
             extra_hist = hist_df.sum(axis=0).plot.bar(
-                ax=ax_hist, rot=0, width=1, facecolor="red", edgecolor="black", lw=1
+                ax=ax_hist,
+                rot=0,
+                width=1,
+                facecolor=hist_facecolor,
+                edgecolor="black",
+                lw=1,
             )
             extra_hist.bar_label(extra_hist.containers[0], fmt="%.0f")
             extra_hist.set_facecolor("white")
@@ -339,7 +345,10 @@ def russia_plots_n(
 
             plt.setp(ax_hist.get_xticklabels(), fontsize=8)
             plt.setp(ax_hist.get_yticklabels(), fontsize=8)
-        ax.set_title(f"{title_text[i]}", fontdict={"size": 12})
+        if title_text is not None and i < len(title_text):
+            ax.set_title(f"{title_text[i]}", fontdict={"size": 12})
+        else:
+            pass
         plt.tight_layout()
 
     return fig
