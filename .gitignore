@@ -112,7 +112,7 @@ data/cache/
 
 # Results and figures (if too large)
 test/
-results/
+res/
 outputs/
 figures/
 
@@ -168,4 +168,6 @@ test/results/
 !**/config.yml
 !**/model_config.yml
 
-res/
+res/# pixi environments
+.pixi/*
+!.pixi/config.toml

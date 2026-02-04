@@ -33,6 +33,7 @@ def plot_dendrogram(
     output_path: str | Path | None = None,
     figsize: tuple[int, int] = (16, 8),
     title: str | None = None,
+    show_cluster_axis: bool = True,
 ) -> Figure:
     """Plot hierarchical clustering dendrogram with cluster cutoff line.
 
@@ -42,6 +43,7 @@ def plot_dendrogram(
         output_path: Path to save figure. If None, figure is not saved.
         figsize: Figure size (width, height) in inches.
         title: Custom title. If None, uses default title.
+        show_cluster_axis: If True, add secondary y-axis showing cluster count.
 
     Returns:
         Matplotlib figure object.
@@ -63,22 +65,51 @@ def plot_dendrogram(
         p=0,
     )
 
-    ax.set_xlabel("Catchments (unlabeled due to high count)", fontsize=12)
-    ax.set_ylabel("Ward distance", fontsize=12)
+    ax.set_xlabel("Гидрологические посты", fontsize=12)
+    ax.set_ylabel("Расстояние Уорда", fontsize=12)
 
     if title is None:
         title = f"Hierarchical Clustering Dendrogram ({n_clusters} clusters)"
     ax.set_title(title, fontsize=14, pad=15)
 
+    cutoff_height = linkage_matrix[-n_clusters + 1, 2]
     ax.axhline(
-        y=linkage_matrix[-n_clusters + 1, 2],
+        y=cutoff_height,
         color="r",
         linestyle="--",
         linewidth=2,
-        label=f"Cut at {n_clusters} clusters",
+        label=f"{n_clusters} кластеров (d={cutoff_height:.1f})",
     )
     ax.legend(fontsize=11)
     ax.grid(True, alpha=0.3)
+
+    # Add secondary y-axis showing number of clusters at each merge height
+    if show_cluster_axis:
+        ax2 = ax.twinx()
+        ax2.set_ylabel("Число кластеров", fontsize=12)
+
+        # Get merge heights from linkage matrix (column 2)
+        merge_heights = linkage_matrix[:, 2]
+        n_samples = len(linkage_matrix) + 1
+
+        # Select key cluster counts to show (avoid clutter)
+        cluster_counts = [2, 3, 5, 7, 10, 15, 20, 30, 50]
+        cluster_counts = [c for c in cluster_counts if c < n_samples]
+
+        # Calculate heights where each cluster count is achieved
+        tick_positions = []
+        tick_labels = []
+        for k in cluster_counts:
+            # Height at which we go from k clusters to k-1 clusters
+            idx = n_samples - k
+            if 0 <= idx < len(merge_heights):
+                height = merge_heights[idx]
+                tick_positions.append(height)
+                tick_labels.append(str(k))
+
+        ax2.set_ylim(ax.get_ylim())
+        ax2.set_yticks(tick_positions)
+        ax2.set_yticklabels(tick_labels)
 
     plt.tight_layout()
 
@@ -897,9 +928,7 @@ def plot_hybrid_spatial_clusters(
     # Plot gauges with marker system
     if show_gauges:
         for i, hybrid_class in enumerate(sorted_classes):
-            class_gauges = gauges_plot[
-                gauges_plot[hybrid_col].astype(str) == hybrid_class
-            ]
+            class_gauges = gauges_plot[gauges_plot[hybrid_col].astype(str) == hybrid_class]
             if len(class_gauges) == 0:
                 continue
 

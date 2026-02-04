@@ -685,3 +685,339 @@ def interpret_cluster_from_data(
         name_components = _build_fallback_components(raw_row)
 
     return " / ".join(name_components[:2])
+
+
+# =============================================================================
+# RUSSIAN LOCALIZATION
+# =============================================================================
+
+
+def _get_feature_priority_map_ru() -> dict[str, tuple[int, str, str]]:
+    """Карта приоритетов признаков для именования кластеров (русская версия).
+
+    Уровни приоритета (меньше = выше приоритет):
+    1 - Критические/редкие: Определяющие гидрологические факторы
+    2 - Важные: Значимые гидрологические влияния
+    3 - Умеренные: Типичные характеристики
+    4 - Низкие: Повсеместные признаки
+
+    Returns:
+        Словарь: код признака -> (приоритет, краткое_название, полное_название)
+    """
+    return {
+        # Приоритет 1: Критические - редкие и высокодиагностичные признаки
+        "prm_pc_use": (1, "Мерзлотные породы", "с мерзлотными породами"),
+        "kar_pc_use": (1, "Карстовые породы", "с карстовыми породами"),
+        "urb_pc_use": (1, "Урбанизированные территории", "с урбанизированными территориями"),
+        "ire_pc_use": (1, "Орошаемые территории", "с орошаемыми территориями"),
+        "gla_pc_use": (1, "Оледенение", "с ледниковым питанием"),
+        # Приоритет 2: Важные - значимые гидрологические факторы
+        "lka_pc_use": (2, "Озерность", "с озерностью"),
+        "rev_mc_usu": (2, "Объем водохранилищ", "с водохранилищами"),
+        "lkv_mc_usu": (2, "Объем озер", "с высокой озерностью"),
+        "snw_pc_uyr": (2, "Снеговое питание", "со снеговым питанием"),
+        "inu_pc_ult": (2, "Затапливаемые территории", "с затапливаемыми территориями"),
+        "gwt_cm_uav": (2, "УГВ", "с глубоким залеганием грунтовых вод"),
+        "gwt_cm_sav": (2, "УГВ", "с глубоким залеганием грунтовых вод"),
+        "slp_dg_uav": (2, "Расчленённость", "с крутыми склонами"),
+        "sgr_dk_uav": (2, "Уклон русла", "с высоким уклоном русла"),
+        # Приоритет 3: Умеренные - типичные характеристики
+        "ele_mt_uav": (3, "Средняя высота водосбора", "средняя высота водосбора"),
+        "ws_area": (3, "Площадь", "площадь водосбора"),
+        "crp_pc_use": (3, "Пахотные земли", "с пахотными землями"),
+        "pst_pc_use": (3, "Пастбища", "с пастбищами"),
+        "pac_pc_use": (3, "ООПТ", "с охраняемыми территориями"),
+        # Приоритет 4: Низкие - повсеместные признаки
+        "pre_mm_uyr": (4, "Увлажнение", "с высоким увлажнением"),
+        "aet_mm_uyr": (4, "Испарение", "с высоким испарением"),
+        "pet_mm_uyr": (4, "Испаряемость", "с высокой испаряемостью"),
+        "cly_pc_uav": (4, "Глинистые почвы", "с глинистыми почвами"),
+        "slt_pc_uav": (4, "Осадочные породы", "с осадочными породами"),
+        "snd_pc_uav": (4, "Песчаные породы", "с песчаными породами"),
+    }
+
+
+def _build_primary_components_ru(
+    high_features: pd.Series,
+    normalized_row: pd.Series,
+    raw_row: pd.Series,
+    feature_priority: dict[str, tuple[int, str, str]],
+) -> list[str]:
+    """Формирование компонентов названия из высокозначимых признаков.
+
+    Args:
+        high_features: Признаки выше порогового значения
+        normalized_row: Нормализованные значения центроида
+        raw_row: Исходные значения центроида
+        feature_priority: Карта приоритетов признаков
+
+    Returns:
+        Список компонентов названия
+    """
+    name_components: list[str] = []
+
+    high_with_priority = []
+    for feat in high_features.index:
+        if feat in feature_priority:
+            priority, short_name, _ = feature_priority[feat]
+            norm_val: float = normalized_row[feat]
+            high_with_priority.append((priority, norm_val, feat, short_name))
+
+    # Лесистость обрабатывается отдельно - включаем только при экстремальных значениях
+    if "for_pc_use" in high_features.index:
+        forest_raw: float = raw_row["for_pc_use"]
+        forest_norm: float = normalized_row["for_pc_use"]
+        if forest_raw > 80:
+            high_with_priority.append((1, forest_norm, "for_pc_use", "Лесистость"))
+        elif forest_raw < 10:
+            high_with_priority.append((2, forest_norm, "for_pc_use", "Лесистость"))
+
+    high_with_priority.sort(key=lambda x: (x[0], -x[1]))
+
+    for i, (_, _, feat, name) in enumerate(high_with_priority[:3]):
+        if i == 0:
+            raw_val: float = raw_row[feat]
+            component = _format_primary_feature_ru(feat, name, raw_val)
+            name_components.append(component)
+        elif i == 1 and len(name_components) < 2:
+            name_components.append(name)
+
+    return name_components
+
+
+def _format_primary_feature_ru(feat: str, name: str, raw_val: float) -> str:
+    """Форматирование главного признака (без числовых значений).
+
+    Args:
+        feat: Код признака
+        name: Отображаемое название
+        raw_val: Исходное значение (используется только для классификации)
+
+    Returns:
+        Текстовая характеристика
+    """
+    # Для УГВ используем единое название
+    if feat in ("gwt_cm_sav", "gwt_cm_uav"):
+        return "УГВ"
+    return name
+
+
+def _extract_distinctive_features_ru(raw_row: pd.Series) -> list[str]:
+    """Извлечение диагностичных умеренных признаков.
+
+    Args:
+        raw_row: Исходные значения центроида
+
+    Returns:
+        Список описаний диагностичных признаков
+    """
+    components: list[str] = []
+    checks = [
+        ("lka_pc_use", "Озерность", 3.0),
+        ("crp_pc_use", "Пахотные земли", 25.0),
+        ("slp_dg_uav", "Расчленённость", 3.0),
+        ("kar_pc_use", "Карстовые породы", 10.0),
+        ("urb_pc_use", "Урбанизированные территории", 2.0),
+        ("inu_pc_ult", "Затапливаемые территории", 5.0),
+    ]
+
+    for feat, label, threshold in checks:
+        if feat in raw_row:
+            feat_val: float = raw_row[feat]
+            if feat_val > threshold:
+                components.append(label)
+                if len(components) >= 2:
+                    break
+
+    return components
+
+
+def _extract_topographic_features_ru(
+    normalized_row: pd.Series,
+    raw_row: pd.Series,
+) -> list[str]:
+    """Извлечение топографических характеристик.
+
+    Args:
+        normalized_row: Нормализованные значения центроида
+        raw_row: Исходные значения центроида
+
+    Returns:
+        Список топографических характеристик
+    """
+    components: list[str] = []
+
+    elev_norm: float = normalized_row.get("ele_mt_uav", 0.5)
+    if 0.35 < elev_norm < 0.65:
+        elev_val: float = raw_row.get("ele_mt_uav", 0)
+        components.append(_classify_elevation_ru(elev_val))
+
+    if len(components) < 2:
+        precip_norm: float = normalized_row.get("pre_mm_uyr", 0.5)
+        if 0.35 < precip_norm < 0.65:
+            precip_val: float = raw_row.get("pre_mm_uyr", 0)
+            precip_label = _classify_precipitation_ru(precip_val)
+            if precip_label:
+                components.append(precip_label)
+
+    return components
+
+
+def _extract_extreme_forest_ru(raw_row: pd.Series) -> str | None:
+    """Извлечение характеристики лесистости (только при экстремальных значениях).
+
+    Args:
+        raw_row: Исходные значения центроида
+
+    Returns:
+        Описание лесистости или None
+    """
+    if "for_pc_use" not in raw_row:
+        return None
+
+    forest_val: float = raw_row["for_pc_use"]
+    if forest_val > 80:
+        return "Лесистость"
+    if forest_val < 20:
+        return "Лесистость"
+    return None
+
+
+def _classify_elevation_ru(elev_val: float) -> str:
+    """Классификация высотного положения.
+
+    Args:
+        elev_val: Высота в метрах
+
+    Returns:
+        Категория высотного положения
+    """
+    if elev_val < 200:
+        return "Площадь"
+    if elev_val < 500:
+        return "Площадь"
+    return "Средняя высота водосбора"
+
+
+def _classify_precipitation_ru(precip_val: float) -> str:
+    """Классификация увлажнения.
+
+    Args:
+        precip_val: Осадки в мм/год
+
+    Returns:
+        Категория увлажнения или пустая строка
+    """
+    if precip_val < 400:
+        return "Засушливые регионы"
+    if precip_val < 600:
+        return "Увлажнение"
+    return ""
+
+
+def _build_moderate_components_ru(
+    normalized_row: pd.Series,
+    raw_row: pd.Series,
+) -> list[str]:
+    """Формирование компонентов названия из умеренных признаков.
+
+    Args:
+        normalized_row: Нормализованные значения центроида
+        raw_row: Исходные значения центроида
+
+    Returns:
+        Список компонентов названия
+    """
+    distinctive_components = _extract_distinctive_features_ru(raw_row)
+    if len(distinctive_components) >= 2:
+        return distinctive_components[:2]
+
+    if len(distinctive_components) < 2:
+        topo_components = _extract_topographic_features_ru(normalized_row, raw_row)
+        distinctive_components.extend(topo_components)
+
+    if len(distinctive_components) == 0:
+        forest_component = _extract_extreme_forest_ru(raw_row)
+        if forest_component:
+            distinctive_components.append(forest_component)
+
+    return distinctive_components[:2]
+
+
+def _build_fallback_components_ru(raw_row: pd.Series) -> list[str]:
+    """Формирование резервных компонентов названия.
+
+    Args:
+        raw_row: Исходные значения центроида
+
+    Returns:
+        Список компонентов названия
+    """
+    name_components: list[str] = []
+
+    elev_val: float = raw_row.get("ele_mt_uav", 0)
+    precip_val: float = raw_row.get("pre_mm_uyr", 0)
+
+    # Классификация по высоте
+    if elev_val > 1000:
+        name_components.append("Средняя высота водосбора")
+    elif elev_val > 500:
+        name_components.append("Средняя высота водосбора")
+    else:
+        name_components.append("Площадь")
+
+    # Классификация по увлажнению
+    if precip_val > 700:
+        name_components.append("Увлажнение")
+    elif precip_val < 400:
+        name_components.append("Засушливые регионы")
+    else:
+        name_components.append("Увлажнение")
+
+    return name_components
+
+
+def interpret_cluster_from_data_ru(
+    normalized_row: pd.Series,
+    raw_row: pd.Series,
+    feature_descriptions: dict[str, dict[str, str]],
+    high_threshold: float = 0.65,
+    low_threshold: float = 0.35,
+) -> str:
+    """Формирование названия кластера на основе доминирующих характеристик.
+
+    Генерирует научно-корректное название кластера водосборов на русском языке
+    в соответствии с терминологией гидрологии и физической географии.
+
+    Args:
+        normalized_row: Нормализованные значения центроида (0-1)
+        raw_row: Исходные значения центроида
+        feature_descriptions: Словарь метаданных признаков
+        high_threshold: Порог для высоких нормализованных значений (по умолч. 0.65)
+        low_threshold: Порог для низких нормализованных значений (по умолч. 0.35)
+
+    Returns:
+        Описательное название кластера на русском языке
+    """
+    # Выявление доминирующих признаков
+    high_features = normalized_row[normalized_row > high_threshold].sort_values(
+        ascending=False
+    )
+
+    # Карта приоритетов признаков (русская версия)
+    feature_priority = _get_feature_priority_map_ru()
+
+    # Основная стратегия именования
+    name_components = _build_primary_components_ru(
+        high_features, normalized_row, raw_row, feature_priority
+    )
+
+    # Резервная стратегия: умеренные признаки
+    if len(name_components) == 0:
+        name_components = _build_moderate_components_ru(normalized_row, raw_row)
+
+    # Финальный резерв: высота + увлажнение
+    if len(name_components) == 0:
+        name_components = _build_fallback_components_ru(raw_row)
+
+    return " / ".join(name_components[:2])

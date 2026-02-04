@@ -1,0 +1,46 @@
+[workspace]
+authors = ["Dmitrii Abramov <dmbrmv96@gmail.com>"]
+channels = ["conda-forge"]
+name = "Dissertation"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+# Starts the marimo editor
+edit = "marimo edit"
+# Presentation mode (for your advisor/defense)
+present = "marimo run my"
+
+[pypi-dependencies]
+dissertation = { path = ".", editable = true }
+
+[dependencies]
+gdal = ">=3.12.1,<4"
+pysheds = ">=0.5,<0.6"
+numpy = "1.26.4.*"
+numba = "0.59.1.*"
+marimo = ">=0.19.7,<0.20"
+altair = ">=6.0.0,<7"
+vegafusion = ">=2.0.2,<3"
+vl-convert-python = ">=1.9.0,<2"
+ruff = ">=0.15.0,<0.16"
+openai = ">=2.16.0,<3"
+mcp = ">=1"
+pydantic = ">=2"
+nbformat = ">=5.10.4,<6"
+pytest = ">=9.0.2,<10"
+python-lsp-server = ">=1.14.0,<2"
+websockets = ">=16.0,<17"
+python-lsp-ruff = ">=2.3.0,<3"
+ty = ">=0.0.14,<0.0.15"
+basedpyright = ">=1.37.4,<2"
+duckdb = ">=1.4.4,<2"
+sqlglot = ">=28.8.0,<29"
+geopandas = ">=1.1.2,<2"
+matplotlib = ">=3.10.8,<4"
+analytics-python = ">=2.2.3,<3"
+ipykernel = ">=7.1.0,<8"
+tqdm = ">=4.67.3,<5"
+ipywidgets = ">=8.1.8,<9"
+seaborn = ">=0.13.2,<0.14"
+cartopy = ">=0.25.0,<0.26"

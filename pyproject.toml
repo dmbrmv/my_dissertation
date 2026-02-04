@@ -1,19 +1,20 @@
-[tool.ruff]
-# Honor classic PEP 8 width for code (90) and keep notebooks in scope.
-line-length = 90
-target-version = "py310"
-extend-include = ["*.ipynb"]
-exclude = [
-  ".git",
-  ".venv",
-  "build",
-  "dist",
-  "__pypackages__",
-  "**/__pycache__/**",
-  "**/data/**",
-  "docs/_build",
-]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+[project]
+name = "dissertation"
+version = "0.1.0"
+description = "Discharge model comparison for Russian river basins"
+authors = [{ name = "Dmitrii Abramov", email = "dmbrmv96@gmail.com" }]
+readme = "README.md"
+license = { text = "MIT" }
 
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.ruff]
+line-length = 105
 [tool.ruff.lint]
 # Core PEP 8/pycodestyle + pragmatic extras.
 select = [
@@ -33,18 +34,14 @@ select = [
   "C90",  # mccabe (cyclomatic complexity)
   "PIE",  # flake8-pie (small correctness wins)
 ]
-# Keep Black-style whitespace compatibility and avoid noisy docstring pedantry.
 ignore = [
   "E203",  # whitespace before ':' — Black/Ruff-formatter compatible
   "D100",  # missing docstring in public module
   "D104",  # missing docstring in public package
   "S101",  # use of assert (we allow in tests; see per-file too)
 ]
-
 [tool.ruff.lint.per-file-ignores]
-# Tests: allow asserts and relax strict docstrings / prints.
 "tests/**/*" = ["S101", "D100", "D101", "D102", "D103", "T20"]
-# Scripts/CLI/notebooks: allow prints and skip docstring requirements for notebooks.
 "scripts/**/*" = ["T20"]
 "**/*.ipynb" = ["D", "T20"]
 
@@ -74,7 +71,6 @@ docstring-code-format = true
 docstring-code-line-length = 72
 
 [tool.pyright]
-pythonVersion = "3.10"
 typeCheckingMode = "basic"
 exclude = [
   "**/data",
@@ -87,11 +83,38 @@ exclude = [
 reportMissingImports = true
 reportMissingTypeStubs = false
 
-[project]
-name = "PhD dissertation"
-version = "0.1.0"
-description = "Discharge model comparison for Russian river basins"
-authors = [{ name = "Dmitrii Abramov", email = "dmbrmv96@gmail.com" }]
-readme = "README.md"
-license = { text = "MIT" }
-requires-python = ">=3.10"
+
+dependencies = [
+  "gdal>=3.12.1,<4",
+  "pysheds>=0.5,<0.6",
+  "numpy>=1.26.4,<1.26.5",
+  "numba>=0.59.1,<0.59.2",
+  "marimo>=0.19.7,<0.20",
+  "altair>=6.0.0,<7",
+  "vegafusion>=2.0.2,<3",
+  "vl-convert-python>=1.9.0,<2",
+  "openai>=2.16.0,<3",
+  "mcp>=1",
+  "pydantic>=2",
+  "nbformat>=5.10.4,<6",
+  "websockets>=16.0,<17",
+  "duckdb>=1.4.4,<2",
+  "sqlglot>=28.8.0,<29",
+  "geopandas>=1.1.2,<2",
+  "matplotlib>=3.10.8,<4",
+  "analytics-python>=2.2.3,<3",
+  "ipykernel>=7.1.0,<8",
+  "tqdm>=4.67.3,<5",
+  "ipywidgets>=8.1.8,<9",
+  "seaborn>=0.13.2,<0.14",
+]
+
+[project.optional-dependencies]
+dev = [
+  "ruff>=0.15.0,<0.16",
+  "pytest>=9.0.2,<10",
+  "python-lsp-server>=1.14.0,<2",
+  "python-lsp-ruff>=2.3.0,<3",
+  "ty>=0.0.14,<0.0.15",
+  "basedpyright>=1.37.4,<2",
+]
