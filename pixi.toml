@@ -10,6 +10,8 @@ version = "0.1.0"
 edit = "marimo edit"
 # Presentation mode (for your advisor/defense)
 present = "marimo run my"
+# Export a notebook to static HTML for GitHub Pages (run with: pixi run export <notebook.py>)
+export = "python scripts/export_notebook.py"
 
 [pypi-dependencies]
 dissertation = { path = ".", editable = true }

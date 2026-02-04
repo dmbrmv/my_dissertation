@@ -1,13 +1,13 @@
-# Deploy marimo notebooks to GitHub Pages as interactive WASM applications
+# Deploy pre-built marimo notebooks to GitHub Pages
 name: Deploy Marimo Notebooks
 
 on:
   push:
     branches: ["main"]
     paths:
-      - "notebooks/*.py"
+      - "docs/notebooks/**"
       - ".github/workflows/marimo-page.yml"
-  workflow_dispatch: # Allow manual triggering
+  workflow_dispatch:
 
 concurrency:
   group: "pages"
@@ -20,34 +20,12 @@ jobs:
       - name: 📥 Checkout repository
         uses: actions/checkout@v5
 
-      - name: 🐍 Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: 🚀 Install uv
-        uses: astral-sh/setup-uv@v5
-
-      - name: 📦 Install marimo
-        run: uv pip install --system marimo
-
-      - name: 📄 Export all Marimo notebooks to WASM HTML
-        run: |
-          mkdir -p _site
-          
-          # Export each .py file that contains "import marimo" (is a marimo notebook)
-          for notebook in notebooks/*.py; do
-            if grep -q "import marimo" "$notebook"; then
-              name=$(basename "$notebook" .py)
-              echo "Exporting $notebook -> _site/$name/"
-              marimo export html-wasm "$notebook" -o "_site/$name" --mode run
-            fi
-          done
-          
-          touch _site/.nojekyll
-
       - name: 📝 Generate index page
         run: |
+          mkdir -p _site
+          cp -r docs/notebooks/* _site/ 2>/dev/null || true
+          touch _site/.nojekyll
+          
           cat > _site/index.html << 'EOF'
           <!DOCTYPE html>
           <html lang="en">
@@ -64,10 +42,7 @@ jobs:
                 background: #f5f5f5;
               }
               h1 { color: #333; }
-              .notebook-list {
-                list-style: none;
-                padding: 0;
-              }
+              .notebook-list { list-style: none; padding: 0; }
               .notebook-list li {
                 background: white;
                 margin: 0.5rem 0;
@@ -80,9 +55,7 @@ jobs:
                 text-decoration: none;
                 font-weight: 500;
               }
-              .notebook-list a:hover {
-                text-decoration: underline;
-              }
+              .notebook-list a:hover { text-decoration: underline; }
             </style>
           </head>
           <body>
@@ -90,11 +63,11 @@ jobs:
             <ul class="notebook-list">
           EOF
           
-          # Add links for each exported notebook
-          for dir in _site/*/; do
-            if [ -d "$dir" ]; then
-              name=$(basename "$dir")
-              echo "    <li><a href=\"$name/\">$name</a></li>" >> _site/index.html
+          # Add links for each HTML file
+          for html in _site/*.html; do
+            if [ -f "$html" ] && [ "$(basename "$html")" != "index.html" ]; then
+              name=$(basename "$html" .html)
+              echo "    <li><a href=\"$name.html\">$name</a></li>" >> _site/index.html
             fi
           done
           
@@ -112,15 +85,12 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-
     permissions:
       pages: write
       id-token: write
-
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - name: 🚀 Deploy to GitHub Pages
         id: deployment
