@@ -100,16 +100,26 @@ def plot_dendrogram(
         tick_positions = []
         tick_labels = []
         for k in cluster_counts:
-            # Height at which we go from k clusters to k-1 clusters
             idx = n_samples - k
             if 0 <= idx < len(merge_heights):
                 height = merge_heights[idx]
                 tick_positions.append(height)
                 tick_labels.append(str(k))
 
+        # Cull ticks that are too close in axis-space to avoid overlapping labels
+        y_lo, y_hi = ax.get_ylim()
+        y_span = y_hi - y_lo
+        min_gap = 0.04 * y_span  # require ≥4 % of axis height between ticks
+
+        filtered_pos, filtered_lbl = [], []
+        for pos, lbl in zip(tick_positions, tick_labels):
+            if not filtered_pos or abs(pos - filtered_pos[-1]) >= min_gap:
+                filtered_pos.append(pos)
+                filtered_lbl.append(lbl)
+
         ax2.set_ylim(ax.get_ylim())
-        ax2.set_yticks(tick_positions)
-        ax2.set_yticklabels(tick_labels)
+        ax2.set_yticks(filtered_pos)
+        ax2.set_yticklabels(filtered_lbl, fontsize=10)
 
     plt.tight_layout()
 
@@ -400,7 +410,7 @@ def plot_hydrograph_clusters(
             clust_p75,
             color="salmon",
             alpha=0.35,
-            label="25-75% spread",
+            label="Размах 25-75%",
             zorder=2,
         )
 
@@ -411,7 +421,7 @@ def plot_hydrograph_clusters(
             color="darkred",
             alpha=1.0,
             linewidth=2.8,
-            label="Cluster median",
+            label="Медиана кластера",
             zorder=3,
         )
 
@@ -423,14 +433,14 @@ def plot_hydrograph_clusters(
         clust_ax.yaxis.set_major_formatter(FormatStrFormatter("%.1f"))
 
         if i % n_cols == 0:
-            clust_ax.set_ylabel("Normalized runoff [0-1]")
+            clust_ax.set_ylabel("Нормированный сток [0–1]")
         if i >= (n_rows - 1) * n_cols:
-            clust_ax.set_xlabel("Day of year")
+            clust_ax.set_xlabel("День года")
 
         for val in np.arange(0, 1.25, 0.25):
             clust_ax.axhline(val, c="black", linestyle="--", linewidth=0.2, zorder=0)
 
-        clust_ax.set_title(f"{clust_name} — {len(clust_data.columns)} gauges")
+        clust_ax.set_title(f"{clust_name} — {len(clust_data.columns)} постов")
 
         # Add legend to first subplot
         if i == 0:
@@ -441,7 +451,7 @@ def plot_hydrograph_clusters(
         axes_flat[j].axis("off")
 
     fig.suptitle(
-        "Hydrological Regime Types: Normalized Seasonal Discharge Patterns",
+        "Типы гидрологических режимов: нормированные сезонные паттерны стока",
         fontsize=16,
         y=0.995,
     )

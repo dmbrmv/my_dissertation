@@ -237,7 +237,7 @@ def group_patterns_by_cluster(
         if valid_gauges:
             cluster_df = q_df_normalized[valid_gauges].copy()
             cluster_df.index = pd.date_range(start="2000-01-01", periods=len(cluster_df))
-            cluster_patterns[f"Cluster {cluster_id}"] = cluster_df
+            cluster_patterns[f"Кластер {cluster_id}"] = cluster_df
 
     log.info("Grouped patterns into %d clusters", len(cluster_patterns))
 
