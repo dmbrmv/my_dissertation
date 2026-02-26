@@ -103,9 +103,7 @@ def hexes_plots_n(
         cmap = cm.get_cmap(cmap_name, len(list_of_limits) - 1)
         # Replace inf values with finite bounds for BoundaryNorm
         finite_limits = (
-            list_of_limits.copy()
-            if isinstance(list_of_limits, list)
-            else list(list_of_limits)
+            list_of_limits.copy() if isinstance(list_of_limits, list) else list(list_of_limits)
         )
         for i, val in enumerate(finite_limits):
             if np.isinf(val) and val < 0:
@@ -120,13 +118,9 @@ def hexes_plots_n(
 
     if cb_label is not None:
         if list_of_limits is None:
-            raise ValueError(
-                "cb_label requires list_of_limits to define colorbar segments."
-            )
+            raise ValueError("cb_label requires list_of_limits to define colorbar segments.")
         if len(cb_label) != len(list_of_limits) - 1:
-            raise ValueError(
-                "cb_label length must match the number of colorbar segments."
-            )
+            raise ValueError("cb_label length must match the number of colorbar segments.")
 
     basemap_proj = basemap_data.to_crs(aea_proj4)
 
@@ -156,9 +150,7 @@ def hexes_plots_n(
         ax.set_aspect("equal")
         ax.axis("off")
         ax.set_extent(rus_extent)  # type: ignore
-        basemap_proj.plot(
-            ax=ax, color="grey", edgecolor="black", alpha=basemap_alpha, linewidth=0.4
-        )
+        basemap_proj.plot(ax=ax, color="grey", edgecolor="black", alpha=basemap_alpha, linewidth=0.4)
 
         metric_hexes[metric].plot(
             ax=ax,
@@ -192,9 +184,7 @@ def hexes_plots_n(
         )
         color_mapper = mpl.cm.ScalarMappable(norm=norm, cmap=cmap)
         color_mapper.set_array([])
-        cbar = fig.colorbar(
-            color_mapper, cax=cax, orientation="horizontal", drawedges=True
-        )
+        cbar = fig.colorbar(color_mapper, cax=cax, orientation="horizontal", drawedges=True)
         cbar.ax.tick_params(labelsize=8)
 
         # Fix colorbar tick labels: replace large negative values with -∞ symbol
@@ -229,9 +219,7 @@ def hexes_plots_n(
 
         if with_histogram:
             if list_of_limits is None:
-                raise ValueError(
-                    "list_of_limits must be provided when with_histogram=True."
-                )
+                raise ValueError("list_of_limits must be provided when with_histogram=True.")
 
             values = ws_metric[metric].dropna()
             if not values.empty:
@@ -244,16 +232,12 @@ def hexes_plots_n(
                 edges = list_of_limits
                 # Use finite limits for midpoint calculation (color mapping)
                 finite_edges = [
-                    -1e10
-                    if (np.isinf(e) and e < 0)
-                    else (1e10 if (np.isinf(e) and e > 0) else e)
+                    -1e10 if (np.isinf(e) and e < 0) else (1e10 if (np.isinf(e) and e > 0) else e)
                     for e in edges
                 ]
                 bin_midpoints = [
                     (left + right) / 2
-                    for left, right in zip(
-                        finite_edges[:-1], finite_edges[1:], strict=False
-                    )
+                    for left, right in zip(finite_edges[:-1], finite_edges[1:], strict=False)
                 ]
                 colors = [color_mapper.to_rgba(midpoint) for midpoint in bin_midpoints]
 
@@ -446,29 +430,19 @@ def hex_model_distribution_plot(
             "No watershed overlaps exceed the minimum overlap share. Consider lowering the threshold."
         )
 
-    counts = (
-        intersections.groupby(["hex_idx", model_col]).size().reset_index(name="count")
-    )
-    totals = (
-        counts.groupby("hex_idx", as_index=False)["count"]
-        .sum()
-        .rename(columns={"count": "total"})
-    )
+    counts = intersections.groupby(["hex_idx", model_col]).size().reset_index(name="count")
+    totals = counts.groupby("hex_idx", as_index=False)["count"].sum().rename(columns={"count": "total"})
     counts = counts.merge(totals, on="hex_idx")
     counts.loc[:, "freq"] = counts["count"] / counts["total"]
 
-    top = counts.sort_values(
-        ["hex_idx", "freq"], ascending=[True, False]
-    ).drop_duplicates("hex_idx")
+    top = counts.sort_values(["hex_idx", "freq"], ascending=[True, False]).drop_duplicates("hex_idx")
     top_idx = top.set_index("hex_idx")
 
     hex_grid.loc[:, "dominant_model"] = hex_grid["hex_idx"].map(top_idx[model_col])
     hex_grid.loc[:, "dominant_share"] = hex_grid["hex_idx"].map(top_idx["freq"])
 
     if ambiguous_label is not None:
-        mask = hex_grid["dominant_share"].notna() & (
-            hex_grid["dominant_share"] < dominant_threshold
-        )
+        mask = hex_grid["dominant_share"].notna() & (hex_grid["dominant_share"] < dominant_threshold)
         hex_grid.loc[mask, "dominant_model"] = ambiguous_label
 
     hex_grid.loc[hex_grid["dominant_share"].isna(), "dominant_model"] = np.nan
@@ -478,9 +452,7 @@ def hex_model_distribution_plot(
         label_order.append(ambiguous_label)
 
     present_labels = [
-        lbl
-        for lbl in hex_grid["dominant_model"].dropna().unique()
-        if isinstance(lbl, str)
+        lbl for lbl in hex_grid["dominant_model"].dropna().unique() if isinstance(lbl, str)
     ]
     for lbl in present_labels:
         if lbl not in label_order:
@@ -565,10 +537,7 @@ def hex_model_distribution_plot(
         ax.legend(handles=legend_handles, **legend_defaults)
 
     category_counts = (
-        valid_hexes["dominant_model"]
-        .value_counts()
-        .reindex(label_order, fill_value=0)
-        .rename("count")
+        valid_hexes["dominant_model"].value_counts().reindex(label_order, fill_value=0).rename("count")
     )
 
     if with_histogram:
@@ -684,9 +653,7 @@ def hex_model_distribution_plots_n(
     from .styling_utils import get_russia_projection, get_unified_colors
 
     if len(model_cols) > nrows * ncols:
-        raise ValueError(
-            f"Too many model columns ({len(model_cols)}) for grid ({nrows}x{ncols})"
-        )
+        raise ValueError(f"Too many model columns ({len(model_cols)}) for grid ({nrows}x{ncols})")
 
     if histogram_rect is None:
         histogram_rect = [0.02, 0.02, 0.25, 0.35]
@@ -712,8 +679,7 @@ def hex_model_distribution_plots_n(
         # List of color lists
         if len(color_list) != len(model_cols):
             raise ValueError(
-                f"color_list length ({len(color_list)}) must match "
-                f"model_cols length ({len(model_cols)})"
+                f"color_list length ({len(color_list)}) must match model_cols length ({len(model_cols)})"
             )
         color_lists = color_list  # type: ignore
 
@@ -722,9 +688,7 @@ def hex_model_distribution_plots_n(
     aea_proj4 = aea_crs.proj4_init
 
     # Create figure with subplots
-    fig, axes = plt.subplots(
-        nrows, ncols, figsize=figsize, subplot_kw={"projection": aea_crs}
-    )
+    fig, axes = plt.subplots(nrows, ncols, figsize=figsize, subplot_kw={"projection": aea_crs})
     axes_flat = np.array(axes).flatten()
 
     # Prepare data once
@@ -780,42 +744,29 @@ def hex_model_distribution_plots_n(
         # Aggregate to hexagons
         intersections = gpd.overlay(
             ws_data,
-            hex_grid.reset_index().rename(columns={"index": "hex_idx"})[
-                ["hex_idx", "geometry"]
-            ],
+            hex_grid.reset_index().rename(columns={"index": "hex_idx"})[["hex_idx", "geometry"]],
             how="intersection",
         )
         intersections.loc[:, "intersect_area"] = intersections.geometry.area
         intersections = intersections[
-            intersections["intersect_area"]
-            >= min_overlap_share * intersections["orig_area"]
+            intersections["intersect_area"] >= min_overlap_share * intersections["orig_area"]
         ]
 
         # Find dominant model per hex
-        counts = (
-            intersections.groupby(["hex_idx", model_col]).size().reset_index(name="count")
-        )
+        counts = intersections.groupby(["hex_idx", model_col]).size().reset_index(name="count")
         totals = counts.groupby("hex_idx")["count"].sum().reset_index(name="total")
         counts = counts.merge(totals, on="hex_idx")
         counts.loc[:, "freq"] = counts["count"] / counts["total"]
 
-        top = counts.sort_values(
-            ["hex_idx", "freq"], ascending=[True, False]
-        ).drop_duplicates("hex_idx")
+        top = counts.sort_values(["hex_idx", "freq"], ascending=[True, False]).drop_duplicates("hex_idx")
 
         hex_plot = hex_grid.copy()
-        hex_plot.loc[:, "dominant"] = hex_plot.index.map(
-            top.set_index("hex_idx")[model_col]
-        )
-        hex_plot.loc[:, "dominant_share"] = hex_plot.index.map(
-            top.set_index("hex_idx")["freq"]
-        )
+        hex_plot.loc[:, "dominant"] = hex_plot.index.map(top.set_index("hex_idx")[model_col])
+        hex_plot.loc[:, "dominant_share"] = hex_plot.index.map(top.set_index("hex_idx")["freq"])
 
         # Mark ambiguous
         if ambiguous_label:
-            mask = hex_plot["dominant_share"].notna() & (
-                hex_plot["dominant_share"] < dominant_threshold
-            )
+            mask = hex_plot["dominant_share"].notna() & (hex_plot["dominant_share"] < dominant_threshold)
             hex_plot.loc[mask, "dominant"] = ambiguous_label
 
         # Map to indices
@@ -851,10 +802,7 @@ def hex_model_distribution_plots_n(
 
         # Calculate category counts for this subplot
         category_counts = (
-            valid["dominant"]
-            .value_counts()
-            .reindex(label_order, fill_value=0)
-            .rename("count")
+            valid["dominant"].value_counts().reindex(label_order, fill_value=0).rename("count")
         )
         category_counts_dict[model_col] = category_counts
 

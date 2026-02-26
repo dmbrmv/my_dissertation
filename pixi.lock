@@ -285,6 +285,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/pygments-2.19.2-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pyjwt-2.11.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pylint-4.0.4-pyhcf101f3_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/pymannkendall-1.4.3-pyha21a80b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pymdown-extensions-10.21.1-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pyogrio-0.12.1-py312h07dd7c3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pyparsing-3.3.2-pyhcf101f3_0.conda
@@ -4338,6 +4339,19 @@ packages:
   - pkg:pypi/pylint?source=hash-mapping
   size: 390859
   timestamp: 1764517517150
+- conda: https://conda.anaconda.org/conda-forge/noarch/pymannkendall-1.4.3-pyha21a80b_0.conda
+  sha256: 82e2b0280d30eca59561b2c2495a61ebec76f00747e207a6ed97d9a3e55a49cf
+  md5: cd51c8b8bf20d82459260f94bfa742e7
+  depends:
+  - numpy
+  - python >=3
+  - scipy
+  license: MIT
+  license_family: MIT
+  purls:
+  - pkg:pypi/pymannkendall?source=hash-mapping
+  size: 17929
+  timestamp: 1687849224352
 - conda: https://conda.anaconda.org/conda-forge/noarch/pymdown-extensions-10.21.1-pyhd8ed1ab_0.conda
   sha256: 405e0a5e43ccf7c1cd084932e97291c3cf934036e8569e9cc0ccc91371aae93b
   md5: d08476fd9134bf9a37edb06c4d65f441
