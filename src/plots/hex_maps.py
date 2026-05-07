@@ -302,6 +302,241 @@ def hexes_plots_n(
     return fig, metric_hexes, r_km, coverage_stats
 
 
+def hybrid_cluster_metrics_maps_n(
+    watersheds: gpd.GeoDataFrame,
+    basemap_data: gpd.GeoDataFrame,
+    cluster_col: str,
+    metric_cols: list[str],
+    label_list: list[str],
+    nrows: int,
+    ncols: int,
+    agg: Literal["median", "mean", "max", "min"] = "median",
+    rus_extent: tuple = (50, 140, 32, 90),
+    list_of_limits: list[float] | None = None,
+    cmap_lims: tuple = (0.0, 1.0),
+    cmap_name: str = "RdYlGn",
+    figsize: tuple = (9.76378, 6.69291),
+    basemap_alpha: float = 0.8,
+    with_histogram: bool = False,
+    title_text: list[str] | None = None,
+    cb_label: list[str] | None = None,
+) -> tuple[plt.Figure, pd.DataFrame]:
+    """Choropleth maps of individual watersheds coloured by cluster-level metric aggregates.
+
+    Each watershed is painted with its cluster's aggregate (e.g. median) metric
+    value.  Watersheds are sorted **largest-area first** so that small
+    catchments always render on top and are never occluded by larger ones.
+    """
+    if not metric_cols:
+        raise ValueError("metric_cols must contain at least one column name.")
+    if len(label_list) < len(metric_cols):
+        raise ValueError("label_list must provide at least one label per metric.")
+    if cluster_col not in watersheds.columns:
+        raise ValueError(f"cluster_col '{cluster_col}' is missing from watersheds.")
+
+    aea_crs = ccrs.AlbersEqualArea(
+        central_longitude=100,
+        standard_parallels=(50, 70),
+        central_latitude=56,
+        false_easting=0,
+        false_northing=0,
+    )
+    aea_proj4 = aea_crs.proj4_init
+
+    cols = [cluster_col, "geometry", *metric_cols]
+    missing = [c for c in cols if c not in watersheds.columns]
+    if missing:
+        raise ValueError(f"watersheds is missing columns: {missing}")
+
+    ws = watersheds[cols].copy()
+    ws_eq = to_equal_area(ws, crs=aea_proj4)
+    ws_eq = ws_eq.dropna(subset=[cluster_col])
+
+    cluster_agg = ws_eq.groupby(cluster_col)[metric_cols].agg(agg)
+    plot_cols = [f"cluster_{m}" for m in metric_cols]
+    for m, pc in zip(metric_cols, plot_cols, strict=False):
+        ws_eq[pc] = ws_eq[cluster_col].map(cluster_agg[m])
+
+    ws_eq["_area"] = ws_eq.geometry.area
+    ws_eq = ws_eq.sort_values("_area", ascending=False).reset_index(drop=True)
+
+    fig, axs = plt.subplots(
+        figsize=figsize, ncols=ncols, nrows=nrows, subplot_kw={"projection": aea_crs}
+    )
+    axs_flat = np.array(axs).ravel()
+
+    if list_of_limits:
+        cmap = cm.get_cmap(cmap_name, len(list_of_limits) - 1)
+        finite_limits = (
+            list_of_limits.copy() if isinstance(list_of_limits, list) else list(list_of_limits)
+        )
+        for i, val in enumerate(finite_limits):
+            if np.isinf(val) and val < 0:
+                finite_limits[i] = -1e10
+            elif np.isinf(val) and val > 0:
+                finite_limits[i] = 1e10
+        norm = mpl.colors.BoundaryNorm(finite_limits, len(finite_limits) - 1)
+    else:
+        cmap = cm.get_cmap(cmap_name)
+        vmin, vmax = cmap_lims
+        norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+
+    if cb_label is not None:
+        if list_of_limits is None:
+            raise ValueError("cb_label requires list_of_limits to define colorbar segments.")
+        if len(cb_label) != len(list_of_limits) - 1:
+            raise ValueError("cb_label length must match the number of colorbar segments.")
+
+    basemap_proj = basemap_data.to_crs(aea_proj4)
+
+    for idx, (metric, pc) in enumerate(zip(metric_cols, plot_cols, strict=False)):
+        if idx >= len(axs_flat):
+            break
+        ax = axs_flat[idx]
+
+        plot_gdf = ws_eq.dropna(subset=[pc])
+        if plot_gdf.empty:
+            raise ValueError(f"Metric column '{metric}' has no non-null cluster values.")
+
+        ax.set_aspect("equal")
+        ax.axis("off")
+        ax.set_extent(rus_extent)  # type: ignore
+        basemap_proj.plot(ax=ax, color="grey", edgecolor="black", alpha=basemap_alpha, linewidth=0.4)
+
+        plot_gdf.plot(
+            ax=ax,
+            column=pc,
+            cmap=cmap,
+            norm=norm,
+            edgecolor="black",
+            linewidth=0.15,
+            legend=False,
+            missing_kwds={"color": "#DF60DF00"},
+        )
+
+        cax = inset_axes(
+            ax,
+            width="55%",
+            height="4%",
+            loc="lower right",
+            bbox_to_anchor=(0.0, 0.05, 0.95, 1.0),
+            bbox_transform=ax.transAxes,
+            borderpad=0,
+        )
+        color_mapper = mpl.cm.ScalarMappable(norm=norm, cmap=cmap)
+        color_mapper.set_array([])
+        cbar = fig.colorbar(color_mapper, cax=cax, orientation="horizontal", drawedges=True)
+        cbar.ax.tick_params(labelsize=8)
+
+        if list_of_limits is not None:
+            current_ticks = cbar.get_ticks()
+            new_labels = []
+            for t in current_ticks:
+                if t < -1e9:
+                    new_labels.append("-∞")
+                elif t > 1e9:
+                    new_labels.append("∞")
+                elif t == int(t):
+                    new_labels.append(f"{int(t)}")
+                else:
+                    new_labels.append(f"{t:.1f}")
+            cbar.ax.set_xticklabels(new_labels)
+
+        if cb_label is not None and list_of_limits is not None:
+            n_segments = len(cb_label)
+            for label_idx, label_text in enumerate(cb_label):
+                pos = (label_idx + 0.5) / max(n_segments, 1)
+                cbar.ax.text(
+                    pos,
+                    1.12,
+                    label_text,
+                    ha="center",
+                    va="bottom",
+                    transform=cbar.ax.transAxes,
+                    fontsize=9,
+                    clip_on=False,
+                )
+
+        if with_histogram:
+            if list_of_limits is None:
+                raise ValueError("list_of_limits must be provided when with_histogram=True.")
+
+            gauge_vals = ws_eq.dropna(subset=[metric])[metric]
+            if not gauge_vals.empty:
+                bins = list_of_limits
+                categories = pd.cut(gauge_vals, bins=bins, include_lowest=True, right=True)
+                hist_counts = categories.value_counts(sort=False)
+
+                ax_hist = ax.inset_axes([0.05, 0.05, 0.30, 0.24])
+
+                edges = list_of_limits
+                finite_edges = [
+                    -1e10 if (np.isinf(e) and e < 0) else (1e10 if (np.isinf(e) and e > 0) else e)
+                    for e in edges
+                ]
+                bin_midpoints = [
+                    (left + right) / 2
+                    for left, right in zip(finite_edges[:-1], finite_edges[1:], strict=False)
+                ]
+                hist_colors = [color_mapper.to_rgba(midpoint) for midpoint in bin_midpoints]
+
+                bars = ax_hist.bar(
+                    np.arange(len(hist_counts)),
+                    hist_counts.values,
+                    width=1,
+                    color=hist_colors,
+                    edgecolor="black",
+                    linewidth=1,
+                )
+                ax_hist.bar_label(bars, fmt="%.0f")
+                ax_hist.set_facecolor("white")
+                ax_hist.tick_params(width=1)
+                ax_hist.grid(False)
+
+                def _fmt_edge(val: float, edges=edges) -> str:  # noqa: B006
+                    if np.isinf(val) and val < 0:
+                        return "-∞"
+                    if np.isinf(val) and val > 0:
+                        return "∞"
+                    val = max(val, edges[0])
+                    if np.isclose(val, 0.0, atol=1e-6):
+                        val = 0.0
+                    return f"{val:.1f}"
+
+                xlbl = [
+                    f"{_fmt_edge(left)}-{_fmt_edge(right)}"
+                    for left, right in zip(edges[:-1], edges[1:], strict=False)
+                ]
+
+                ax_hist.set_xticks(np.arange(len(xlbl)))
+                ax_hist.set_xticklabels(xlbl)
+                ax_hist.set(frame_on=False)
+
+                plt.setp(ax_hist.get_xticklabels(), fontsize=8, rotation=30)
+                plt.setp(ax_hist.get_yticklabels(), fontsize=8)
+
+        if title_text is not None and idx < len(title_text):
+            ax.set_title(title_text[idx], fontsize=12)
+
+        if idx < len(label_list):
+            ax.text(
+                0,
+                1,
+                label_list[idx],
+                transform=ax.transAxes,
+                ha="left",
+                va="top",
+                fontsize=14,
+            )
+
+    for idx in range(len(metric_cols), len(axs_flat)):
+        axs_flat[idx].set_visible(False)
+
+    hspace = 0.05 if nrows == 1 else 0.25
+    fig.subplots_adjust(wspace=0.05, hspace=hspace)
+    return fig, cluster_agg
+
+
 def hex_model_distribution_plot(
     watersheds: gpd.GeoDataFrame,
     basemap_data: gpd.GeoDataFrame,
@@ -887,6 +1122,7 @@ def hex_model_distribution_plots_n(
 
 __all__ = [
     "hexes_plots_n",
+    "hybrid_cluster_metrics_maps_n",
     "hex_model_distribution_plot",
     "hex_model_distribution_plots_n",
 ]

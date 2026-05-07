@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 def create_nse_boxplots(
     df,
     nse_columns,
+    column_labels,
     figsize=(14, 8),
     color="lightblue",
     save_path=None,
@@ -74,6 +75,9 @@ def create_nse_boxplots(
         # Customize the plot
         title = f"Медиана: {median_val:.2f}, NSE≥0.5: {satisfactory} ({satisfactory_pct:.1f}%)"
         ax.set_title(title, fontsize=14, pad=20)
+        # pandas plot.box() sets column name as x tick label; hide it so only xlabel shows
+        plt.setp(ax.get_xticklabels(), visible=False)
+        ax.set_xlabel(column_labels[i], fontsize=14)
         ax.set_ylabel("NSE", fontsize=14)
         ax.tick_params(axis="both", which="major", labelsize=12)
         ax.grid(True, alpha=0.3, linestyle="--")

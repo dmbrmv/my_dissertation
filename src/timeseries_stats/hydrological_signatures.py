@@ -382,17 +382,16 @@ def analyze_signature_errors_comprehensive(
     obs_mean = float(np.mean(obs_series))
 
     # BFI using ensemble Lyne-Hollick filter
-    obs_bfi = calculate_bfi(obs_series, alpha=None, passes=3, reflect_points=30)
-
-    # Flow extremes (quantiles)
-    obs_extremes = FlowExtremes(obs_series)
-    obs_quantiles = obs_extremes.calculate_flow_quantiles(quantiles=[0.05, 0.95])
-
-    # IMPORTANT: Verify naming convention!
-    # q05_0 = quantile(0.05) = 5th percentile = Q95 (exceeded 95% of time)
-    # q95_0 = quantile(0.95) = 95th percentile = Q5 (exceeded 5% of time)
-    obs_q5 = obs_quantiles["q95_0"]  # High flow (95th percentile)
-    obs_q95 = obs_quantiles["q05_0"]  # Low flow (5th percentile)
+    if obs_series.isna().all():
+        obs_bfi = np.nan
+        obs_q5 = np.nan
+        obs_q95 = np.nan
+    else:
+        obs_bfi = calculate_bfi(obs_series, alpha=None, passes=3, reflect_points=30)
+        obs_extremes = FlowExtremes(obs_series)
+        obs_quantiles = obs_extremes.calculate_flow_quantiles(quantiles=[0.05, 0.95])
+        obs_q5 = obs_quantiles["q95_0"]  # High flow (95th percentile)
+        obs_q95 = obs_quantiles["q05_0"]  # Low flow (5th percentile)
 
     # ===== CALCULATE SIMULATED SIGNATURES =====
     sim_mean = float(np.mean(sim_series))

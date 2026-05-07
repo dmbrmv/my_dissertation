@@ -159,6 +159,8 @@ archive/*/outputs/
 archive/*/data/
 notebooks/data/raw/
 notebooks/outputs/
+notebooks/*.py
+res_0426/
 test/outputs/
 test/results/
 
