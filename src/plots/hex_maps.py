@@ -42,8 +42,10 @@ def hexes_plots_n(
     negative_threshold: float | None = None,
     rus_extent: tuple = (50, 140, 32, 90),
     list_of_limits: list[float] | None = None,
+    list_of_limits_per_metric: list[list[float]] | None = None,
     cmap_lims: tuple = (0.0, 1.0),
     cmap_name: str = "RdYlGn",
+    cmap_names: list[str] | None = None,
     figsize: tuple = (9.76378, 6.69291),
     basemap_alpha: float = 0.8,
     annotate_counts: bool = False,
@@ -99,27 +101,37 @@ def hexes_plots_n(
     metric_hexes: dict[str, gpd.GeoDataFrame] = {}
     coverage_stats: dict[str, dict[str, float]] = {}
 
-    if list_of_limits:
-        cmap = cm.get_cmap(cmap_name, len(list_of_limits) - 1)
-        # Replace inf values with finite bounds for BoundaryNorm
-        finite_limits = (
-            list_of_limits.copy() if isinstance(list_of_limits, list) else list(list_of_limits)
-        )
-        for i, val in enumerate(finite_limits):
-            if np.isinf(val) and val < 0:
-                finite_limits[i] = -1e10
-            elif np.isinf(val) and val > 0:
-                finite_limits[i] = 1e10
-        norm = mpl.colors.BoundaryNorm(finite_limits, len(finite_limits) - 1)
-    else:
-        cmap = cm.get_cmap(cmap_name)
+    def _limits_for_metric(metric_idx: int) -> list[float] | None:
+        if list_of_limits_per_metric is not None:
+            return list_of_limits_per_metric[metric_idx]
+        return list_of_limits
+
+    def _cmap_name_for_metric(metric_idx: int) -> str:
+        if cmap_names is not None:
+            return cmap_names[metric_idx]
+        return cmap_name
+
+    def _make_cmap_norm(metric_idx: int) -> tuple[mpl.colors.Colormap, mpl.colors.Normalize]:
+        limits = _limits_for_metric(metric_idx)
+        name = _cmap_name_for_metric(metric_idx)
+        if limits:
+            colormap = cm.get_cmap(name, len(limits) - 1)
+            finite_limits = limits.copy()
+            for i, val in enumerate(finite_limits):
+                if np.isinf(val) and val < 0:
+                    finite_limits[i] = -1e10
+                elif np.isinf(val) and val > 0:
+                    finite_limits[i] = 1e10
+            return colormap, mpl.colors.BoundaryNorm(finite_limits, len(finite_limits) - 1)
+        colormap = cm.get_cmap(name)
         vmin, vmax = cmap_lims
-        norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+        return colormap, mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 
     if cb_label is not None:
-        if list_of_limits is None:
+        ref_limits = _limits_for_metric(0)
+        if ref_limits is None:
             raise ValueError("cb_label requires list_of_limits to define colorbar segments.")
-        if len(cb_label) != len(list_of_limits) - 1:
+        if len(cb_label) != len(ref_limits) - 1:
             raise ValueError("cb_label length must match the number of colorbar segments.")
 
     basemap_proj = basemap_data.to_crs(aea_proj4)
@@ -128,6 +140,8 @@ def hexes_plots_n(
         if idx >= len(axs_flat):
             break
         ax = axs_flat[idx]
+        cmap, norm = _make_cmap_norm(idx)
+        metric_limits = _limits_for_metric(idx)
 
         ws_metric = watersheds_eq.dropna(subset=[metric])
         if ws_metric.empty:
@@ -184,7 +198,12 @@ def hexes_plots_n(
         )
         color_mapper = mpl.cm.ScalarMappable(norm=norm, cmap=cmap)
         color_mapper.set_array([])
-        cbar = fig.colorbar(color_mapper, cax=cax, orientation="horizontal", drawedges=True)
+        cbar = fig.colorbar(
+            color_mapper,
+            cax=cax,
+            orientation="horizontal",
+            drawedges=list_of_limits is not None,
+        )
         cbar.ax.tick_params(labelsize=8)
 
         # Fix colorbar tick labels: replace large negative values with -∞ symbol
@@ -218,18 +237,18 @@ def hexes_plots_n(
                 )
 
         if with_histogram:
-            if list_of_limits is None:
+            if metric_limits is None:
                 raise ValueError("list_of_limits must be provided when with_histogram=True.")
 
             values = ws_metric[metric].dropna()
             if not values.empty:
-                bins = list_of_limits
+                bins = metric_limits
                 categories = pd.cut(values, bins=bins, include_lowest=True, right=True)
                 hist_counts = categories.value_counts(sort=False)
 
                 ax_hist = ax.inset_axes([0.05, 0.05, 0.30, 0.24])
 
-                edges = list_of_limits
+                edges = metric_limits
                 # Use finite limits for midpoint calculation (color mapping)
                 finite_edges = [
                     -1e10 if (np.isinf(e) and e < 0) else (1e10 if (np.isinf(e) and e > 0) else e)
@@ -425,7 +444,12 @@ def hybrid_cluster_metrics_maps_n(
         )
         color_mapper = mpl.cm.ScalarMappable(norm=norm, cmap=cmap)
         color_mapper.set_array([])
-        cbar = fig.colorbar(color_mapper, cax=cax, orientation="horizontal", drawedges=True)
+        cbar = fig.colorbar(
+            color_mapper,
+            cax=cax,
+            orientation="horizontal",
+            drawedges=list_of_limits is not None,
+        )
         cbar.ax.tick_params(labelsize=8)
 
         if list_of_limits is not None:

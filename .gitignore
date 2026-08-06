@@ -121,6 +121,7 @@ secrets.yml
 *.secret
 .env
 .env.local
+graphify-out
 
 # Temporary files
 *.tmp
@@ -152,6 +153,7 @@ dmypy.json
 # Documentation builds
 docs/_build/
 docs/.doctrees/
+docs/notebooks/
 
 # Specific to your project structure
 archive/*/results/
@@ -163,6 +165,8 @@ notebooks/*.py
 res_0426/
 test/outputs/
 test/results/
+AGENTS.md
+.cursor/
 
 # Keep important config files (exceptions to rules above)
 !camels_ru.yml

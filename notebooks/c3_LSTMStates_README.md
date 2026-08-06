@@ -1,170 +1,170 @@
-# LSTM States Analysis - Documentation
+# Анализ состояний LSTM — документация
 
-## Overview
+## Обзор
 
-This analysis examines how LSTM hidden states (`h_n`) and cell states (`c_n`) internally represent **meteorological processes NOT included as model inputs**.
+Анализ показывает, как скрытые состояния LSTM (`h_n`) и состояния фильтра (`c_n`) внутренне представляют **метеорологические процессы, не включённые во входные данные модели**.
 
-## Data Structure
+## Структура данных
 
-**States array shape**: `(996, 730, 256)`
-- **996**: Number of gauges
-- **730**: Timesteps (2019-2020 test period)
-- **256**: Hidden units
+**Массив состояний**: `(996, 730, 256)`
+- **996**: число водосборов
+- **730**: суток (тестовый период 2019–2020)
+- **256**: скрытых ячеек
 
-Each gauge has its **own** state trajectory, enabling proper per-gauge correlation analysis.
+Каждый водосбор имеет **собственную** траекторию состояний, что обеспечивает корректный поканальный анализ корреляций.
 
-## Key Files
+## Ключевые файлы
 
-| File | Description |
-|------|-------------|
-| `c3_ExtractLSTMStates.ipynb` | Extracts per-gauge states from LSTM model (run on CUDA machine) |
-| `c3_LSTMStates_v2.ipynb` | Main analysis notebook (can run on Mac) |
-| `all_gauges_states.npz` | Extracted states: `h_n`, `c_n`, `gauge_ids` |
+| Файл | Описание |
+|------|----------|
+| `c3_ExtractLSTMStates.ipynb` | Извлечение поканальных состояний (CUDA) |
+| `c3_LSTMStates_v2.ipynb` | Основной анализ и визуализация |
+| `all_gauges_states.npz` | Состояния: `h_n`, `c_n`, `gauge_ids` |
+| `src/plots/lstm_states.py` | Функции визуализации с русскими подписями |
 
-## Scientific Background
+## Теория LSTM: h_n vs c_n
 
-### LSTM Theory: h_n vs c_n
+| Состояние | Название | Роль | Ожидаемое поведение |
+|-----------|----------|------|---------------------|
+| **c_n** | Фильтр состояния | Долговременная память | Сезонные процессы (СВЭ, снег) |
+| **h_n** | Скрытый фильтр | Кратковременный выход | Быстрые процессы (испарение, грунтовый сток) |
 
-| State | Name | Theoretical Role | Expected Behavior |
-|-------|------|------------------|-------------------|
-| **c_n** | Cell State | Long-term memory | Captures **slowly-varying, persistent** patterns (seasonal cycles) |
-| **h_n** | Hidden State | Short-term output | More **responsive to recent inputs** (quick fluctuations) |
+### Гипотеза
 
-### Hypothesis
+- **h_n** сильнее коррелирует с краткосрочными процессами (испарение, грунтовый сток)
+- **c_n** сильнее коррелирует с сезонными процессами (СВЭ, высота снежного покрова)
 
-- **h_n** should correlate better with quick/variable processes (evaporation, subsurface)
-- **c_n** should correlate better with seasonal/persistent patterns (SWE, snow_depth)
+### Анализируемые процессы (не во входах модели)
 
-### Processes Analyzed (NOT in model inputs)
+| Параметр | Источник | Физический смысл | Временной масштаб |
+|----------|----------|------------------|-------------------|
+| Испарение | GLEAM | Потери воды в атмосферу | Краткосрочный |
+| СВЭ | ERA5-Land | Запас воды в снеге | Сезонный |
+| Высота снежного покрова | ERA5-Land | Накопление снега | Сезонный |
+| Грунтовый сток | ERA5-Land | Подземный / базовый сток | Краткосрочный |
 
-| Parameter | Source | Physical Meaning | Temporal Scale |
-|-----------|--------|------------------|----------------|
-| Evaporation | GLEAM | Water loss to atmosphere | Short-term |
-| SWE | ERA5-Land | Snow water storage | Seasonal |
-| Snow Depth | ERA5-Land | Snow accumulation | Seasonal |
-| Subsurface | ERA5-Land | Groundwater/baseflow | Short-term |
+## Методология
 
-## Methodology
+### 1. Поканальная корреляция
 
-### 1. Per-Gauge Correlation Analysis
+- **Раньше**: одна траектория состояний × метеоданные всех водосборов (неверно)
+- **Теперь**: состояния каждого водосбора × его метеоданные (верно)
 
-**Critical improvement over previous version**:
-- **Before**: One state trajectory correlated with 996 different gauges' meteo data (WRONG)
-- **Now**: Each gauge's state trajectory correlated with its OWN meteo data (CORRECT)
+### 2. Знаковые корреляции
 
-For each gauge:
-1. Get gauge's state trajectory: `(730 timesteps, 256 cells)`
-2. Load gauge's meteo data: `(730 timesteps,)`
-3. Compute Pearson correlation for each cell: `r = corr(cell_trajectory, meteo_trajectory)`
+Группы: `{process}_pos` / `{process}_neg`
 
-### 2. Signed Correlations
+### 3. Z-score ранжирование
 
-Preserves positive/negative relationships:
-- **Positive correlation**: Cell activates when process increases
-- **Negative correlation**: Cell inhibits when process increases
+Нормализация внутри каждого процесса для сбалансированного назначения ячеек.
 
-Groups: `{process}_pos` or `{process}_neg`
+### 4. Доминирующий процесс по водосбору
 
-### 3. Z-Score Ranking for Cell Assignment
+Z-score сравнение процессов для каждого водосбора отдельно.
 
-**Problem**: Snow processes often have higher raw correlations, dominating assignments
+## Выходные таблицы (`res_0426/chapter_three/tables/`)
 
-**Solution**: Normalize correlations within each process using Z-scores:
-```
-z_score[cell, process] = (r[cell, process] - mean_r[process]) / std_r[process]
-```
+| Файл | Содержание |
+|------|------------|
+| `lstm_v2_hn_cell_assignment.csv` | Назначение ячеек h_n |
+| `lstm_v2_cn_cell_assignment.csv` | Назначение ячеек c_n |
+| `lstm_v2_hn_cn_comparison.csv` | Сравнение h_n и c_n |
+| `lstm_v2_gauge_dominant.csv` | Доминирующий процесс по водосборам |
+| `lstm_v2_hypothesis_test.csv` | Проверка гипотезы |
+| `lstm_v2_cluster_process_crosstab.csv` | Кросс-таблица кластер × процесс |
+| `lstm_v2_hybrid_cluster_process_summary.csv` | Модальный процесс и доли (+) по семействам процессов для каждого гибридного кластера |
 
-This ensures weaker-correlation processes (subsurface, evaporation) still get cell representation.
+## Выходные рисунки (`res_0426/chapter_three/figures/`)
 
-### 4. Per-Gauge Dominant Process
+| Файл | Содержание |
+|------|------------|
+| `lstm_v2_hn_cell_grid.png` | Сетка 16×16 назначений h_n |
+| `lstm_v2_cn_cell_grid.png` | Сетка 16×16 назначений c_n |
+| `lstm_v2_hn_dominant_process_map.png` | Гекс-карта доминирующих процессов (модальный процесс в гексе) |
+| `lstm_v2_corr_evaporation_hex.png` | Гекс-карты корреляций: испарение (2×2: |r| и знаковый r) |
+| `lstm_v2_corr_swe_hex.png` | Гекс-карты корреляций: СВЭ (2×2) |
+| `lstm_v2_corr_snow_depth_hex.png` | Гекс-карты корреляций: высота снега (2×2) |
+| `lstm_v2_corr_subsurface_hex.png` | Гекс-карты корреляций: грунтовый сток (2×2) |
+| `lstm_v2_ts_evaporation_exemplars.png` | Временные ряды: испарение |
+| `lstm_v2_ts_swe_exemplars.png` | Временные ряды: СВЭ |
+| `lstm_v2_ts_snow_depth_exemplars.png` | Временные ряды: высота снега |
+| `lstm_v2_ts_subsurface_exemplars.png` | Временные ряды: грунтовый сток |
+| `lstm_v2_hn_cn_comparison_grid.png` | Сравнение сеток h_n / c_n |
+| `lstm_v2_hypothesis_test.png` | Диаграмма проверки гипотезы |
+| `lstm_v2_hybrid_modal_process_map.png` | Модальный доминирующий процесс h_n по 16 гибридным кластерам (dissolved regions) |
+| `lstm_v2_hybrid_sign_tendency_maps.png` | Медианный знаковый r (h_n) по семействам процессов в гибридных кластерах (2×2, dissolved, seismic) |
+| `lstm_v2_hybrid_process_stacked_bars.png` | Столбчатая диаграмма долей процессов внутри каждого кластера |
 
-For each gauge, determine which process has the strongest representation using Z-score normalized comparisons.
+## Русская терминология
 
-## Output Files
+| Код | Русское название |
+|-----|------------------|
+| h_n | скрытый фильтр (h_n) |
+| c_n | фильтр состояния (c_n) |
+| evaporation | испарение (GLEAM) |
+| swe | влагозапас снега (ERA5-Land) |
+| snow_depth | высота снежного покрова (ERA5-Land) |
+| subsurface | грунтовый сток (ERA5-Land) |
+| inactive | неактивная ячейка |
 
-### Tables (`res/chapter_three/tables/`)
+## Интерпретация
 
-| File | Content |
-|------|---------|
-| `lstm_v2_hn_cell_assignment.csv` | h_n cell-to-process assignments |
-| `lstm_v2_cn_cell_assignment.csv` | c_n cell-to-process assignments |
-| `lstm_v2_hn_cn_comparison.csv` | h_n vs c_n overlap statistics |
-| `lstm_v2_gauge_dominant.csv` | Per-gauge dominant process |
-| `lstm_v2_hypothesis_test.csv` | Temporal scale hypothesis results |
-| `lstm_v2_cluster_process_crosstab.csv` | Hybrid cluster x process counts |
+### Сетка ячеек
 
-### Figures (`res/chapter_three/images/`)
+Каждая ячейка 16×16 — одна из 256 скрытых единиц LSTM. Цвет — метеопроцесс, который ячейка лучше всего представляет.
 
-| File | Content |
-|------|---------|
-| `lstm_v2_hn_cell_grid.png` | 16x16 grid of h_n cell assignments |
-| `lstm_v2_hn_dominant_process_map.png` | Spatial map of dominant processes |
-| `lstm_v2_hn_cn_comparison_grid.png` | Side-by-side h_n vs c_n grids |
-| `lstm_v2_cluster_process_heatmap.png` | Cluster x process percentage heatmap |
+### Проверка гипотезы
 
-## Interpreting Results
+См. `lstm_v2_hypothesis_test.csv` и `lstm_v2_hypothesis_test.png`.
 
-### Cell Grid
+### Гекс-карты корреляций
 
-Each cell in the 16x16 grid represents one of 256 LSTM hidden units. Colors indicate which meteorological process that cell best represents.
+**Важно:** для гекс-агрегации используются **полигоны водосборов** (`russia_50k_ws.gpkg`), а не точки постов.
 
-### Hypothesis Test Results
+Сетка 2×2 на каждый метеопроцесс:
+- **а), б)** — модуль r (|r|) для h_n и c_n (`RdYlGn`);
+- **в), г)** — знаковый r для h_n и c_n (`seismic`).
 
-Check `lstm_v2_hypothesis_test.csv`:
-- If `Matches Hypothesis = True` for most processes, the LSTM follows expected temporal dynamics
-- `h_n Mean |r|` vs `c_n Mean |r|` shows which state has stronger correlations
+### Интерпретация знака корреляции
 
-### Cluster Analysis
+| Шаг | Смысл |
+|-----|-------|
+| Выбор ячейки | `argmax \|r\|` — наибольшая *сила* связи; знак не учитывается |
+| Знак ячейки | Фактический Pearson r выбранной ячейки (+ или −) |
+| Верхний ряд | Только \|r\| — сила без направления |
+| Нижний ряд | Знаковый r — направление совместной изменчивости |
+| r < 0 | Обратная связь (не «слабая» корреляция) |
+| `_pos` / `_neg` | Знак лучшей ячейки для процесса-победителя (Z-score) |
 
-Check `lstm_v2_cluster_process_crosstab.csv`:
-- Do gauges in same hybrid cluster have similar dominant processes?
-- High within-cluster homogeneity suggests LSTM organization aligns with hydrological regimes
+Пространственные различия знака отражают региональные режимы: одна и та же ячейка LSTM может быть синфазной с процессом в одном водосборе и антифазной в другом, если выбраны разные «лучшие» ячейки или если внутреннее представление модели различается по климатическим зонам.
 
-## Common Issues
+### Гекс-карта доминирующего процесса (7a)
 
-### 1. Missing meteo data for some gauges
-- Solution: Gauges with missing data are excluded from correlation analysis
-- Check: Printed "Valid gauges" count should be close to 996
+Модальный `dominant_group` среди водосборов, попадающих в каждый гекс; цвет — тип процесса с суффиксом знака.
 
-### 2. All cells assigned to same process
-- Cause: One process dominates (usually snow)
-- Solution: Z-score normalization addresses this
+### Гибридные кластеры × доминирующий процесс (раздел 10)
 
-### 3. Low correlations overall
-- Check: `MIN_CORRELATION = 0.3` threshold
-- Cells below threshold assigned to "inactive" group
+Три взаимодополняющих рисунка вместо тепловой карты:
 
-## Code References
+1. **`lstm_v2_hybrid_modal_process_map.png`** — модальный доминирующий метеопроцесс h_n для каждого из 16 гибридных кластеров; водосборы объединены (`dissolve`) в одну область на кластер; легенда снизу показывает все 8 знаковых групп (включая нулевые).
+2. **`lstm_v2_hybrid_sign_tendency_maps.png`** — 2×2 карты **медианного знакового r** (h_n) по четырём семействам метеопроцессов внутри кластера; дискретная шкала `SIGNED_CORR_HEX_LIMITS`, colormap `seismic`, гистограмма как в BlindMetrics/`hybrid_cluster_metrics_maps_n`.
+3. **`lstm_v2_hybrid_process_stacked_bars.png`** — доли всех знаковых групп внутри каждого кластера (удобнее тепловой карты для 16 кластеров).
 
-### Loading states
-```python
-states = np.load("all_gauges_states.npz")
-h_states_all = states["h_n"]  # (996, 730, 256)
-c_states_all = states["c_n"]  # (996, 730, 256)
-gauge_ids = states["gauge_ids"]  # (996,)
-```
+Таблица `lstm_v2_hybrid_cluster_process_summary.csv` содержит модальный процесс, `{param}_pos_share` и `{param}_median_signed_r` для каждого кластера.
 
-### Computing correlation for one gauge
-```python
-gauge_idx = 0
-gauge_states = h_states_all[gauge_idx]  # (730, 256)
-meteo_data = load_meteo_data(gauge_ids[gauge_idx], "evaporation")  # (730,)
-correlations = compute_cell_correlations(gauge_states, meteo_data)  # (256,)
-```
+Подробное описание для текста диссертации: `res_0426/chapter_three/tables/lstm_v2_hybrid_figures_description.md`.
 
-### Finding dominant process
-```python
-# For each gauge, find process with max Z-score normalized correlation
-gauge_zscores = (gauge_max_corr - gauge_max_corr.mean()) / gauge_max_corr.std()
-dominant_process = gauge_zscores.idxmax()
-```
+### Временные ряды-примеры
 
-## Historical Context
+6 водосборов с наибольшей корреляцией h_n; верхний ряд — активация лучшей ячейки, нижний — метеоряд.
 
-Previous version (`example_states.npz`) had shape `(731, 256)` which represented only ONE gauge's time series. This was incorrectly correlated with all 996 gauges' meteo data.
+## Типичные проблемы
 
-The corrected version extracts states for ALL gauges: `(996, 730, 256)`.
+1. **Отсутствие метеоданных** — водосборы исключаются из корреляций
+2. **Все ячейки одного процесса** — решается Z-score нормализацией
+3. **Низкие корреляции** — порог `MIN_CORRELATION = 0.3`
+4. **`Representative watershed area must be positive`** — в `hexes_plots_n` переданы точки постов (`gauges`) вместо полигонов водосборов (`ws`)
 
 ---
 
-*Last updated: 2026-01-28*
+*Обновлено: 2026-06-24 (гибридные пространственные карты)*
