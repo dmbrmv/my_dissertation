@@ -102,7 +102,7 @@ mlruns/
 .neptune/
 
 # Data directories
-data
+data/**
 data/raw/
 data/processed/
 data/external/
