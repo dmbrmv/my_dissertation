@@ -2,7 +2,7 @@
 authors = ["Dmitrii Abramov <dmbrmv96@gmail.com>"]
 channels = ["conda-forge"]
 name = "Dissertation"
-platforms = ["osx-arm64"]
+platforms = ["linux-64", "osx-arm64"]
 version = "0.1.0"
 
 [tasks]
@@ -53,3 +53,4 @@ bottleneck = ">=1.6.0,<2"
 h5netcdf = ">=1.8.1,<2"
 cfgrib = ">=0.9.15.1,<0.10"
 pymannkendall = ">=1.4.3,<2"
+pip = ">=26.2.1,<27"
